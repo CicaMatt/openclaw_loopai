@@ -19,6 +19,9 @@
   },
   "agents": {
     "defaults": {
+      "sandbox": {
+        "workspaceAccess": "rw"
+      },
       "model": {
         "primary": "openai-codex/gpt-5.3-codex"
       },
@@ -26,7 +29,10 @@
     }
   },
   "tools": {
-    "profile": "messaging"
+    "profile": "full",
+    "sessions": {
+      "visibility": "all"
+    }
   },
   "commands": {
     "native": "auto",
@@ -72,6 +78,12 @@
     "entries": {
       "telegram": {
         "enabled": true
+      },
+      "kidney-cancer-tool": {
+        "enabled": true,
+        "config": {
+          "endpoint": "http://looporchestra.sytes.net:4000/nodes/ai_tool/kidney-cancer-detection-model"
+        }
       }
     }
   }
