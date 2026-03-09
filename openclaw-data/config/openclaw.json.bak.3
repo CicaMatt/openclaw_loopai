@@ -1,10 +1,10 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.3",
-    "lastTouchedAt": "2026-03-05T15:20:58.854Z"
+    "lastTouchedAt": "2026-03-05T16:22:18.198Z"
   },
   "wizard": {
-    "lastRunAt": "2026-03-05T15:06:55.193Z",
+    "lastRunAt": "2026-03-05T16:22:18.181Z",
     "lastRunVersion": "2026.3.3",
     "lastRunCommand": "onboard",
     "lastRunMode": "local"
@@ -19,6 +19,9 @@
   },
   "agents": {
     "defaults": {
+      "sandbox": {
+        "workspaceAccess": "rw"
+      },
       "model": {
         "primary": "openai-codex/gpt-5.3-codex"
       },
@@ -26,7 +29,10 @@
     }
   },
   "tools": {
-    "profile": "messaging"
+    "profile": "full",
+    "sessions": {
+      "visibility": "all"
+    }
   },
   "commands": {
     "native": "auto",
@@ -42,6 +48,9 @@
       "enabled": true,
       "dmPolicy": "pairing",
       "botToken": "8522661553:AAHvhhGa5UowC0EbfMdl3n5gShhx-sRUJQk",
+      "allowFrom": [
+        495506013
+      ],
       "groupPolicy": "allowlist",
       "streaming": "partial"
     }
@@ -57,8 +66,8 @@
       ]
     },
     "auth": {
-      "mode": "token",
-      "token": "bd7ca64dca30aea9ee3d3688ebf1540da263f5b8a31fbe36a4833b90f6734c69"
+      "mode": "password",
+      "password": "password"
     },
     "tailscale": {
       "mode": "off",
@@ -69,6 +78,12 @@
     "entries": {
       "telegram": {
         "enabled": true
+      },
+      "kidney-cancer-tool": {
+        "enabled": true,
+        "config": {
+          "endpoint": "http://looporchestra.sytes.net:4000/nodes/ai_tool/kidney-cancer-detection-model"
+        }
       }
     }
   }

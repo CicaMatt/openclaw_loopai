@@ -1,11 +1,11 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.3.3",
-    "lastTouchedAt": "2026-03-05T16:22:08.882Z"
+    "lastTouchedVersion": "2026.3.9",
+    "lastTouchedAt": "2026-03-09T20:24:54.250Z"
   },
   "wizard": {
-    "lastRunAt": "2026-03-05T15:06:55.193Z",
-    "lastRunVersion": "2026.3.3",
+    "lastRunAt": "2026-03-09T19:04:52.127Z",
+    "lastRunVersion": "2026.3.9",
     "lastRunCommand": "onboard",
     "lastRunMode": "local"
   },
@@ -20,13 +20,13 @@
   "agents": {
     "defaults": {
       "model": {
-        "primary": "openai-codex/gpt-5.3-codex"
+        "primary": "openai-codex/gpt-5.4"
       },
       "workspace": "/home/node/.openclaw/workspace"
     }
   },
   "tools": {
-    "profile": "messaging"
+    "profile": "coding"
   },
   "commands": {
     "native": "auto",
@@ -42,9 +42,6 @@
       "enabled": true,
       "dmPolicy": "pairing",
       "botToken": "8522661553:AAHvhhGa5UowC0EbfMdl3n5gShhx-sRUJQk",
-      "allowFrom": [
-        495506013
-      ],
       "groupPolicy": "allowlist",
       "streaming": "partial"
     }
@@ -61,11 +58,22 @@
     },
     "auth": {
       "mode": "token",
-      "token": "bd7ca64dca30aea9ee3d3688ebf1540da263f5b8a31fbe36a4833b90f6734c69"
+      "token": "9f15c9972b6e1b857a3509a6c107a16caf251dcb0da46104"
     },
     "tailscale": {
       "mode": "off",
       "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send"
+      ]
     }
   },
   "plugins": {

@@ -1,0 +1,80 @@
+{
+  "75e7c5a4b545f0c50c217a874bf770b23d6fa1f85e0feda24b50bd705dda451c": {
+    "deviceId": "75e7c5a4b545f0c50c217a874bf770b23d6fa1f85e0feda24b50bd705dda451c",
+    "publicKey": "FQK3BK_Kb3FXdJahGK_HaDcrfok0Rui0SYnFa1V6DrQ",
+    "platform": "linux",
+    "clientId": "openclaw-probe",
+    "clientMode": "probe",
+    "role": "operator",
+    "roles": [
+      "operator"
+    ],
+    "scopes": [
+      "operator.read",
+      "operator.admin",
+      "operator.write",
+      "operator.approvals",
+      "operator.pairing"
+    ],
+    "approvedScopes": [
+      "operator.read",
+      "operator.admin",
+      "operator.write",
+      "operator.approvals",
+      "operator.pairing"
+    ],
+    "tokens": {
+      "operator": {
+        "token": "59LAwuTwP3dpjamVFkKmVBHixRJczNh4qOpWXQ3qEn4",
+        "role": "operator",
+        "scopes": [
+          "operator.admin",
+          "operator.approvals",
+          "operator.pairing",
+          "operator.read",
+          "operator.write"
+        ],
+        "createdAtMs": 1773082963275,
+        "rotatedAtMs": 1773087731345
+      }
+    },
+    "createdAtMs": 1773082963275,
+    "approvedAtMs": 1773087731344
+  },
+  "40cefc67383965e33af71b0a48f60030018cb4c60a4effcea6faa7df94eb0741": {
+    "deviceId": "40cefc67383965e33af71b0a48f60030018cb4c60a4effcea6faa7df94eb0741",
+    "publicKey": "Lh0kbybDblXrtod1ERoddTnCq3g-xXE04kT7STN0sKc",
+    "platform": "MacIntel",
+    "clientId": "openclaw-control-ui",
+    "clientMode": "webchat",
+    "role": "operator",
+    "roles": [
+      "operator"
+    ],
+    "scopes": [
+      "operator.admin",
+      "operator.approvals",
+      "operator.pairing"
+    ],
+    "approvedScopes": [
+      "operator.admin",
+      "operator.approvals",
+      "operator.pairing"
+    ],
+    "remoteIp": "192.168.65.1",
+    "tokens": {
+      "operator": {
+        "token": "Wh7conjwwilBjTYX4QZIYlP4a8pElR3G-XTZOlFmztA",
+        "role": "operator",
+        "scopes": [
+          "operator.admin",
+          "operator.approvals",
+          "operator.pairing"
+        ],
+        "createdAtMs": 1773087749565
+      }
+    },
+    "createdAtMs": 1773087749565,
+    "approvedAtMs": 1773087749565
+  }
+}
