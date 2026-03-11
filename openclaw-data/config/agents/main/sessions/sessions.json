@@ -353,7 +353,7 @@
   },
   "agent:main:telegram:direct:495506013": {
     "sessionId": "5429323c-5a9e-4293-a918-2c960eb22768",
-    "updatedAt": 1773160095443,
+    "updatedAt": 1773241973401,
     "systemSent": true,
     "abortedLastRun": false,
     "chatType": "direct",
@@ -459,7 +459,7 @@
     "contextTokens": 272000,
     "systemPromptReport": {
       "source": "run",
-      "generatedAt": 1773160085684,
+      "generatedAt": 1773241959662,
       "sessionId": "5429323c-5a9e-4293-a918-2c960eb22768",
       "sessionKey": "agent:main:telegram:direct:495506013",
       "provider": "openai-codex",
@@ -691,11 +691,11 @@
         ]
       }
     },
-    "inputTokens": 32227,
-    "outputTokens": 172,
-    "cacheRead": 0,
+    "inputTokens": 1335,
+    "outputTokens": 239,
+    "cacheRead": 33920,
     "cacheWrite": 0,
-    "totalTokens": 32227,
+    "totalTokens": 34049,
     "totalTokensFresh": true
   }
 }

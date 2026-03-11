@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.9",
-    "lastTouchedAt": "2026-03-11T12:11:10.388Z"
+    "lastTouchedAt": "2026-03-11T13:52:26.377Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -43,6 +43,13 @@
         "workspace": "/home/node/.openclaw/workspace-doctor-agent",
         "agentDir": "/home/node/.openclaw/agents/doctor-agent/agent",
         "model": "openai-codex/gpt-5.4"
+      },
+      {
+        "id": "patient-agent",
+        "name": "patient-agent",
+        "workspace": "/home/node/.openclaw/workspace-patient-agent",
+        "agentDir": "/home/node/.openclaw/agents/patient-agent/agent",
+        "model": "openai-codex/gpt-5.4"
       }
     ]
   },
@@ -65,6 +72,14 @@
         "channel": "telegram",
         "accountId": "doctor-agent-tg"
       }
+    },
+    {
+      "type": "route",
+      "agentId": "patient-agent",
+      "match": {
+        "channel": "telegram",
+        "accountId": "patient-agent-tg"
+      }
     }
   ],
   "commands": {
@@ -81,10 +96,11 @@
       "enabled": true,
       "dmPolicy": "pairing",
       "groupPolicy": "allowlist",
+      "streaming": "partial",
       "accounts": {
         "default": {
           "dmPolicy": "pairing",
-          "botToken": "8522661553:AAHvhhGa5UowC0EbfMdl3n5gShhx-sRUJQk",
+          "botToken": "8652862644:AAFqG6VSuodfmTB58YsPVD3a1gDgVTj6pdA",
           "allowFrom": [
             495506013
           ],
@@ -94,15 +110,24 @@
         "doctor-agent-tg": {
           "enabled": true,
           "dmPolicy": "pairing",
-          "botToken": "8710041332:AAHxW3FPShrkqFycD61wqJJGSHNEqL-W13M",
+          "botToken": "8761481900:AAH6sBiQq8B5_WhbzwGC1_FcKkwfgI1FAe4",
+          "allowFrom": [
+            495506013
+          ],
+          "groupPolicy": "allowlist",
+          "streaming": "partial"
+        },
+        "patient-agent-tg": {
+          "enabled": true,
+          "dmPolicy": "pairing",
+          "botToken": "8669013778:AAHRB8kKGVxwlOFG9oRqDkN-zCg_84YAm9Y",
           "allowFrom": [
             495506013
           ],
           "groupPolicy": "allowlist",
           "streaming": "partial"
         }
-      },
-      "streaming": "partial"
+      }
     }
   },
   "gateway": {
