@@ -409,7 +409,7 @@
   },
   "agent:main:telegram:direct:495506013": {
     "sessionId": "5429323c-5a9e-4293-a918-2c960eb22768",
-    "updatedAt": 1773241973401,
+    "updatedAt": 1773250855017,
     "systemSent": true,
     "abortedLastRun": false,
     "chatType": "direct",
@@ -422,7 +422,7 @@
     "lastTo": "telegram:495506013",
     "lastAccountId": "default",
     "origin": {
-      "label": "Matteo Cicalese (@CicaMatt) id:495506013",
+      "label": "Matteo Cicalese",
       "provider": "telegram",
       "surface": "telegram",
       "chatType": "direct",
