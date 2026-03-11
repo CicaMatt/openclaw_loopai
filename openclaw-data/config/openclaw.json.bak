@@ -1,10 +1,10 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.9",
-    "lastTouchedAt": "2026-03-09T20:24:54.250Z"
+    "lastTouchedAt": "2026-03-11T11:56:02.935Z"
   },
   "wizard": {
-    "lastRunAt": "2026-03-09T19:04:52.127Z",
+    "lastRunAt": "2026-03-09T20:25:00.842Z",
     "lastRunVersion": "2026.3.9",
     "lastRunCommand": "onboard",
     "lastRunMode": "local"
@@ -23,7 +23,21 @@
         "primary": "openai-codex/gpt-5.4"
       },
       "workspace": "/home/node/.openclaw/workspace"
-    }
+    },
+    "list": [
+      {
+        "id": "main",
+        "tools": {
+          "alsoAllow": [
+            "web_search",
+            "web_fetch",
+            "tts",
+            "nodes",
+            "agents_list"
+          ]
+        }
+      }
+    ]
   },
   "tools": {
     "profile": "coding"
@@ -42,6 +56,9 @@
       "enabled": true,
       "dmPolicy": "pairing",
       "botToken": "8522661553:AAHvhhGa5UowC0EbfMdl3n5gShhx-sRUJQk",
+      "allowFrom": [
+        495506013
+      ],
       "groupPolicy": "allowlist",
       "streaming": "partial"
     }

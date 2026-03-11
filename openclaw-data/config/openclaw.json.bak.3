@@ -1,11 +1,11 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.3.3",
-    "lastTouchedAt": "2026-03-05T16:22:18.198Z"
+    "lastTouchedVersion": "2026.3.9",
+    "lastTouchedAt": "2026-03-11T11:17:52.302Z"
   },
   "wizard": {
-    "lastRunAt": "2026-03-05T16:22:18.181Z",
-    "lastRunVersion": "2026.3.3",
+    "lastRunAt": "2026-03-09T20:25:00.842Z",
+    "lastRunVersion": "2026.3.9",
     "lastRunCommand": "onboard",
     "lastRunMode": "local"
   },
@@ -19,20 +19,35 @@
   },
   "agents": {
     "defaults": {
-      "sandbox": {
-        "workspaceAccess": "rw"
-      },
       "model": {
-        "primary": "openai-codex/gpt-5.3-codex"
+        "primary": "openai-codex/gpt-5.4"
       },
       "workspace": "/home/node/.openclaw/workspace"
-    }
+    },
+    "list": [
+      {
+        "id": "main",
+        "tools": {
+          "alsoAllow": [
+            "web_search",
+            "web_fetch",
+            "tts",
+            "nodes",
+            "agents_list"
+          ]
+        }
+      },
+      {
+        "id": "doctor-agent",
+        "name": "doctor-agent",
+        "workspace": "/home/node/.openclaw/workspace-doctor-agent",
+        "agentDir": "/home/node/.openclaw/agents/doctor-agent/agent",
+        "model": "openai-codex/gpt-5.4"
+      }
+    ]
   },
   "tools": {
-    "profile": "full",
-    "sessions": {
-      "visibility": "all"
-    }
+    "profile": "coding"
   },
   "commands": {
     "native": "auto",
@@ -66,24 +81,29 @@
       ]
     },
     "auth": {
-      "mode": "password",
-      "password": "password"
+      "mode": "token",
+      "token": "9f15c9972b6e1b857a3509a6c107a16caf251dcb0da46104"
     },
     "tailscale": {
       "mode": "off",
       "resetOnExit": false
+    },
+    "nodes": {
+      "denyCommands": [
+        "camera.snap",
+        "camera.clip",
+        "screen.record",
+        "contacts.add",
+        "calendar.add",
+        "reminders.add",
+        "sms.send"
+      ]
     }
   },
   "plugins": {
     "entries": {
       "telegram": {
         "enabled": true
-      },
-      "kidney-cancer-tool": {
-        "enabled": true,
-        "config": {
-          "endpoint": "http://looporchestra.sytes.net:4000/nodes/ai_tool/kidney-cancer-detection-model"
-        }
       }
     }
   }

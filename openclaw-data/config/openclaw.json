@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.9",
-    "lastTouchedAt": "2026-03-09T20:25:00.866Z"
+    "lastTouchedAt": "2026-03-11T12:11:10.388Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -23,11 +23,50 @@
         "primary": "openai-codex/gpt-5.4"
       },
       "workspace": "/home/node/.openclaw/workspace"
-    }
+    },
+    "list": [
+      {
+        "id": "main",
+        "tools": {
+          "alsoAllow": [
+            "web_search",
+            "web_fetch",
+            "tts",
+            "nodes",
+            "agents_list"
+          ]
+        }
+      },
+      {
+        "id": "doctor-agent",
+        "name": "doctor-agent",
+        "workspace": "/home/node/.openclaw/workspace-doctor-agent",
+        "agentDir": "/home/node/.openclaw/agents/doctor-agent/agent",
+        "model": "openai-codex/gpt-5.4"
+      }
+    ]
   },
   "tools": {
     "profile": "coding"
   },
+  "bindings": [
+    {
+      "type": "route",
+      "agentId": "main",
+      "match": {
+        "channel": "telegram",
+        "accountId": "default"
+      }
+    },
+    {
+      "type": "route",
+      "agentId": "doctor-agent",
+      "match": {
+        "channel": "telegram",
+        "accountId": "doctor-agent-tg"
+      }
+    }
+  ],
   "commands": {
     "native": "auto",
     "nativeSkills": "auto",
@@ -41,11 +80,28 @@
     "telegram": {
       "enabled": true,
       "dmPolicy": "pairing",
-      "botToken": "8522661553:AAHvhhGa5UowC0EbfMdl3n5gShhx-sRUJQk",
-      "allowFrom": [
-        495506013
-      ],
       "groupPolicy": "allowlist",
+      "accounts": {
+        "default": {
+          "dmPolicy": "pairing",
+          "botToken": "8522661553:AAHvhhGa5UowC0EbfMdl3n5gShhx-sRUJQk",
+          "allowFrom": [
+            495506013
+          ],
+          "groupPolicy": "allowlist",
+          "streaming": "partial"
+        },
+        "doctor-agent-tg": {
+          "enabled": true,
+          "dmPolicy": "pairing",
+          "botToken": "8710041332:AAHxW3FPShrkqFycD61wqJJGSHNEqL-W13M",
+          "allowFrom": [
+            495506013
+          ],
+          "groupPolicy": "allowlist",
+          "streaming": "partial"
+        }
+      },
       "streaming": "partial"
     }
   },
