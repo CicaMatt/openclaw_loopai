@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.9",
-    "lastTouchedAt": "2026-03-11T13:19:52.588Z"
+    "lastTouchedAt": "2026-03-11T15:26:01.936Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -48,7 +48,63 @@
         "id": "patient-agent",
         "name": "patient-agent",
         "workspace": "/home/node/.openclaw/workspace-patient-agent",
-        "agentDir": "/home/node/.openclaw/agents/patient-agent/agent"
+        "agentDir": "/home/node/.openclaw/agents/patient-agent/agent",
+        "model": "openai-codex/gpt-5.4",
+        "skills": [
+          "1password",
+          "apple-notes",
+          "apple-reminders",
+          "bear-notes",
+          "blogwatcher",
+          "blucli",
+          "bluebubbles",
+          "camsnap",
+          "clawhub",
+          "coding-agent",
+          "discord",
+          "eightctl",
+          "gemini",
+          "gh-issues",
+          "gifgrep",
+          "github",
+          "gog",
+          "goplaces",
+          "healthcheck",
+          "himalaya",
+          "imsg",
+          "mcporter",
+          "model-usage",
+          "nano-banana-pro",
+          "nano-pdf",
+          "notion",
+          "obsidian",
+          "openai-image-gen",
+          "openai-whisper",
+          "openai-whisper-api",
+          "openhue",
+          "oracle",
+          "ordercli",
+          "peekaboo",
+          "sag",
+          "session-logs",
+          "sherpa-onnx-tts",
+          "skill-creator",
+          "slack",
+          "songsee",
+          "sonoscli",
+          "spotify-player",
+          "summarize",
+          "things-mac",
+          "tmux",
+          "trello",
+          "video-frames",
+          "voice-call",
+          "wacli",
+          "weather",
+          "xurl",
+          "dumb-calculator",
+          "pipeline-generator"
+        ]
       }
     ]
   },
@@ -71,6 +127,14 @@
         "channel": "telegram",
         "accountId": "doctor-agent-tg"
       }
+    },
+    {
+      "type": "route",
+      "agentId": "patient-agent",
+      "match": {
+        "channel": "telegram",
+        "accountId": "patient-agent-tg"
+      }
     }
   ],
   "commands": {
@@ -91,7 +155,7 @@
       "accounts": {
         "default": {
           "dmPolicy": "pairing",
-          "botToken": "8522661553:AAHvhhGa5UowC0EbfMdl3n5gShhx-sRUJQk",
+          "botToken": "8652862644:AAFqG6VSuodfmTB58YsPVD3a1gDgVTj6pdA",
           "allowFrom": [
             495506013
           ],
@@ -101,7 +165,17 @@
         "doctor-agent-tg": {
           "enabled": true,
           "dmPolicy": "pairing",
-          "botToken": "8710041332:AAHxW3FPShrkqFycD61wqJJGSHNEqL-W13M",
+          "botToken": "8761481900:AAH6sBiQq8B5_WhbzwGC1_FcKkwfgI1FAe4",
+          "allowFrom": [
+            495506013
+          ],
+          "groupPolicy": "allowlist",
+          "streaming": "partial"
+        },
+        "patient-agent-tg": {
+          "enabled": true,
+          "dmPolicy": "pairing",
+          "botToken": "8669013778:AAHRB8kKGVxwlOFG9oRqDkN-zCg_84YAm9Y",
           "allowFrom": [
             495506013
           ],
