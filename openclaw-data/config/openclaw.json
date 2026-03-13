@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.9",
-    "lastTouchedAt": "2026-03-11T15:30:37.690Z"
+    "lastTouchedAt": "2026-03-12T14:30:22.718Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -153,7 +153,8 @@
           "xurl",
           "dumb-calculator",
           "pipeline-generator",
-          "kidney-cancer-detection"
+          "kidney-cancer-detection",
+          "user-medical-data-update"
         ]
       },
       {
@@ -215,8 +216,8 @@
           "weather",
           "xurl",
           "dumb-calculator",
-          "pipeline-generator",
-          "kidney-cancer-detection"
+          "kidney-cancer-detection",
+          "user-medical-data-update"
         ]
       }
     ]
