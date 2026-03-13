@@ -5,7 +5,7 @@ import re
 from copy import deepcopy
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 BASE_DIR = Path('/home/node/openclaw-shared/user_medical_data')
 BASIC_TEMPLATE = {
@@ -39,21 +39,50 @@ def ensure_list(value: Any) -> List[Any]:
     return [value]
 
 
-def slugify_user_id(user_id: str) -> str:
-    cleaned = re.sub(r'[^a-zA-Z0-9._-]+', '_', user_id.strip())
+def sanitize_identifier(value: str) -> str:
+    cleaned = re.sub(r'[^a-zA-Z0-9._-]+', '_', value.strip())
     cleaned = cleaned.strip('._-')
     return cleaned or 'unknown-user'
 
 
-def load_payload(path: Path) -> Dict[str, Any]:
+def extract_telegram_user_id(payload: Dict[str, Any]) -> Optional[str]:
+    direct = str(payload.get('telegram_user_id', '')).strip()
+    if direct:
+        return direct
+
+    channel_identifiers = payload.get('channel_identifiers') or {}
+    nested = str(channel_identifiers.get('telegram_user_id', '')).strip()
+    if nested:
+        return nested
+
+    return None
+
+
+def resolve_canonical_user_id(payload: Dict[str, Any], user_id: str) -> str:
+    telegram_user_id = extract_telegram_user_id(payload)
+    if telegram_user_id:
+        return telegram_user_id
+    return user_id
+
+
+def resolve_storage_folder_name(payload: Dict[str, Any], user_id: str) -> str:
+    return sanitize_identifier(resolve_canonical_user_id(payload, user_id))
+
+
+def load_payload_from_file(path: Path) -> Dict[str, Any]:
     with path.open('r', encoding='utf-8') as f:
         return json.load(f)
 
 
-def empty_record(user_id: str) -> Dict[str, Any]:
+def load_payload_from_stdin() -> Dict[str, Any]:
+    return json.load(__import__('sys').stdin)
+
+
+def empty_record(user_id: str, telegram_user_id: Optional[str] = None) -> Dict[str, Any]:
     return {
         'schema_version': '1.0',
         'user_id': user_id,
+        'telegram_user_id': telegram_user_id,
         'created_at': now_iso(),
         'updated_at': now_iso(),
         'basic_health_data': deepcopy(BASIC_TEMPLATE),
@@ -61,9 +90,9 @@ def empty_record(user_id: str) -> Dict[str, Any]:
     }
 
 
-def load_existing(record_path: Path, user_id: str) -> Dict[str, Any]:
+def load_existing(record_path: Path, user_id: str, telegram_user_id: Optional[str] = None) -> Dict[str, Any]:
     if not record_path.exists():
-        return empty_record(user_id)
+        return empty_record(user_id, telegram_user_id=telegram_user_id)
     with record_path.open('r', encoding='utf-8') as f:
         data = json.load(f)
     if 'basic_health_data' not in data:
@@ -74,6 +103,7 @@ def load_existing(record_path: Path, user_id: str) -> Dict[str, Any]:
     data.setdefault('symptom_health_timeline', [])
     data.setdefault('schema_version', '1.0')
     data.setdefault('user_id', user_id)
+    data.setdefault('telegram_user_id', telegram_user_id)
     data.setdefault('created_at', now_iso())
     return data
 
@@ -137,19 +167,33 @@ def merge_timeline(existing: Dict[str, Any], incoming_entries: List[Dict[str, An
 
 def main() -> int:
     parser = argparse.ArgumentParser(description='Create or update structured user medical data records.')
-    parser.add_argument('--payload-file', required=True, help='Path to a JSON payload file.')
+    parser.add_argument('--payload-file', help='Path to a JSON payload file.')
+    parser.add_argument('--payload-stdin', action='store_true', help='Read the JSON payload from stdin.')
     args = parser.parse_args()
 
-    payload = load_payload(Path(args.payload_file))
+    if bool(args.payload_file) == bool(args.payload_stdin):
+        raise SystemExit('Provide exactly one of --payload-file or --payload-stdin')
+
+    if args.payload_stdin:
+        payload = load_payload_from_stdin()
+    else:
+        payload = load_payload_from_file(Path(args.payload_file))
     user_id = str(payload.get('user_id', '')).strip()
     if not user_id:
         raise SystemExit('payload must include user_id')
 
-    user_dir = BASE_DIR / slugify_user_id(user_id)
+    telegram_user_id = extract_telegram_user_id(payload)
+    canonical_user_id = resolve_canonical_user_id(payload, user_id)
+    storage_folder_name = resolve_storage_folder_name(payload, user_id)
+
+    user_dir = BASE_DIR / storage_folder_name
     user_dir.mkdir(parents=True, exist_ok=True)
     record_path = user_dir / 'medical_data.json'
 
-    record = load_existing(record_path, user_id)
+    record = load_existing(record_path, canonical_user_id, telegram_user_id=telegram_user_id)
+    record['user_id'] = canonical_user_id
+    if telegram_user_id:
+        record['telegram_user_id'] = telegram_user_id
     merge_basic(record, payload.get('basic_health_data', {}))
     added = merge_timeline(record, payload.get('symptom_health_timeline', []))
     record['updated_at'] = now_iso()
@@ -160,7 +204,9 @@ def main() -> int:
 
     result = {
         'record_path': str(record_path),
-        'user_id': user_id,
+        'storage_folder_name': storage_folder_name,
+        'user_id': record['user_id'],
+        'telegram_user_id': telegram_user_id,
         'timeline_entries_added': added,
         'updated_at': record['updated_at'],
     }

@@ -3,25 +3,52 @@ import argparse
 import json
 import re
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 BASE_DIR = Path('/home/node/openclaw-shared/user_medical_data')
 
 
-def slugify_user_id(user_id: str) -> str:
-    cleaned = re.sub(r'[^a-zA-Z0-9._-]+', '_', user_id.strip())
+def sanitize_identifier(value: str) -> str:
+    cleaned = re.sub(r'[^a-zA-Z0-9._-]+', '_', value.strip())
     cleaned = cleaned.strip('._-')
     return cleaned or 'unknown-user'
 
 
-def load_record(user_id: str) -> Dict[str, Any]:
-    record_path = BASE_DIR / slugify_user_id(user_id) / 'medical_data.json'
-    if not record_path.exists():
-        raise FileNotFoundError(f'No medical data found for user_id={user_id} at {record_path}')
+def load_json_record(record_path: Path) -> Dict[str, Any]:
     with record_path.open('r', encoding='utf-8') as f:
         data = json.load(f)
     data['_record_path'] = str(record_path)
     return data
+
+
+def find_record_by_user_id(user_id: str) -> Optional[Dict[str, Any]]:
+    direct_path = BASE_DIR / sanitize_identifier(user_id) / 'medical_data.json'
+    if direct_path.exists():
+        return load_json_record(direct_path)
+
+    for record_path in BASE_DIR.glob('*/medical_data.json'):
+        data = load_json_record(record_path)
+        if str(data.get('user_id', '')).strip() == user_id:
+            return data
+    return None
+
+
+def load_record(user_id: Optional[str] = None, telegram_user_id: Optional[str] = None) -> Dict[str, Any]:
+    if telegram_user_id:
+        record_path = BASE_DIR / sanitize_identifier(telegram_user_id) / 'medical_data.json'
+        if not record_path.exists():
+            raise FileNotFoundError(
+                f'No medical data found for telegram_user_id={telegram_user_id} at {record_path}'
+            )
+        return load_json_record(record_path)
+
+    if user_id:
+        data = find_record_by_user_id(user_id)
+        if data is not None:
+            return data
+        raise FileNotFoundError(f'No medical data found for user_id={user_id} under {BASE_DIR}')
+
+    raise ValueError('Either user_id or telegram_user_id is required')
 
 
 def nonempty_basic_fields(basic: Dict[str, Any]) -> Dict[str, Any]:
@@ -56,6 +83,7 @@ def build_summary(data: Dict[str, Any], recent_limit: int) -> Dict[str, Any]:
 
     return {
         'user_id': data.get('user_id'),
+        'telegram_user_id': data.get('telegram_user_id'),
         'record_path': data.get('_record_path'),
         'created_at': data.get('created_at'),
         'updated_at': data.get('updated_at'),
@@ -69,6 +97,7 @@ def build_summary(data: Dict[str, Any], recent_limit: int) -> Dict[str, Any]:
 
 def print_human_summary(summary: Dict[str, Any]) -> None:
     print(f"User ID: {summary.get('user_id')}")
+    print(f"Telegram User ID: {summary.get('telegram_user_id')}")
     print(f"Record: {summary.get('record_path')}")
     print(f"Created: {summary.get('created_at')}")
     print(f"Updated: {summary.get('updated_at')}")
@@ -96,12 +125,16 @@ def print_human_summary(summary: Dict[str, Any]) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description='Summarize structured user medical data records.')
-    parser.add_argument('--user-id', required=True, help='Stable user identifier')
+    parser.add_argument('--user-id', help='Stable logical user identifier stored in the record')
+    parser.add_argument('--telegram-user-id', help='Telegram user ID used as the storage folder name')
     parser.add_argument('--recent-limit', type=int, default=10, help='Number of recent timeline entries to show')
     parser.add_argument('--format', choices=['text', 'json'], default='text', help='Output format')
     args = parser.parse_args()
 
-    data = load_record(args.user_id)
+    if not args.user_id and not args.telegram_user_id:
+        raise SystemExit('Provide --user-id or --telegram-user-id')
+
+    data = load_record(user_id=args.user_id, telegram_user_id=args.telegram_user_id)
     summary = build_summary(data, args.recent_limit)
 
     if args.format == 'json':

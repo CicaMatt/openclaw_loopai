@@ -4,16 +4,23 @@
 
 Store each user's data at:
 
-- `/home/node/openclaw-shared/user_medical_data/<sanitized-user-id>/medical_data.json`
+- `/home/node/openclaw-shared/user_medical_data/<storage-folder>/medical_data.json`
 
-The folder name should be a sanitized form of the user identifier.
+Folder naming rule:
+- Use a sanitized `telegram_user_id` when available.
+- Otherwise use a sanitized `user_id`.
+
+Canonical identifier rule:
+- When `telegram_user_id` is available, persist that Telegram value as the record's `user_id`.
+- `telegram_user_id` may also be stored explicitly for clarity/backward compatibility.
 
 ## Record structure
 
 ```json
 {
   "schema_version": "1.0",
-  "user_id": "example-user",
+  "user_id": "123456789",
+  "telegram_user_id": "123456789",
   "created_at": "2026-03-11T17:00:00Z",
   "updated_at": "2026-03-11T17:05:00Z",
   "basic_health_data": {
@@ -59,7 +66,7 @@ The folder name should be a sanitized form of the user identifier.
 ## Summary behavior
 
 The companion summary script reads one user record and returns:
-- record metadata (`user_id`, path, timestamps)
+- record metadata (`user_id`, `telegram_user_id`, path, timestamps)
 - only non-empty `basic_health_data` fields
 - total timeline entry count
 - symptom and measurement counts
@@ -77,7 +84,8 @@ The companion summary script reads one user record and returns:
 
 ```json
 {
-  "user_id": "example-user",
+  "user_id": "123456789",
+  "telegram_user_id": "123456789",
   "basic_health_data": {
     "age": 42,
     "blood_type": "O+"
@@ -91,3 +99,8 @@ The companion summary script reads one user record and returns:
   ]
 }
 ```
+
+## Execution hygiene
+
+- Prefer stdin-based execution for updates so no temporary payload JSON file is written into the workspace.
+- If a temporary payload file must be used, delete it immediately after the update completes.

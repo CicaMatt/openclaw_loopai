@@ -1,0 +1,25 @@
+{
+  "schema_version": "1.0",
+  "user_id": "495506013",
+  "telegram_user_id": "495506013",
+  "created_at": "2026-03-13T14:26:13Z",
+  "updated_at": "2026-03-13T14:26:13Z",
+  "basic_health_data": {
+    "full_name": null,
+    "preferred_name": "Stefano",
+    "date_of_birth": null,
+    "age": 45,
+    "sex": "male",
+    "gender": null,
+    "blood_type": "O+",
+    "height_cm": null,
+    "weight_kg": null,
+    "allergies": [],
+    "chronic_conditions": [],
+    "medications": [],
+    "emergency_contact": null,
+    "primary_physician": null,
+    "notes": null
+  },
+  "symptom_health_timeline": []
+}
