@@ -1,7 +1,7 @@
 {
   "agent:main:main": {
     "sessionId": "6056d60b-fafb-42df-8f90-35d186c123ce",
-    "updatedAt": 1773411920633,
+    "updatedAt": 1773425413968,
     "systemSent": true,
     "abortedLastRun": false,
     "chatType": "direct",
@@ -155,7 +155,7 @@
     "contextTokens": 272000,
     "systemPromptReport": {
       "source": "run",
-      "generatedAt": 1773411843261,
+      "generatedAt": 1773425382274,
       "sessionId": "6056d60b-fafb-42df-8f90-35d186c123ce",
       "sessionKey": "agent:main:main",
       "provider": "openai-codex",
@@ -387,11 +387,11 @@
         ]
       }
     },
-    "inputTokens": 131862,
-    "outputTokens": 2520,
-    "cacheRead": 46592,
+    "inputTokens": 2471,
+    "outputTokens": 1072,
+    "cacheRead": 56576,
     "cacheWrite": 0,
-    "totalTokens": 46813,
+    "totalTokens": 59047,
     "totalTokensFresh": true
   },
   "agent:main:telegram:slash:495506013": {

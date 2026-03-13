@@ -1,13 +1,16 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.9",
-    "lastTouchedAt": "2026-03-12T14:30:22.718Z"
+    "lastTouchedAt": "2026-03-13T17:53:24.328Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
     "lastRunVersion": "2026.3.9",
     "lastRunCommand": "onboard",
     "lastRunMode": "local"
+  },
+  "update": {
+    "channel": "stable"
   },
   "auth": {
     "profiles": {
