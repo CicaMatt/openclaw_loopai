@@ -1,7 +1,7 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.3.9",
-    "lastTouchedAt": "2026-03-13T17:53:24.328Z"
+    "lastTouchedVersion": "2026.3.13",
+    "lastTouchedAt": "2026-03-15T11:48:54.720Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -157,7 +157,8 @@
           "dumb-calculator",
           "pipeline-generator",
           "kidney-cancer-detection",
-          "user-medical-data-update"
+          "user-medical-data-update",
+          "patient-klm"
         ]
       },
       {
