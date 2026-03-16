@@ -1,0 +1,46 @@
+{
+  "prototype_id": "69b7ce309fc31ca2c4714132",
+  "created_at": "2026-03-16T09:32:32.788000",
+  "updated_at": "2026-03-16T09:32:32.788000",
+  "prototype_name": "Test_kidney_nexus",
+  "prototype_description": "It Prototype",
+  "prototype_subtitle": null,
+  "prototype_players": [
+    {
+      "user_id": "626130f7c71f6b9e651c76be",
+      "role": "owner"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_name": "Test_kidney_nexus",
+      "workflow_id": "wf_id",
+      "workflow_type": "prototype",
+      "branches": [
+        {
+          "branch_id": "mjia9vqwnj9v72se3hcx7",
+          "branch_name": "Branch 1",
+          "nodes": [
+            {
+              "node_category": "input",
+              "node_sub_category": "Data Reader",
+              "node_name": "NodeDataReader5",
+              "node_label": "Image Reader",
+              "node_description": "Reads one or more Images files",
+              "data": {
+                "general_parameters": {
+                  "filename": "<image_path_here>",
+                  "storage_ref": "nodes_bucket"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "external_nodes": []
+    }
+  ],
+  "project_link_id": "",
+  "concert_hall_id": "627392cbef51f1256835d0e8",
+  "session_id": "6rh70xszeeie7ud251uvtk"
+}

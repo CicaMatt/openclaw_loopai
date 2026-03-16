@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-03-16T10:55:38.648Z"
+    "lastTouchedAt": "2026-03-16T11:48:34.052Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -84,7 +84,8 @@
           "xurl",
           "kidney-cancer-detection",
           "pipeline-generator",
-          "dumb-calculator"
+          "dumb-calculator",
+          "pipeline-execution"
         ],
         "tools": {
           "alsoAllow": [
@@ -159,7 +160,8 @@
           "kidney-cancer-detection",
           "user-medical-data-update",
           "patient-klm",
-          "nephrology-klm"
+          "nephrology-klm",
+          "pipeline-execution"
         ]
       },
       {
