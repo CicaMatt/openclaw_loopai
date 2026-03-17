@@ -1,9 +1,9 @@
 ---
-name: pipeline-execution
-description: Execute the fixed Test_kidney_nexus kidney cancer detection pipeline by first uploading a user-provided image with the same upload flow and Telegram user id logic used by the kidney-cancer-detection skill, then replacing the image-path placeholder in the stored prototype request JSON and sending it to the prototype execution endpoint. Use when a user wants to run this integrated kidney pipeline on an image and inspect either the raw response or the expected key outputs from the kidney cancer detector, the Image Analyzer, and the X-AI component.
+name: kidney-pipeline-execution
+description: Execute the kidney cancer detection pipeline by first uploading a user-provided image with the same upload flow and Telegram user id logic used by the kidney-cancer-detection skill, then replacing the image-path placeholder in the stored prototype request JSON and sending it to the prototype execution endpoint. Use when a user wants to run this integrated kidney pipeline on an image and inspect either the raw response or the expected key outputs from the kidney cancer detector, the Image Analyzer, and the X-AI component.
 ---
 
-# Pipeline Execution
+# Kidney Pipeline Execution
 
 Upload the local image first, then execute the fixed kidney cancer detection prototype payload with the uploaded remote image path substituted into the request JSON. This pipeline includes a Kidney Cancer Detection model, an Image Analyzer component, and an integrated X-AI component downstream.
 
