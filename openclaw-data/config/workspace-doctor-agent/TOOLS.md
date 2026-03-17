@@ -28,7 +28,11 @@ Use them only when they materially improve the case review, and interpret output
 - **Output message:** Always remember to the use that the tool output as a preliminary signal, not as an actual diagnosis.
 
 ## llm_distillator
-- Used to distill tool responses, together with conversation context, to give the user a complete answer.
+- **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
+- **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
+- **Suggestion rule:** Suggest this skill only once there has been enough symptom discussion to frame the case and a tool has just produced a diagnostic result or preliminary diagnosis.
+- **Presentation rule:** Use it to convert raw or fragmented tool output into a concise explanation that matches the agent’s diagnostic output structure and preserves the distinction between tool findings and clinical interpretation.
+- **Safety rule:** Present the distilled result as a preliminary interpretation, not a confirmed diagnosis, and keep uncertainty visible when the upstream tool output is limited or ambiguous.
 
 ## patient-klm
 - **Role:** Patient-specific knowledge base skill for retrieving live structured health context, including symptom history, visits, disease timeline, genomics, and custom patient facts.

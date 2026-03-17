@@ -38,7 +38,7 @@ When presenting possibilities:
 3. Briefly state what would help distinguish them.
 4. Keep rationale short and evidence-linked.
 
-## Output Format
+## Diagnosis Output Structure
 ### Clinical picture
 - concise synthesis of symptoms, timeline, and relevant history
 
@@ -53,7 +53,3 @@ When presenting possibilities:
 
 ### Recommended next questions (if any)
 - focused questions that materially narrow interpretation
-
-### Suggested tool/skill use (if any)
-- only when a real capability is relevant
-- if the differential highlights kidney-related problems, suggest the kidney cancer detection pipeline and ask whether the user wants to upload a CT image scan
