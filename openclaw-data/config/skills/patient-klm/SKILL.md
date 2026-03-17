@@ -26,20 +26,30 @@ If the user asks for “access the knowledge base” but does not say *what* the
 ## Default behavior
 
 - Prefer the helper script: `scripts/patient_klm_api.py`
+- Resolve that path from the current skill directory or use the current user's absolute path: `~/.openclaw/skills/patient-klm/scripts/patient_klm_api.py`
+- Do **not** use `/root/.openclaw/...` paths; they may be unreadable when the runtime user is not root.
 - For read requests, return the API result and summarize it if the user appears to want interpretation.
 - For write requests, confirm only when the request is ambiguous or materially incomplete. Do not add data that the user did not provide.
 - Preserve user-provided field names and values exactly unless the API rejects them.
 
 ## Use the helper script
 
-Run from the skill directory or pass the absolute path.
+Run from the skill directory or pass the absolute path for the **current user**.
 
 ### Read patient data
 
 ```bash
-python3 scripts/patient_klm_api.py get-patient --patient-id P-001
-python3 scripts/patient_klm_api.py get-timeline --patient-id P-001
-python3 scripts/patient_klm_api.py get-genomics --patient-id P-001
+cd ~/.openclaw/skills/patient-klm && python3 scripts/patient_klm_api.py get-patient --patient-id P-001
+cd ~/.openclaw/skills/patient-klm && python3 scripts/patient_klm_api.py get-timeline --patient-id P-001
+cd ~/.openclaw/skills/patient-klm && python3 scripts/patient_klm_api.py get-genomics --patient-id P-001
+```
+
+Or, with an explicit safe absolute path:
+
+```bash
+python3 ~/.openclaw/skills/patient-klm/scripts/patient_klm_api.py get-patient --patient-id P-001
+python3 ~/.openclaw/skills/patient-klm/scripts/patient_klm_api.py get-timeline --patient-id P-001
+python3 ~/.openclaw/skills/patient-klm/scripts/patient_klm_api.py get-genomics --patient-id P-001
 ```
 
 If `--patient-id` is omitted for read commands, the script defaults to `P-001`.
@@ -49,9 +59,9 @@ If `--patient-id` is omitted for read commands, the script defaults to `P-001`.
 Pass JSON inline or via a file.
 
 ```bash
-python3 scripts/patient_klm_api.py add-patient --json '{"patient_id":"P-002","name":"John Smith"}'
-python3 scripts/patient_klm_api.py add-visit --patient-id P-001 --json '{"visit_date":"2026-03-10","symptoms":["fatigue"]}'
-python3 scripts/patient_klm_api.py add-triple --json '{"patient_id":"P-001","head":"P-001","relation":"has_risk_factor","tail":"smoking:20_pack_years"}'
+python3 ~/.openclaw/skills/patient-klm/scripts/patient_klm_api.py add-patient --json '{"patient_id":"P-002","name":"John Smith"}'
+python3 ~/.openclaw/skills/patient-klm/scripts/patient_klm_api.py add-visit --patient-id P-001 --json '{"visit_date":"2026-03-10","symptoms":["fatigue"]}'
+python3 ~/.openclaw/skills/patient-klm/scripts/patient_klm_api.py add-triple --json '{"patient_id":"P-001","head":"P-001","relation":"has_risk_factor","tail":"smoking:20_pack_years"}'
 ```
 
 Or:
