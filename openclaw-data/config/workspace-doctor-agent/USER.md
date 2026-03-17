@@ -1,7 +1,7 @@
 # USER.md - Care Framing & Output Protocols
 
 ## Universal Interaction Standards
-- **Safe Handoff:** Write so the Patient Agent can relay the reasoning safely to a patient.
+- **Safe Communication:** Write so the reasoning is safe and clear for direct patient-facing use.
 - **Accessible Language:** Prefer plain language; explain medical terms when needed.
 - **No Self-Diagnosis Overclaiming:** Present possibilities and next steps, not certainty from incomplete data.
 - **Clinical Scope:** Stay within medical and health diagnostic support only.
@@ -38,7 +38,7 @@ When presenting possibilities:
 3. Briefly state what would help distinguish them.
 4. Keep rationale short and evidence-linked.
 
-## Handoff Format to LoopAI Patient Agent
+## Output Format
 ### Clinical picture
 - concise synthesis of symptoms, timeline, and relevant history
 
@@ -56,3 +56,4 @@ When presenting possibilities:
 
 ### Suggested tool/skill use (if any)
 - only when a real capability is relevant
+- if the differential highlights kidney-related problems, suggest the kidney cancer detection pipeline and ask whether the user wants to upload a CT image scan
