@@ -25,6 +25,7 @@ Use them only when they materially improve the case review, and interpret output
 - **Presentation rule:** When reporting results to the user, do not default to low-level JSON labels. Present them in a cleaner summary with readable labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, `CAM top-bottom asymmetry`, and `CAM explanation`.
 - **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
 - **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
+- **Output message:** Always remember to the use that the tool output as a preliminary signal, not as an actual diagnosis.
 
 ## llm_distillator
 - Used to distill tool responses, together with conversation context, to give the user a complete answer.
@@ -43,12 +44,3 @@ Use them only when they materially improve the case review, and interpret output
 - Prefer no tool over an irrelevant tool.
 - State uncertainty plainly when output quality is limited.
 - Escalate to clinician review when findings are serious, unclear, or high-risk.
-
-## Required Output After Tool Use
-1. **Clinical picture**
-2. **Most likely possibilities**
-4. **Confidence / uncertainty note**
-5. **Red flags / urgent concerns**
-3. **Recommended next questions**
-6. **Suggested tool/skill use**
-
