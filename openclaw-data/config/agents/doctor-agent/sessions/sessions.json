@@ -1,7 +1,7 @@
 {
   "agent:doctor-agent:telegram:direct:495506013": {
     "sessionId": "ab156464-5c96-458e-a6a7-b2b9229cef87",
-    "updatedAt": 1773759390644,
+    "updatedAt": 1773760335270,
     "systemSent": true,
     "abortedLastRun": false,
     "chatType": "direct",
@@ -189,7 +189,7 @@
     "contextTokens": 272000,
     "systemPromptReport": {
       "source": "run",
-      "generatedAt": 1773759366011,
+      "generatedAt": 1773760327110,
       "sessionId": "ab156464-5c96-458e-a6a7-b2b9229cef87",
       "sessionKey": "agent:doctor-agent:telegram:direct:495506013",
       "provider": "openai-codex",
@@ -417,11 +417,11 @@
         ]
       }
     },
-    "inputTokens": 6903,
-    "outputTokens": 925,
-    "cacheRead": 16640,
+    "inputTokens": 13446,
+    "outputTokens": 175,
+    "cacheRead": 3584,
     "cacheWrite": 0,
-    "totalTokens": 16796,
+    "totalTokens": 17030,
     "totalTokensFresh": true
   },
   "agent:doctor-agent:telegram:slash:495506013": {
