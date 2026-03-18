@@ -1,7 +1,7 @@
 {
   "agent:doctor-agent:telegram:direct:495506013": {
-    "sessionId": "4c22bf2e-1f28-4ef6-ab0c-7c4f56394276",
-    "updatedAt": 1773770107412,
+    "sessionId": "d8965c86-67d0-497a-ab7a-9af2235e845a",
+    "updatedAt": 1773834537510,
     "systemSent": true,
     "abortedLastRun": false,
     "chatType": "direct",
@@ -22,7 +22,7 @@
       "to": "telegram:495506013",
       "accountId": "doctor-agent-tg"
     },
-    "sessionFile": "/home/node/.openclaw/agents/doctor-agent/sessions/4c22bf2e-1f28-4ef6-ab0c-7c4f56394276.jsonl",
+    "sessionFile": "/home/node/.openclaw/agents/doctor-agent/sessions/d8965c86-67d0-497a-ab7a-9af2235e845a.jsonl",
     "compactionCount": 0,
     "skillsSnapshot": {
       "prompt": "\n\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>healthcheck</name>\n    <description>Host security hardening and risk-tolerance configuration for OpenClaw deployments. Use when a user asks for security audits, firewall/SSH/update hardening, risk posture, exposure review, OpenClaw cron scheduling for periodic checks, or version status checks on a machine running OpenClaw (laptop, workstation, Pi, VPS).</description>\n    <location>/app/skills/healthcheck/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>skill-creator</name>\n    <description>Create, edit, improve, or audit AgentSkills. Use when creating a new skill from scratch or when asked to improve, review, audit, tidy up, or clean up an existing skill or SKILL.md file. Also use when editing or restructuring a skill directory (moving files to references/ or scripts/, removing stale content, validating against the AgentSkills spec). Triggers on phrases like &quot;create a skill&quot;, &quot;author a skill&quot;, &quot;tidy up a skill&quot;, &quot;improve this skill&quot;, &quot;review the skill&quot;, &quot;clean up the skill&quot;, &quot;audit the skill&quot;.</description>\n    <location>/app/skills/skill-creator/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>weather</name>\n    <description>Get current weather and forecasts via wttr.in or Open-Meteo. Use when: user asks about weather, temperature, or forecasts for any location. NOT for: historical weather data, severe weather alerts, or detailed meteorological analysis. No API key needed.</description>\n    <location>/app/skills/weather/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>kidney-pipeline-execution</name>\n    <description>Execute the kidney cancer detection pipeline by first uploading a user-provided image with the same upload flow and Telegram user id logic used by the kidney-cancer-detection skill, then replacing the image-path placeholder in the stored prototype request JSON and sending it to the prototype execution endpoint. Use when a user wants to run this integrated kidney pipeline on an image and inspect either the raw response or the expected key outputs from the kidney cancer detector, the Image Analyzer, and the X-AI component.</description>\n    <location>~/.openclaw/skills/kidney-pipeline-execution/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>llm-distillator</name>\n    <description>Distill health-related conversation context plus diagnostic tool output into a clear, comprehensive patient-facing answer using a Hugging Face-hosted Llama 70B model. Use when the agent needs to (1) extract clinically relevant context from the current conversation, including symptoms, history, red flags, timelines, and other useful health details, (2) combine that context with the output of a diagnosis or screening tool, and (3) produce a concise but complete explanation that is easy for a user to understand.</description>\n    <location>~/.openclaw/skills/llm-distillator/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>nephrology-klm</name>\n    <description>Query the Nephrology-KLM knowledge model for nephrology expertise, differential-diagnosis support, disease-specific interpretation, and specialized kidney-related feedback. Use when the user needs nephrology-domain guidance about CKD, AKI, glomerular disease, dialysis, electrolyte/acid-base disorders, renal imaging findings, nephrology treatment considerations, or kidney-focused diagnosis/expertise.</description>\n    <location>~/.openclaw/skills/nephrology-klm/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>patient-klm</name>\n    <description>Access and update a patient-specific knowledge store backed by a Patient KLM API that exposes EHR records, disease timelines, genomic profiles, and custom structured triples in SQLite. Use when a user asks to retrieve, inspect, summarize, add, or update patient knowledge base data; fetch patient context for agent personalization; view all triples for a patient; inspect the disease timeline; inspect genomics; create a new patient; add a visit; or add a custom triple. Default to patient_id `P-001` when the user asks for patient knowledge base access without specifying a patient. If the intended endpoint is unclear, ask a brief clarification question before writing data.</description>\n    <location>~/.openclaw/skills/patient-klm/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>pipeline-generator</name>\n    <description>Generate an ML pipeline prototype by sending a user prompt to http://looporchestra.sytes.net:4010/nodes/ai_tool/AutoGen-model and reading the returned Answer field. Use only when the user explicitly asks for an ML pipeline prototype to be defined/generated, then explain the returned pipeline at a high level.</description>\n    <location>~/.openclaw/skills/pipeline-generator/SKILL.md</location>\n  </skill>\n</available_skills>",
@@ -189,8 +189,8 @@
     "contextTokens": 272000,
     "systemPromptReport": {
       "source": "run",
-      "generatedAt": 1773770067582,
-      "sessionId": "4c22bf2e-1f28-4ef6-ab0c-7c4f56394276",
+      "generatedAt": 1773834485064,
+      "sessionId": "d8965c86-67d0-497a-ab7a-9af2235e845a",
       "sessionKey": "agent:doctor-agent:telegram:direct:495506013",
       "provider": "openai-codex",
       "model": "gpt-5.4",
@@ -209,8 +209,8 @@
         "sandboxed": false
       },
       "systemPrompt": {
-        "chars": 32325,
-        "projectContextChars": 17006,
+        "chars": 31582,
+        "projectContextChars": 16263,
         "nonProjectContextChars": 15319
       },
       "injectedWorkspaceFiles": [
@@ -226,8 +226,8 @@
           "name": "SOUL.md",
           "path": "/home/node/.openclaw/workspace-doctor-agent/SOUL.md",
           "missing": false,
-          "rawChars": 4286,
-          "injectedChars": 4286,
+          "rawChars": 4055,
+          "injectedChars": 4055,
           "truncated": false
         },
         {
@@ -250,8 +250,8 @@
           "name": "USER.md",
           "path": "/home/node/.openclaw/workspace-doctor-agent/USER.md",
           "missing": false,
-          "rawChars": 2572,
-          "injectedChars": 2572,
+          "rawChars": 2060,
+          "injectedChars": 2060,
           "truncated": false
         },
         {
@@ -417,11 +417,11 @@
         ]
       }
     },
-    "inputTokens": 48816,
-    "outputTokens": 2013,
-    "cacheRead": 3584,
+    "inputTokens": 32584,
+    "outputTokens": 1064,
+    "cacheRead": 13056,
     "cacheWrite": 0,
-    "totalTokens": 52400,
+    "totalTokens": 22644,
     "totalTokensFresh": true
   },
   "agent:doctor-agent:telegram:slash:495506013": {
@@ -436,5 +436,423 @@
     },
     "sessionId": "721078df-b7d8-4a06-8301-142f7b335bdb",
     "updatedAt": 1773232523298
+  },
+  "agent:doctor-agent:telegram:direct:567556397": {
+    "origin": {
+      "label": "Andrea Pitrone (@pitro_eng_guitarist) id:567556397",
+      "provider": "telegram",
+      "surface": "telegram",
+      "chatType": "direct",
+      "from": "telegram:567556397",
+      "to": "telegram:567556397",
+      "accountId": "doctor-agent-tg"
+    },
+    "sessionId": "8c8eb80d-11f4-409d-8caf-d90a96a1b301",
+    "updatedAt": 1773834111813,
+    "deliveryContext": {
+      "channel": "telegram",
+      "to": "telegram:567556397",
+      "accountId": "doctor-agent-tg"
+    },
+    "lastChannel": "telegram",
+    "lastTo": "telegram:567556397",
+    "lastAccountId": "doctor-agent-tg",
+    "systemSent": true,
+    "abortedLastRun": false,
+    "chatType": "direct",
+    "sessionFile": "/home/node/.openclaw/agents/doctor-agent/sessions/8c8eb80d-11f4-409d-8caf-d90a96a1b301.jsonl",
+    "skillsSnapshot": {
+      "prompt": "\n\nThe following skills provide specialized instructions for specific tasks.\nUse the read tool to load a skill's file when the task matches its description.\nWhen a skill file references a relative path, resolve it against the skill directory (parent of SKILL.md / dirname of the path) and use that absolute path in tool commands.\n\n<available_skills>\n  <skill>\n    <name>healthcheck</name>\n    <description>Host security hardening and risk-tolerance configuration for OpenClaw deployments. Use when a user asks for security audits, firewall/SSH/update hardening, risk posture, exposure review, OpenClaw cron scheduling for periodic checks, or version status checks on a machine running OpenClaw (laptop, workstation, Pi, VPS).</description>\n    <location>/app/skills/healthcheck/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>skill-creator</name>\n    <description>Create, edit, improve, or audit AgentSkills. Use when creating a new skill from scratch or when asked to improve, review, audit, tidy up, or clean up an existing skill or SKILL.md file. Also use when editing or restructuring a skill directory (moving files to references/ or scripts/, removing stale content, validating against the AgentSkills spec). Triggers on phrases like &quot;create a skill&quot;, &quot;author a skill&quot;, &quot;tidy up a skill&quot;, &quot;improve this skill&quot;, &quot;review the skill&quot;, &quot;clean up the skill&quot;, &quot;audit the skill&quot;.</description>\n    <location>/app/skills/skill-creator/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>weather</name>\n    <description>Get current weather and forecasts via wttr.in or Open-Meteo. Use when: user asks about weather, temperature, or forecasts for any location. NOT for: historical weather data, severe weather alerts, or detailed meteorological analysis. No API key needed.</description>\n    <location>/app/skills/weather/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>kidney-pipeline-execution</name>\n    <description>Execute the kidney cancer detection pipeline by first uploading a user-provided image with the same upload flow and Telegram user id logic used by the kidney-cancer-detection skill, then replacing the image-path placeholder in the stored prototype request JSON and sending it to the prototype execution endpoint. Use when a user wants to run this integrated kidney pipeline on an image and inspect either the raw response or the expected key outputs from the kidney cancer detector, the Image Analyzer, and the X-AI component.</description>\n    <location>~/.openclaw/skills/kidney-pipeline-execution/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>llm-distillator</name>\n    <description>Distill health-related conversation context plus diagnostic tool output into a clear, comprehensive patient-facing answer using a Hugging Face-hosted Llama 70B model. Use when the agent needs to (1) extract clinically relevant context from the current conversation, including symptoms, history, red flags, timelines, and other useful health details, (2) combine that context with the output of a diagnosis or screening tool, and (3) produce a concise but complete explanation that is easy for a user to understand.</description>\n    <location>~/.openclaw/skills/llm-distillator/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>nephrology-klm</name>\n    <description>Query the Nephrology-KLM knowledge model for nephrology expertise, differential-diagnosis support, disease-specific interpretation, and specialized kidney-related feedback. Use when the user needs nephrology-domain guidance about CKD, AKI, glomerular disease, dialysis, electrolyte/acid-base disorders, renal imaging findings, nephrology treatment considerations, or kidney-focused diagnosis/expertise.</description>\n    <location>~/.openclaw/skills/nephrology-klm/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>patient-klm</name>\n    <description>Access and update a patient-specific knowledge store backed by a Patient KLM API that exposes EHR records, disease timelines, genomic profiles, and custom structured triples in SQLite. Use when a user asks to retrieve, inspect, summarize, add, or update patient knowledge base data; fetch patient context for agent personalization; view all triples for a patient; inspect the disease timeline; inspect genomics; create a new patient; add a visit; or add a custom triple. Default to patient_id `P-001` when the user asks for patient knowledge base access without specifying a patient. If the intended endpoint is unclear, ask a brief clarification question before writing data.</description>\n    <location>~/.openclaw/skills/patient-klm/SKILL.md</location>\n  </skill>\n  <skill>\n    <name>pipeline-generator</name>\n    <description>Generate an ML pipeline prototype by sending a user prompt to http://looporchestra.sytes.net:4010/nodes/ai_tool/AutoGen-model and reading the returned Answer field. Use only when the user explicitly asks for an ML pipeline prototype to be defined/generated, then explain the returned pipeline at a high level.</description>\n    <location>~/.openclaw/skills/pipeline-generator/SKILL.md</location>\n  </skill>\n</available_skills>",
+      "skills": [
+        {
+          "name": "healthcheck"
+        },
+        {
+          "name": "skill-creator"
+        },
+        {
+          "name": "weather",
+          "requiredEnv": []
+        },
+        {
+          "name": "kidney-pipeline-execution"
+        },
+        {
+          "name": "llm-distillator"
+        },
+        {
+          "name": "nephrology-klm"
+        },
+        {
+          "name": "patient-klm"
+        },
+        {
+          "name": "pipeline-generator"
+        }
+      ],
+      "skillFilter": [
+        "1password",
+        "apple-notes",
+        "apple-reminders",
+        "bear-notes",
+        "blogwatcher",
+        "blucli",
+        "bluebubbles",
+        "camsnap",
+        "clawhub",
+        "coding-agent",
+        "discord",
+        "eightctl",
+        "gemini",
+        "gh-issues",
+        "gifgrep",
+        "github",
+        "gog",
+        "goplaces",
+        "healthcheck",
+        "himalaya",
+        "imsg",
+        "mcporter",
+        "model-usage",
+        "nano-banana-pro",
+        "nano-pdf",
+        "notion",
+        "obsidian",
+        "openai-image-gen",
+        "openai-whisper",
+        "openai-whisper-api",
+        "openhue",
+        "oracle",
+        "ordercli",
+        "peekaboo",
+        "sag",
+        "session-logs",
+        "sherpa-onnx-tts",
+        "skill-creator",
+        "slack",
+        "songsee",
+        "sonoscli",
+        "spotify-player",
+        "summarize",
+        "things-mac",
+        "tmux",
+        "trello",
+        "video-frames",
+        "voice-call",
+        "wacli",
+        "weather",
+        "xurl",
+        "dumb-calculator",
+        "pipeline-generator",
+        "patient-klm",
+        "nephrology-klm",
+        "pipeline-execution",
+        "llm-distillator",
+        "kidney-pipeline-execution"
+      ],
+      "resolvedSkills": [
+        {
+          "name": "healthcheck",
+          "description": "Host security hardening and risk-tolerance configuration for OpenClaw deployments. Use when a user asks for security audits, firewall/SSH/update hardening, risk posture, exposure review, OpenClaw cron scheduling for periodic checks, or version status checks on a machine running OpenClaw (laptop, workstation, Pi, VPS).",
+          "filePath": "/app/skills/healthcheck/SKILL.md",
+          "baseDir": "/app/skills/healthcheck",
+          "source": "openclaw-bundled",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "skill-creator",
+          "description": "Create, edit, improve, or audit AgentSkills. Use when creating a new skill from scratch or when asked to improve, review, audit, tidy up, or clean up an existing skill or SKILL.md file. Also use when editing or restructuring a skill directory (moving files to references/ or scripts/, removing stale content, validating against the AgentSkills spec). Triggers on phrases like \"create a skill\", \"author a skill\", \"tidy up a skill\", \"improve this skill\", \"review the skill\", \"clean up the skill\", \"audit the skill\".",
+          "filePath": "/app/skills/skill-creator/SKILL.md",
+          "baseDir": "/app/skills/skill-creator",
+          "source": "openclaw-bundled",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "weather",
+          "description": "Get current weather and forecasts via wttr.in or Open-Meteo. Use when: user asks about weather, temperature, or forecasts for any location. NOT for: historical weather data, severe weather alerts, or detailed meteorological analysis. No API key needed.",
+          "filePath": "/app/skills/weather/SKILL.md",
+          "baseDir": "/app/skills/weather",
+          "source": "openclaw-bundled",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "kidney-pipeline-execution",
+          "description": "Execute the kidney cancer detection pipeline by first uploading a user-provided image with the same upload flow and Telegram user id logic used by the kidney-cancer-detection skill, then replacing the image-path placeholder in the stored prototype request JSON and sending it to the prototype execution endpoint. Use when a user wants to run this integrated kidney pipeline on an image and inspect either the raw response or the expected key outputs from the kidney cancer detector, the Image Analyzer, and the X-AI component.",
+          "filePath": "/home/node/.openclaw/skills/kidney-pipeline-execution/SKILL.md",
+          "baseDir": "/home/node/.openclaw/skills/kidney-pipeline-execution",
+          "source": "openclaw-managed",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "llm-distillator",
+          "description": "Distill health-related conversation context plus diagnostic tool output into a clear, comprehensive patient-facing answer using a Hugging Face-hosted Llama 70B model. Use when the agent needs to (1) extract clinically relevant context from the current conversation, including symptoms, history, red flags, timelines, and other useful health details, (2) combine that context with the output of a diagnosis or screening tool, and (3) produce a concise but complete explanation that is easy for a user to understand.",
+          "filePath": "/home/node/.openclaw/skills/llm-distillator/SKILL.md",
+          "baseDir": "/home/node/.openclaw/skills/llm-distillator",
+          "source": "openclaw-managed",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "nephrology-klm",
+          "description": "Query the Nephrology-KLM knowledge model for nephrology expertise, differential-diagnosis support, disease-specific interpretation, and specialized kidney-related feedback. Use when the user needs nephrology-domain guidance about CKD, AKI, glomerular disease, dialysis, electrolyte/acid-base disorders, renal imaging findings, nephrology treatment considerations, or kidney-focused diagnosis/expertise.",
+          "filePath": "/home/node/.openclaw/skills/nephrology-klm/SKILL.md",
+          "baseDir": "/home/node/.openclaw/skills/nephrology-klm",
+          "source": "openclaw-managed",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "patient-klm",
+          "description": "Access and update a patient-specific knowledge store backed by a Patient KLM API that exposes EHR records, disease timelines, genomic profiles, and custom structured triples in SQLite. Use when a user asks to retrieve, inspect, summarize, add, or update patient knowledge base data; fetch patient context for agent personalization; view all triples for a patient; inspect the disease timeline; inspect genomics; create a new patient; add a visit; or add a custom triple. Default to patient_id `P-001` when the user asks for patient knowledge base access without specifying a patient. If the intended endpoint is unclear, ask a brief clarification question before writing data.",
+          "filePath": "/home/node/.openclaw/skills/patient-klm/SKILL.md",
+          "baseDir": "/home/node/.openclaw/skills/patient-klm",
+          "source": "openclaw-managed",
+          "disableModelInvocation": false
+        },
+        {
+          "name": "pipeline-generator",
+          "description": "Generate an ML pipeline prototype by sending a user prompt to http://looporchestra.sytes.net:4010/nodes/ai_tool/AutoGen-model and reading the returned Answer field. Use only when the user explicitly asks for an ML pipeline prototype to be defined/generated, then explain the returned pipeline at a high level.",
+          "filePath": "/home/node/.openclaw/skills/pipeline-generator/SKILL.md",
+          "baseDir": "/home/node/.openclaw/skills/pipeline-generator",
+          "source": "openclaw-managed",
+          "disableModelInvocation": false
+        }
+      ],
+      "version": 0
+    },
+    "authProfileOverride": "openai-codex:default",
+    "authProfileOverrideSource": "auto",
+    "authProfileOverrideCompactionCount": 0,
+    "modelProvider": "openai-codex",
+    "model": "gpt-5.4",
+    "contextTokens": 272000,
+    "systemPromptReport": {
+      "source": "run",
+      "generatedAt": 1773834103246,
+      "sessionId": "8c8eb80d-11f4-409d-8caf-d90a96a1b301",
+      "sessionKey": "agent:doctor-agent:telegram:direct:567556397",
+      "provider": "openai-codex",
+      "model": "gpt-5.4",
+      "workspaceDir": "/home/node/.openclaw/workspace-doctor-agent",
+      "bootstrapMaxChars": 20000,
+      "bootstrapTotalMaxChars": 150000,
+      "bootstrapTruncation": {
+        "warningMode": "once",
+        "warningShown": false,
+        "truncatedFiles": 0,
+        "nearLimitFiles": 0,
+        "totalNearLimit": false
+      },
+      "sandbox": {
+        "mode": "off",
+        "sandboxed": false
+      },
+      "systemPrompt": {
+        "chars": 31263,
+        "projectContextChars": 16263,
+        "nonProjectContextChars": 15000
+      },
+      "injectedWorkspaceFiles": [
+        {
+          "name": "AGENTS.md",
+          "path": "/home/node/.openclaw/workspace-doctor-agent/AGENTS.md",
+          "missing": false,
+          "rawChars": 1693,
+          "injectedChars": 1693,
+          "truncated": false
+        },
+        {
+          "name": "SOUL.md",
+          "path": "/home/node/.openclaw/workspace-doctor-agent/SOUL.md",
+          "missing": false,
+          "rawChars": 4055,
+          "injectedChars": 4055,
+          "truncated": false
+        },
+        {
+          "name": "TOOLS.md",
+          "path": "/home/node/.openclaw/workspace-doctor-agent/TOOLS.md",
+          "missing": false,
+          "rawChars": 5228,
+          "injectedChars": 5228,
+          "truncated": false
+        },
+        {
+          "name": "IDENTITY.md",
+          "path": "/home/node/.openclaw/workspace-doctor-agent/IDENTITY.md",
+          "missing": false,
+          "rawChars": 2349,
+          "injectedChars": 2349,
+          "truncated": false
+        },
+        {
+          "name": "USER.md",
+          "path": "/home/node/.openclaw/workspace-doctor-agent/USER.md",
+          "missing": false,
+          "rawChars": 2060,
+          "injectedChars": 2060,
+          "truncated": false
+        },
+        {
+          "name": "HEARTBEAT.md",
+          "path": "/home/node/.openclaw/workspace-doctor-agent/HEARTBEAT.md",
+          "missing": false,
+          "rawChars": 167,
+          "injectedChars": 167,
+          "truncated": false
+        },
+        {
+          "name": "BOOTSTRAP.md",
+          "path": "/home/node/.openclaw/workspace-doctor-agent/BOOTSTRAP.md",
+          "missing": true,
+          "rawChars": 0,
+          "injectedChars": 79,
+          "truncated": false
+        }
+      ],
+      "skills": {
+        "promptChars": 5154,
+        "entries": [
+          {
+            "name": "healthcheck",
+            "blockChars": 456
+          },
+          {
+            "name": "skill-creator",
+            "blockChars": 724
+          },
+          {
+            "name": "weather",
+            "blockChars": 381
+          },
+          {
+            "name": "kidney-pipeline-execution",
+            "blockChars": 698
+          },
+          {
+            "name": "llm-distillator",
+            "blockChars": 666
+          },
+          {
+            "name": "nephrology-klm",
+            "blockChars": 552
+          },
+          {
+            "name": "patient-klm",
+            "blockChars": 820
+          },
+          {
+            "name": "pipeline-generator",
+            "blockChars": 467
+          }
+        ]
+      },
+      "tools": {
+        "listChars": 1602,
+        "schemaChars": 7233,
+        "entries": [
+          {
+            "name": "read",
+            "summaryChars": 298,
+            "schemaChars": 392,
+            "propertiesCount": 4
+          },
+          {
+            "name": "edit",
+            "summaryChars": 129,
+            "schemaChars": 591,
+            "propertiesCount": 6
+          },
+          {
+            "name": "write",
+            "summaryChars": 127,
+            "schemaChars": 313,
+            "propertiesCount": 3
+          },
+          {
+            "name": "exec",
+            "summaryChars": 181,
+            "schemaChars": 1086,
+            "propertiesCount": 12
+          },
+          {
+            "name": "process",
+            "summaryChars": 85,
+            "schemaChars": 961,
+            "propertiesCount": 12
+          },
+          {
+            "name": "sessions_list",
+            "summaryChars": 54,
+            "schemaChars": 212,
+            "propertiesCount": 4
+          },
+          {
+            "name": "sessions_history",
+            "summaryChars": 36,
+            "schemaChars": 161,
+            "propertiesCount": 3
+          },
+          {
+            "name": "sessions_send",
+            "summaryChars": 84,
+            "schemaChars": 273,
+            "propertiesCount": 5
+          },
+          {
+            "name": "sessions_yield",
+            "summaryChars": 97,
+            "schemaChars": 60,
+            "propertiesCount": 1
+          },
+          {
+            "name": "sessions_spawn",
+            "summaryChars": 198,
+            "schemaChars": 1179,
+            "propertiesCount": 17
+          },
+          {
+            "name": "subagents",
+            "summaryChars": 105,
+            "schemaChars": 191,
+            "propertiesCount": 4
+          },
+          {
+            "name": "session_status",
+            "summaryChars": 207,
+            "schemaChars": 89,
+            "propertiesCount": 2
+          },
+          {
+            "name": "web_search",
+            "summaryChars": 175,
+            "schemaChars": 1084,
+            "propertiesCount": 9
+          },
+          {
+            "name": "web_fetch",
+            "summaryChars": 129,
+            "schemaChars": 374,
+            "propertiesCount": 3
+          },
+          {
+            "name": "memory_search",
+            "summaryChars": 334,
+            "schemaChars": 139,
+            "propertiesCount": 3
+          },
+          {
+            "name": "memory_get",
+            "summaryChars": 151,
+            "schemaChars": 128,
+            "propertiesCount": 3
+          }
+        ]
+      }
+    },
+    "inputTokens": 23325,
+    "outputTokens": 125,
+    "cacheRead": 8576,
+    "cacheWrite": 0,
+    "totalTokens": 31901,
+    "totalTokensFresh": true
   }
 }

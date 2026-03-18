@@ -15,20 +15,30 @@ Upload the local image first, then execute the fixed kidney cancer detection pro
 2. Require the Telegram user id.
    - Pass it as `--telegram-user-id` or set `TELEGRAM_USER_ID`.
    - Use that value as the upload request's `user_id` query parameter.
+   - Also use that same numeric Telegram id as the default Telegram send target so the downloaded image goes back to the same DM conversation unless `--telegram-target` explicitly overrides it.
 3. Upload the image with a `POST multipart/form-data` request to:
    - `http://looporchestra.sytes.net:4001/nodes/input/upload?storage_ref=nodes_bucket&local_file_path=upload%2F&user_id=<telegram-user-id>`
 4. Read the upload response JSON and build the remote image path by concatenating:
    - `path + filename`
-5. Replace every `<image_path_here>` placeholder in the fixed prototype JSON with the uploaded remote image path.
+5. Replace the `<image_path_here>` placeholder in the fixed prototype JSON with the uploaded remote image path.
 6. Send the full resulting JSON payload to:
    - `http://looporchestra.sytes.net:4001/admin/prototype_execution/prototype_execution/`
-7. Return the raw response inside a minimal envelope that includes:
+7. Read the analyzer image URL only from `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.file_path`.
+   - Treat `file_path` as a sibling of `cam_explanation` in the live response format.
+   - Extract the URL from that field.
+   - Download the image it points to and save the canonical copy under `/home/node/openclaw-shared/kidney_heatmaps`.
+   - Create a temporary workspace copy only for the outbound Telegram send.
+   - Send that temporary copy to Telegram with `openclaw message send --channel telegram --target <telegram-target> --media <downloaded-image-path>`.
+   - Delete the temporary workspace copy immediately after the send attempt so no workspace leftovers remain.
+   - Default `<telegram-target>` to the current DM chat's numeric Telegram id, which in this tool is the same value passed as `--telegram-user-id`.
+8. Return the raw response inside a minimal envelope that includes:
    - `uploaded_image_path`
    - `endpoint`
    - `http_status`
    - `content_type`
    - `response`
-8. When summarizing the result for the user, expect and prioritize these wanted output fields from the raw response:
+   - when available, also include `analyzer_image_url`, `analyzer_image_local_path`, `analyzer_image_content_type`, and Telegram send metadata after downloading the image pointed to by the analyzer `file_path` field
+9. When summarizing the result for the user, expect and prioritize these wanted output fields from the raw response:
    - `response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.classes`
    - `response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.confidence`
    - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.prediction`
@@ -38,9 +48,9 @@ Upload the local image first, then execute the fixed kidney cancer detection pro
    - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.references`
    - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.summary`
    - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.visual_evidence`
-9. Present those wanted outputs in a clean human-readable summary instead of low-level JSON-path labels. Prefer labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, `CAM top-bottom asymmetry`, `CAM explanation`, `Confidence interpretation`, `Recommended next steps`, `References`, `Summary`, and `Visual evidence`.
-10. Do not include low-level run details by default in user-facing replies. Omit technical execution metadata such as upload paths, endpoint names, HTTP status, node ids, workflow ids, raw file paths, and similar run-internal fields unless the user explicitly asks for technical details or the raw response.
-11. Mention, when present, that the broader raw response may also include an analyzer output `file_path` plus X-AI explanatory fields such as `confidence_interpretation`, `recommended_next_steps`, `references`, `summary`, and `visual_evidence`.
+10. Present those wanted outputs in a clean human-readable summary instead of low-level JSON-path labels. Prefer labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, `CAM top-bottom asymmetry`, `CAM explanation`, `Confidence interpretation`, `Recommended next steps`, `References`, `Summary`, and `Visual evidence`.
+11. Do not include low-level run details by default in user-facing replies. Omit technical execution metadata such as upload paths, endpoint names, HTTP status, node ids, workflow ids, raw file paths, and similar run-internal fields unless the user explicitly asks for technical details or the raw response.
+12. Mention, when present, that the broader raw response may also include an analyzer output `file_path` plus X-AI explanatory fields such as `confidence_interpretation`, `recommended_next_steps`, `references`, `summary`, and `visual_evidence`.
 
 ## Fixed request values
 
@@ -48,12 +58,12 @@ Keep these values static:
 - `storage_ref`: `nodes_bucket`
 - `local_file_path`: `upload/`
 - execution endpoint: `http://looporchestra.sytes.net:4001/admin/prototype_execution/prototype_execution/`
-- prototype payload: use the fixed JSON embedded in `scripts/pipeline_execution_tool.py`
+- prototype payload: use the fixed JSON stored in `references/request-template.json`
 
 ## What this skill runs
 
 ```bash
-python3 scripts/pipeline_execution_tool.py --telegram-user-id <telegram-user-id> [local-image-path]
+python3 scripts/pipeline_execution_tool.py --telegram-user-id <telegram-user-id> [--telegram-target <telegram-chat-id>] [local-image-path]
 ```
 
 If `local-image-path` is omitted, the script automatically selects the newest supported image from `/home/node/.openclaw/media/inbound`.
@@ -121,6 +131,7 @@ When `cam_metrics` is present, include all of its subfields in the wanted output
 
 Also include these secondary fields when useful:
 - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.file_path`
+- the downloaded analyzer image metadata exposed by the script as `analyzer_image_url`, `analyzer_image_local_path`, and `analyzer_image_content_type`
 
 When `recommended_next_steps` is present, preserve the list order. When `references` is present, preserve each item's available fields such as `title`, `author`, `year`, and `url`.
 
