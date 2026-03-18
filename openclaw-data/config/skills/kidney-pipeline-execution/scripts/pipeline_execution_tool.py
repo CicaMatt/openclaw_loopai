@@ -158,7 +158,7 @@ def _normalize_upload_response(value):
     return value
 
 
-def upload_image(local_image_path: str, telegram_user_id: str, timeout: int = 60) -> str:
+def upload_image(local_image_path: str, telegram_user_id: str, timeout: int = 60) -> dict:
     file_path = Path(local_image_path).expanduser().resolve()
     if not file_path.is_file():
         raise RuntimeError(f"Image file not found: {file_path}")
@@ -204,21 +204,73 @@ def upload_image(local_image_path: str, telegram_user_id: str, timeout: int = 60
     if not isinstance(filename, str) or not filename:
         raise RuntimeError("Upload response is missing 'filename'.")
 
-    return f"{remote_dir}{filename}"
+    return {
+        "uploaded_image_path": f"{remote_dir}{filename}",
+        "upload_path": remote_dir,
+        "upload_filename": filename,
+        "telegram_user_id_used": str(telegram_user_id),
+        "upload_request_url": upload_url,
+        "raw_upload_response": parsed,
+    }
 
 
-def _replace_image_placeholder(obj, uploaded_image_path: str):
+PATH_FIELD_KEYS = {"filename", "pdf_path", "File Path"}
+
+
+def _looks_like_template_image_path(value: str) -> bool:
+    if value == "<image_path_here>":
+        return True
+    normalized = value.strip()
+    return normalized.startswith("upload/") or normalized.startswith("/upload/")
+
+
+
+def _replace_uploaded_image_path(obj, uploaded_image_path: str, parent_key=None):
     if isinstance(obj, dict):
-        return {key: _replace_image_placeholder(value, uploaded_image_path) for key, value in obj.items()}
+        return {
+            key: _replace_uploaded_image_path(value, uploaded_image_path, parent_key=key)
+            for key, value in obj.items()
+        }
     if isinstance(obj, list):
-        return [_replace_image_placeholder(item, uploaded_image_path) for item in obj]
-    if obj == "<image_path_here>":
+        return [
+            _replace_uploaded_image_path(item, uploaded_image_path, parent_key=parent_key)
+            for item in obj
+        ]
+    if isinstance(obj, str) and (
+        obj == "<image_path_here>"
+        or (parent_key in PATH_FIELD_KEYS and _looks_like_template_image_path(obj))
+    ):
         return uploaded_image_path
     return obj
 
 
+
+def _assert_no_placeholder_path(payload_obj):
+    found = []
+
+    def _walk(value, path="root"):
+        if isinstance(value, dict):
+            for key, child in value.items():
+                _walk(child, f"{path}.{key}")
+            return
+        if isinstance(value, list):
+            for index, child in enumerate(value):
+                _walk(child, f"{path}[{index}]")
+            return
+        if value == "<image_path_here>":
+            found.append(path)
+
+    _walk(payload_obj)
+    if found:
+        joined = ", ".join(found[:10])
+        raise RuntimeError(f"Request payload still contains <image_path_here> at: {joined}")
+
+
+
 def build_payload(uploaded_image_path: str):
-    return _replace_image_placeholder(copy.deepcopy(load_request_template()), uploaded_image_path)
+    payload_obj = _replace_uploaded_image_path(copy.deepcopy(load_request_template()), uploaded_image_path)
+    _assert_no_placeholder_path(payload_obj)
+    return payload_obj
 
 
 def call_pipeline_execution(uploaded_image_path: str, timeout: int = 120):
@@ -323,15 +375,21 @@ def main():
     local_image_path = args.image_path or find_latest_inbound_image()
     telegram_user_id = str(args.telegram_user_id)
 
-    uploaded_image_path = upload_image(
+    upload_result = upload_image(
         local_image_path=local_image_path,
         telegram_user_id=telegram_user_id,
         timeout=args.upload_timeout,
     )
     result = call_pipeline_execution(
-        uploaded_image_path,
+        upload_result["uploaded_image_path"],
         timeout=args.timeout,
     )
+    result["local_image_path_used"] = str(Path(local_image_path).expanduser().resolve())
+    result["telegram_user_id_used_for_upload"] = upload_result["telegram_user_id_used"]
+    result["upload_path"] = upload_result["upload_path"]
+    result["upload_filename"] = upload_result["upload_filename"]
+    result["upload_request_url"] = upload_result["upload_request_url"]
+    result["raw_upload_response"] = upload_result["raw_upload_response"]
     print(json.dumps(result, indent=2, ensure_ascii=False))
 
 
