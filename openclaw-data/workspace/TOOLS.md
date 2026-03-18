@@ -1,25 +1,50 @@
-# TOOLS.md - Tools Registry
+# TOOLS.md - Medical Skills & Capability Notes
 
-## Diagnostic & Screening Tools
-Tools that help turn vague symptoms into structured signals.
+## Tool Use Principle
+Tools support clinical reasoning; they do not replace it.
+Use them only when they materially improve the case review, and interpret outputs cautiously.
 
-### `kidney-cancer-detector`
-- **Description:** Analyze kidney medical images (CT or MRI) for possible malignancy signals.
-- **Parameters:** `image_path` (string) - local path or URI for the medical image.
-- **When to use:** When the user provides a kidney scan for analysis.
+## Diagnostic Workflow
+1. Review structured history when available.
+2. Review the current symptom snapshot.
+3. Identify red flags first.
+4. Decide whether a tool or skill is actually needed.
+5. Interpret outputs as preliminary signals, not final truth.
+6. Return findings in the standard six-part output structure.
 
-## Information & Research Tools
-Tools that provide evidence-based context.
+## pipeline-generator
+- **Role:** Broader ecosystem ML pipeline generation capability.
+- **Use for:** rare medical systems-design discussions, not routine patient diagnostic support.
+- **Limits:** Not a diagnostic authority and should not shape clinical conclusions directly.
 
-### `pipeline-generator`
-- **Description:** Generate a machine learning pipeline prototype from a user prompt.
-- **Parameters:** `prompt` (string) - detailed ML pipeline request.
-- **When to use:** Only when the user explicitly asks for an ML pipeline prototype.
+## kidney-pipeline-execution
+- **Role:** Execute the fixed kidney cancer detection pipeline starting from an image file.
+- **Use for:** running the integrated kidney pipeline when an image should be uploaded and passed through the Kidney Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
+- **Suggestion rule:** If the diagnostic impression raises kidney-focused problems or a possible renal mass concern, suggest that the user can run this specialized pipeline and invite them to upload a CT image scan.
+- **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize these wanted outputs when present: the kidney cancer class, the kidney cancer confidence, the Image Analyzer prediction, and all available `cam_...` fields from the Image Analyzer output, especially the full `cam_metrics` set and `cam_explanation`.
+- **Presentation rule:** When reporting results to the user, do not default to low-level JSON labels. Present them in a cleaner summary with readable labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, `CAM top-bottom asymmetry`, and `CAM explanation`.
+- **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
+- **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
+- **Output message:** Always remember to the use that the tool output as a preliminary signal, not as an actual diagnosis.
 
-## General Utility Tools
-General-purpose helpers.
+## llm_distillator
+- **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
+- **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
+- **Suggestion rule:** Suggest this skill only once there has been enough symptom discussion to frame the case and a tool has just produced a diagnostic result or preliminary diagnosis.
+- **Presentation rule:** Use it to convert raw or fragmented tool output into a concise explanation that matches the agent’s diagnostic output structure and preserves the distinction between tool findings and clinical interpretation.
+- **Safety rule:** Present the distilled result as a preliminary interpretation, not a confirmed diagnosis, and keep uncertainty visible when the upstream tool output is limited or ambiguous.
 
-### `dumb-calculator`
-- **Description:** Generate one random addition expression and its result.
-- **Parameters:** None.
-- **When to use:** When the user explicitly asks to run a dumb calculator.
+## patient-klm
+- **Role:** Patient-specific knowledge base skill for retrieving live structured health context, including symptom history, visits, disease timeline, genomics, and custom patient facts.
+- **Use for:** when the user reports symptoms and patient-specific context could materially improve interpretation, first retrieve the latest relevant patient record through the patient-klm skill, then combine that structured report with the user’s current symptom description.
+- **Default patient rule:** If the user asks for patient knowledge base access without specifying a patient, default to patient_id `P-001`.
+- **Presentation rule:** Integrate the fetched report with the newly reported symptoms into one coherent clinical picture. Clearly distinguish what came from the patient knowledge base versus what the user reported now when that distinction matters.
+- **Safety rule:** Treat patient-klm output as supporting clinical context, not final truth. Do not overstate certainty, do not invent missing facts, and say when important context is still missing.
+- **Answering rule:** After incorporating the updated report, provide a comprehensive but careful explanation of the user’s likely health situation, including uncertainty, red flags, and next-step guidance when relevant.
+
+## Interpretation Rules
+- Treat all tool outputs as inputs to reasoning, not verdicts.
+- Cross-check against symptoms, history, and time course.
+- Prefer no tool over an irrelevant tool.
+- State uncertainty plainly when output quality is limited.
+- Escalate to clinician review when findings are serious, unclear, or high-risk.
