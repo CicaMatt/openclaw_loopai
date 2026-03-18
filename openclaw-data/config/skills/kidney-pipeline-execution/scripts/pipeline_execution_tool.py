@@ -5,10 +5,7 @@ import json
 import mimetypes
 import os
 import re
-import shutil
-import subprocess
 import sys
-import tempfile
 import uuid
 from pathlib import Path
 from urllib import error, parse, request
@@ -22,8 +19,6 @@ FIXED_LOCAL_FILE_PATH = "upload/"
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tif", ".tiff"}
 
 REQUEST_TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "references" / "request-template.json"
-DOWNLOADED_IMAGES_DIR = Path("/home/node/openclaw-shared/kidney_heatmaps")
-TEMP_SEND_DIR = Path("/home/node/.openclaw/workspace/.kidney-pipeline/tmp-send")
 
 
 def _safe_suffix_from_url(url: str) -> str:
@@ -47,84 +42,79 @@ def _extract_image_url_from_response(response_obj):
     return match.group(0) if match else None
 
 
-def download_analyzer_image(image_url: str, timeout: int = 60):
-    DOWNLOADED_IMAGES_DIR.mkdir(parents=True, exist_ok=True)
-    suffix = _safe_suffix_from_url(image_url)
-    filename = f"analyzer-image-{uuid.uuid4().hex}{suffix}"
-    out_path = DOWNLOADED_IMAGES_DIR / filename
-    req = request.Request(image_url, headers={"Accept": "image/*"}, method="GET")
+def _deep_get(obj, path, default=None):
+    current = obj
+    for key in path:
+        try:
+            current = current[key]
+        except (KeyError, IndexError, TypeError):
+            return default
+    return current
 
-    try:
-        with request.urlopen(req, timeout=timeout) as resp:
-            content = resp.read()
-            content_type = resp.headers.get("Content-Type", "")
-    except error.HTTPError as exc:
-        raise RuntimeError(f"Analyzer image download failed with HTTP {exc.code}: {image_url}") from exc
-    except Exception as exc:
-        raise RuntimeError(f"Analyzer image download failed: {exc}") from exc
 
-    out_path.write_bytes(content)
-    return {
-        "analyzer_image_url": image_url,
-        "analyzer_image_local_path": str(out_path),
-        "analyzer_image_content_type": content_type,
+def _extract_module_reference_metrics(response_payload):
+    if not isinstance(response_payload, dict):
+        return None
+
+    kidney_detector = {
+        "Inference time": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "tracking", "parameters", "Inference time"],
+        ),
+        "classes": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "tracking", "parameters", "classes"],
+        ),
+        "confidence": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "tracking", "parameters", "confidence"],
+        ),
+    }
+    image_analyzer = {
+        "cam_metrics": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "tracking", "parameters", "cam_metrics"],
+        ),
+        "prediction": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "tracking", "parameters", "prediction"],
+        ),
+        "cam_explanation": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "tracking", "parameters", "cam_explanation"],
+        ),
+    }
+    xai = {
+        "confidence_interpretation": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "children", 0, "tracking", "parameters", "confidence_interpretation"],
+        ),
+        "recommended_next_steps": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "children", 0, "tracking", "parameters", "recommended_next_steps"],
+        ),
+        "references": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "children", 0, "tracking", "parameters", "references"],
+        ),
+        "summary": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "children", 0, "tracking", "parameters", "summary"],
+        ),
+        "visual_evidence": _deep_get(
+            response_payload,
+            ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "children", 0, "tracking", "parameters", "visual_evidence"],
+        ),
     }
 
-
-def send_image_to_telegram(image_path: str, telegram_target: str, timeout: int = 60):
-    TEMP_SEND_DIR.mkdir(parents=True, exist_ok=True)
-    source_path = Path(image_path)
-    suffix = source_path.suffix or ".jpg"
-    temp_path_obj = None
-
-    try:
-        with tempfile.NamedTemporaryFile(
-            dir=str(TEMP_SEND_DIR),
-            prefix="telegram-send-",
-            suffix=suffix,
-            delete=False,
-        ) as temp_file:
-            temp_path_obj = Path(temp_file.name)
-
-        shutil.copy2(source_path, temp_path_obj)
-
-        command = [
-            "openclaw",
-            "message",
-            "send",
-            "--channel",
-            "telegram",
-            "--target",
-            telegram_target,
-            "--media",
-            str(temp_path_obj),
-        ]
-
-        completed = subprocess.run(
-            command,
-            check=True,
-            capture_output=True,
-            text=True,
-            timeout=timeout,
-        )
-    except subprocess.CalledProcessError as exc:
-        stderr = (exc.stderr or "").strip()
-        stdout = (exc.stdout or "").strip()
-        detail = stderr or stdout or str(exc)
-        raise RuntimeError(f"Telegram image send failed: {detail}") from exc
-    except subprocess.TimeoutExpired as exc:
-        raise RuntimeError("Telegram image send timed out.") from exc
-    except Exception as exc:
-        raise RuntimeError(f"Telegram image send failed: {exc}") from exc
-    finally:
-        if temp_path_obj and temp_path_obj.exists():
-            temp_path_obj.unlink(missing_ok=True)
-
-    return {
-        "telegram_image_target": telegram_target,
-        "telegram_image_send_stdout": (completed.stdout or "").strip(),
-        "telegram_image_temp_deleted": True,
+    modules = {
+        "kidney_cancer_detector": kidney_detector,
+        "image_analyzer": image_analyzer,
+        "xai": xai,
     }
+    if not any(value is not None for module in modules.values() for value in module.values()):
+        return None
+    return modules
 
 
 def load_request_template():
@@ -231,7 +221,7 @@ def build_payload(uploaded_image_path: str):
     return _replace_image_placeholder(copy.deepcopy(load_request_template()), uploaded_image_path)
 
 
-def call_pipeline_execution(uploaded_image_path: str, timeout: int = 120, telegram_target: str | None = None):
+def call_pipeline_execution(uploaded_image_path: str, timeout: int = 120):
     payload_obj = build_payload(uploaded_image_path)
     payload = json.dumps(payload_obj).encode("utf-8")
     req = request.Request(
@@ -266,17 +256,13 @@ def call_pipeline_execution(uploaded_image_path: str, timeout: int = 120, telegr
         "response": parsed_body,
     }
 
-    image_url = _extract_image_url_from_response(result)
-    if image_url:
-        download_result = download_analyzer_image(image_url)
-        result.update(download_result)
-        result.update(
-            send_image_to_telegram(
-                image_path=download_result["analyzer_image_local_path"],
-                telegram_target=telegram_target,
-            )
-        )
+    module_reference_metrics = _extract_module_reference_metrics(parsed_body)
+    if module_reference_metrics is not None:
+        result["module_reference_metrics"] = module_reference_metrics
 
+    image_url = _extract_image_url_from_response(result)
+    result["analyzer_image_url"] = image_url
+    result["sent_result_image"] = False
     return result
 
 
@@ -307,8 +293,9 @@ def main():
     parser = argparse.ArgumentParser(
         description=(
             "Upload a local image with the same flow as the kidney cancer skill, replace "
-            "the <image_path_here> placeholder inside the fixed prototype payload, then "
-            "call the prototype execution endpoint and print the raw response as JSON."
+            "the <image_path_here> placeholder inside the fixed prototype payload, call the "
+            "prototype execution endpoint, expose any analyzer image URL in the JSON wrapper, "
+            "and print the result without sending out-of-band Telegram messages."
         )
     )
     parser.add_argument(
@@ -326,14 +313,6 @@ def main():
     )
     parser.add_argument("--timeout", type=int, default=120, help="Execution timeout in seconds.")
     parser.add_argument("--upload-timeout", type=int, default=60, help="Upload timeout in seconds.")
-    parser.add_argument(
-        "--telegram-target",
-        default=os.environ.get("TELEGRAM_TARGET"),
-        help=(
-            "Telegram chat target used by `openclaw message send` for the downloaded CAM image. "
-            "Defaults to the Telegram user/chat id from --telegram-user-id."
-        ),
-    )
     args = parser.parse_args()
 
     if not args.telegram_user_id:
@@ -343,7 +322,6 @@ def main():
 
     local_image_path = args.image_path or find_latest_inbound_image()
     telegram_user_id = str(args.telegram_user_id)
-    telegram_target = args.telegram_target or telegram_user_id
 
     uploaded_image_path = upload_image(
         local_image_path=local_image_path,
@@ -353,7 +331,6 @@ def main():
     result = call_pipeline_execution(
         uploaded_image_path,
         timeout=args.timeout,
-        telegram_target=telegram_target,
     )
     print(json.dumps(result, indent=2, ensure_ascii=False))
 

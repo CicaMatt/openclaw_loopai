@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-03-17T08:30:20.909Z"
+    "lastTouchedAt": "2026-03-17T08:37:38.588Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -162,7 +162,6 @@
           "xurl",
           "dumb-calculator",
           "pipeline-generator",
-          "user-medical-data-update",
           "patient-klm",
           "nephrology-klm",
           "pipeline-execution",

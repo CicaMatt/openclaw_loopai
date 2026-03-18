@@ -5,7 +5,14 @@ description: Execute the kidney cancer detection pipeline by first uploading a u
 
 # Kidney Pipeline Execution
 
-Upload the local image first, then execute the fixed kidney cancer detection prototype payload with the uploaded remote image path substituted into the request JSON. This pipeline includes a Kidney Cancer Detection model, an Image Analyzer component, and an integrated X-AI component downstream.
+Upload the local image first, then execute the fixed kidney cancer detection prototype payload with the uploaded remote image path substituted into the request JSON.
+
+Treat this pipeline as a 3-module flow:
+1. **Kidney Cancer Detector module**
+2. **Image Analyzer module**
+3. **X-AI module**
+
+Keep that structure explicit when reading results and when summarizing each run for the user.
 
 ## Workflow
 
@@ -15,7 +22,6 @@ Upload the local image first, then execute the fixed kidney cancer detection pro
 2. Require the Telegram user id.
    - Pass it as `--telegram-user-id` or set `TELEGRAM_USER_ID`.
    - Use that value as the upload request's `user_id` query parameter.
-   - Also use that same numeric Telegram id as the default Telegram send target so the downloaded image goes back to the same DM conversation unless `--telegram-target` explicitly overrides it.
 3. Upload the image with a `POST multipart/form-data` request to:
    - `http://looporchestra.sytes.net:4001/nodes/input/upload?storage_ref=nodes_bucket&local_file_path=upload%2F&user_id=<telegram-user-id>`
 4. Read the upload response JSON and build the remote image path by concatenating:
@@ -23,34 +29,41 @@ Upload the local image first, then execute the fixed kidney cancer detection pro
 5. Replace the `<image_path_here>` placeholder in the fixed prototype JSON with the uploaded remote image path.
 6. Send the full resulting JSON payload to:
    - `http://looporchestra.sytes.net:4001/admin/prototype_execution/prototype_execution/`
-7. Read the analyzer image URL only from `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.file_path`.
-   - Treat `file_path` as a sibling of `cam_explanation` in the live response format.
+7. Read the analyzer image URL from `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.file_path`.
    - Extract the URL from that field.
-   - Download the image it points to and save the canonical copy under `/home/node/openclaw-shared/kidney_heatmaps`.
-   - Create a temporary workspace copy only for the outbound Telegram send.
-   - Send that temporary copy to Telegram with `openclaw message send --channel telegram --target <telegram-target> --media <downloaded-image-path>`.
-   - Delete the temporary workspace copy immediately after the send attempt so no workspace leftovers remain.
-   - Default `<telegram-target>` to the current DM chat's numeric Telegram id, which in this tool is the same value passed as `--telegram-user-id`.
+   - Do **not** send out-of-band Telegram messages from the script itself.
+   - Return the analyzer image URL in the tool output and let the parent agent include it in the normal reply to the active conversation.
+   - This avoids accidental delivery to the wrong chat or a stale target.
 8. Return the raw response inside a minimal envelope that includes:
    - `uploaded_image_path`
    - `endpoint`
    - `http_status`
    - `content_type`
    - `response`
-   - when available, also include `analyzer_image_url`, `analyzer_image_local_path`, `analyzer_image_content_type`, and Telegram send metadata after downloading the image pointed to by the analyzer `file_path` field
-9. When summarizing the result for the user, expect and prioritize these wanted output fields from the raw response:
-   - `response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.classes`
-   - `response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.confidence`
-   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.prediction`
-   - every available `cam_...` field under the Image Analyzer tracking parameters, including the full `cam_metrics` object and any other `cam_*` entries such as `cam_explanation`
-   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.confidence_interpretation`
-   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.recommended_next_steps`
-   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.references`
-   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.summary`
-   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.visual_evidence`
-10. Present those wanted outputs in a clean human-readable summary instead of low-level JSON-path labels. Prefer labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, `CAM top-bottom asymmetry`, `CAM explanation`, `Confidence interpretation`, `Recommended next steps`, `References`, `Summary`, and `Visual evidence`.
-11. Do not include low-level run details by default in user-facing replies. Omit technical execution metadata such as upload paths, endpoint names, HTTP status, node ids, workflow ids, raw file paths, and similar run-internal fields unless the user explicitly asks for technical details or the raw response.
-12. Mention, when present, that the broader raw response may also include an analyzer output `file_path` plus X-AI explanatory fields such as `confidence_interpretation`, `recommended_next_steps`, `references`, `summary`, and `visual_evidence`.
+   - when available, also include `analyzer_image_url` and `sent_result_image`
+9. If `analyzer_image_url` is available, include the analyzer image in the user-facing reply itself.
+   - Prefer attaching or embedding it in the same reply that summarizes the run.
+   - If the channel/tooling makes inline media awkward, include a `MEDIA:<url>` line in the reply body.
+   - Do this on every successful run where the analyzer image URL is present, not only on user follow-up.
+10. When summarizing the result for the user, keep the pipeline grouped into the three modules below and prioritize these main reference metrics for each run:
+   - **Kidney Cancer Detector module**
+     - `response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.Inference time`
+     - `response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.classes`
+     - `response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.confidence`
+   - **Image Analyzer module**
+     - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_metrics`
+     - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.prediction`
+     - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_explanation`
+   - **X-AI module**
+     - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.confidence_interpretation`
+     - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.recommended_next_steps`
+     - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.references`
+     - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.summary`
+     - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.visual_evidence`
+11. Present those wanted outputs in a clean human-readable summary instead of low-level JSON-path labels. Prefer labels such as `Kidney detector inference time`, `Kidney cancer classes`, `Kidney detector confidence`, `Image Analyzer CAM metrics`, `Image Analyzer prediction`, `CAM explanation`, `Confidence interpretation`, `Recommended next steps`, `References`, `Summary`, and `Visual evidence`.
+12. Do not include low-level run details by default in user-facing replies. Omit technical execution metadata such as upload paths, endpoint names, HTTP status, node ids, workflow ids, raw file paths, and similar run-internal fields unless the user explicitly asks for technical details or the raw response.
+13. Mention, when present, that the broader raw response may also include an analyzer output `file_path` plus the X-AI headline fields `confidence_interpretation`, `recommended_next_steps`, `references`, `summary`, and `visual_evidence`.
+14. In the default user-facing reply, if an analyzer image URL exists, append the image itself after the summary rather than merely mentioning that an image was sent elsewhere.
 
 ## Fixed request values
 
@@ -63,7 +76,7 @@ Keep these values static:
 ## What this skill runs
 
 ```bash
-python3 scripts/pipeline_execution_tool.py --telegram-user-id <telegram-user-id> [--telegram-target <telegram-chat-id>] [local-image-path]
+python3 scripts/pipeline_execution_tool.py --telegram-user-id <telegram-user-id> [local-image-path]
 ```
 
 If `local-image-path` is omitted, the script automatically selects the newest supported image from `/home/node/.openclaw/media/inbound`.
@@ -109,16 +122,23 @@ For user-facing summaries, treat these as the primary expected outputs when pres
 ```json
 {
   "wanted_output_fields": {
-    "kidney_cancer_class": "response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.classes",
-    "kidney_cancer_confidence": "response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.confidence",
-    "image_analyzer_prediction": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.prediction",
-    "cam_metrics": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_metrics",
-    "cam_explanation": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_explanation",
-    "confidence_interpretation": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.confidence_interpretation",
-    "recommended_next_steps": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.recommended_next_steps",
-    "references": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.references",
-    "summary": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.summary",
-    "visual_evidence": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.visual_evidence"
+    "kidney_cancer_detector": {
+      "Inference time": "response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.Inference time",
+      "classes": "response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.classes",
+      "confidence": "response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.confidence"
+    },
+    "image_analyzer": {
+      "cam_metrics": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_metrics",
+      "prediction": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.prediction",
+      "cam_explanation": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_explanation"
+    },
+    "xai": {
+      "confidence_interpretation": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.confidence_interpretation",
+      "recommended_next_steps": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.recommended_next_steps",
+      "references": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.references",
+      "summary": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.summary",
+      "visual_evidence": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.visual_evidence"
+    }
   }
 }
 ```
@@ -131,9 +151,9 @@ When `cam_metrics` is present, include all of its subfields in the wanted output
 
 Also include these secondary fields when useful:
 - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.file_path`
-- the downloaded analyzer image metadata exposed by the script as `analyzer_image_url`, `analyzer_image_local_path`, and `analyzer_image_content_type`
+- the forwarded-image metadata exposed by the script as `analyzer_image_url` and `sent_result_image`
 
-When `recommended_next_steps` is present, preserve the list order. When `references` is present, preserve each item's available fields such as `title`, `author`, `year`, and `url`.
+When `recommended_next_steps` is present, preserve the list order. When `references` is present, preserve each item's available fields such as `title`, `author`, `year`, and `url`. When `summary` is present, preserve its wording.
 
 Do not present the summary as raw JSON-path labels unless the user explicitly asks for raw field paths. Default to a cleaner format with readable labels and grouped findings.
 Do not include low-level run details in the default summary. Reserve upload paths, endpoint values, HTTP status, execution metadata, node identifiers, and other run-internal fields for explicit technical or debugging requests.
