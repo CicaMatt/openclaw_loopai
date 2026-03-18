@@ -10,10 +10,13 @@
       "accountId": "48eadf97-acde-4c3e-8f7a-0ee9d1405645"
     }
   },
+  "lastGood": {
+    "openai-codex": "openai-codex:default"
+  },
   "usageStats": {
     "openai-codex:default": {
       "errorCount": 0,
-      "lastUsed": 1773739617183
+      "lastUsed": 1773772314655
     }
   }
 }

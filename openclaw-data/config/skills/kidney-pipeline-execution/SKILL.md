@@ -33,9 +33,14 @@ Upload the local image first, then execute the fixed kidney cancer detection pro
    - `response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.confidence`
    - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.prediction`
    - every available `cam_...` field under the Image Analyzer tracking parameters, including the full `cam_metrics` object and any other `cam_*` entries such as `cam_explanation`
-9. Present those wanted outputs in a clean human-readable summary instead of low-level JSON-path labels. Prefer labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, `CAM top-bottom asymmetry`, and `CAM explanation`.
+   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.confidence_interpretation`
+   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.recommended_next_steps`
+   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.references`
+   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.summary`
+   - `response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.visual_evidence`
+9. Present those wanted outputs in a clean human-readable summary instead of low-level JSON-path labels. Prefer labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, `CAM top-bottom asymmetry`, `CAM explanation`, `Confidence interpretation`, `Recommended next steps`, `References`, `Summary`, and `Visual evidence`.
 10. Do not include low-level run details by default in user-facing replies. Omit technical execution metadata such as upload paths, endpoint names, HTTP status, node ids, workflow ids, raw file paths, and similar run-internal fields unless the user explicitly asks for technical details or the raw response.
-11. Mention, when present, that the broader raw response may also include an analyzer output `file_path`, while the X-AI node is part of the integrated pipeline even if its own tracking payload is sparse.
+11. Mention, when present, that the broader raw response may also include an analyzer output `file_path` plus X-AI explanatory fields such as `confidence_interpretation`, `recommended_next_steps`, `references`, `summary`, and `visual_evidence`.
 
 ## Fixed request values
 
@@ -98,7 +103,12 @@ For user-facing summaries, treat these as the primary expected outputs when pres
     "kidney_cancer_confidence": "response.workflows[0].branches[0].nodes[0].children[0].tracking.parameters.confidence",
     "image_analyzer_prediction": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.prediction",
     "cam_metrics": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_metrics",
-    "cam_explanation": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_explanation"
+    "cam_explanation": "response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.cam_explanation",
+    "confidence_interpretation": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.confidence_interpretation",
+    "recommended_next_steps": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.recommended_next_steps",
+    "references": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.references",
+    "summary": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.summary",
+    "visual_evidence": "response.workflows[0].branches[0].nodes[0].children[0].children[0].children[0].tracking.parameters.visual_evidence"
   }
 }
 ```
@@ -111,6 +121,8 @@ When `cam_metrics` is present, include all of its subfields in the wanted output
 
 Also include these secondary fields when useful:
 - `response.workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters.file_path`
+
+When `recommended_next_steps` is present, preserve the list order. When `references` is present, preserve each item's available fields such as `title`, `author`, `year`, and `url`.
 
 Do not present the summary as raw JSON-path labels unless the user explicitly asks for raw field paths. Default to a cleaner format with readable labels and grouped findings.
 Do not include low-level run details in the default summary. Reserve upload paths, endpoint values, HTTP status, execution metadata, node identifiers, and other run-internal fields for explicit technical or debugging requests.

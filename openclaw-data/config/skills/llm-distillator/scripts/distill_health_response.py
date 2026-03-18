@@ -14,7 +14,7 @@ from pathlib import Path
 
 DEFAULT_MODEL = "meta-llama/Llama-3.3-70B-Instruct"
 HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
-HF_TOKEN_PLACEHOLDER = "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"
+HF_TOKEN_PLACEHOLDER = "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"
 
 SYSTEM_PROMPT = """You are a medically cautious synthesis assistant.
 Your task is to combine health-related conversation context with diagnostic tool output into one clear, comprehensive answer for the user.

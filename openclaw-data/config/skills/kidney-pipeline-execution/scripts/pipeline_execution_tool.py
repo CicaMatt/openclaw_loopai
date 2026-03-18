@@ -18,10 +18,10 @@ FIXED_LOCAL_FILE_PATH = "upload/"
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tif", ".tiff"}
 
 REQUEST_TEMPLATE = {
-    "prototype_id": "69b7ce309fc31ca2c4714132",
-    "created_at": "2026-03-16T09:32:32.788000",
-    "updated_at": "2026-03-16T09:32:32.788000",
-    "prototype_name": "Test_kidney_nexus",
+    "prototype_id": "69b862e0a6fbd73a6254e5be",
+    "created_at": "2026-03-16T20:06:56.253000",
+    "updated_at": "2026-03-16T20:06:56.253000",
+    "prototype_name": "Test_Kidney_nexus",
     "prototype_description": "It Prototype",
     "prototype_subtitle": None,
     "prototype_players": [
@@ -29,12 +29,12 @@ REQUEST_TEMPLATE = {
     ],
     "workflows": [
         {
-            "workflow_name": "Test_kidney_nexus",
+            "workflow_name": "Test_Kidney_nexus",
             "workflow_id": "wf_id",
             "workflow_type": "prototype",
             "branches": [
                 {
-                    "branch_id": "mjia9vqwnj9v72se3hcx7",
+                    "branch_id": "677dt868a8pjr3p7uedynl",
                     "branch_name": "Branch 1",
                     "nodes": [
                         {
@@ -77,7 +77,7 @@ REQUEST_TEMPLATE = {
                             "children": [
                                 {
                                     "node_category": "build_ai_tool",
-                                    "node_sub_category": "Third Party Algorithm",
+                                    "node_sub_category": "Loop Ready Model",
                                     "node_name": "kidney_cancer_detection_model",
                                     "node_label": "Kidney Cancer Detection",
                                     "node_description": "Kidney Cancer Detection",
@@ -139,7 +139,7 @@ REQUEST_TEMPLATE = {
                                             "endpoints": [
                                                 {
                                                     "position": 0,
-                                                    "endpoint": "/nodes/ai_tool/eigen-cam-v2"
+                                                    "endpoint": "/nodes/ai_tool/image-analyzer"
                                                 }
                                             ],
                                             "allowed_node_types": [
@@ -213,7 +213,7 @@ REQUEST_TEMPLATE = {
                                                             "secret_key": "string",
                                                             "text_column_name": "",
                                                             "model_path": "string",
-                                                            "pdf_path": "/upload/2026-03-16_09.31.20_ti3RRjX8SoRJWvUPiHQ8/kidney_test2.jpeg",
+                                                            "pdf_path": "/upload/2026-03-16_20.05.56_d1PtORaYYoNWDsbQg6qs/kidney_test2.jpeg",
                                                             "storage_ref": "nodes_bucket",
                                                             "computing_machines": [
                                                                 {
@@ -246,7 +246,30 @@ REQUEST_TEMPLATE = {
                                                             "additionalProp2": "string",
                                                             "additionalProp3": "string"
                                                         },
-                                                        "parameters": {},
+                                                        "parameters": {
+                                                            "confidence_interpretation": "A confidence level of 99.99% indicates a high degree of certainty in the analysis, but it is essential to note that medical imaging analysis is not a definitive diagnostic tool.",
+                                                            "recommended_next_steps": [
+                                                                "Further medical evaluation, including imaging studies and laboratory tests, to confirm the diagnosis.",
+                                                                "Consultation with a medical professional to discuss the results and determine the best course of action.",
+                                                                "Consideration of additional diagnostic tests, such as biopsy or genetic testing, to gather more information."
+                                                            ],
+                                                            "references": [
+                                                                {
+                                                                    "title": "Kidney Cancer: Diagnosis and Treatment",
+                                                                    "author": "American Cancer Society",
+                                                                    "year": "2022",
+                                                                    "url": "https://www.cancer.org/cancer/kidney-cancer/detection-diagnosis-staging.html"
+                                                                },
+                                                                {
+                                                                    "title": "Imaging in Kidney Cancer",
+                                                                    "author": "European Association of Urology",
+                                                                    "year": "2020",
+                                                                    "url": "https://uroweb.org/guideline/kidney-cancer/"
+                                                                }
+                                                            ],
+                                                            "summary": "The provided medical image analysis suggests a high likelihood of kidney cancer, with a confidence level of 99.99%. The visual evidence points to a kidney tumor, and the class probabilities indicate a strong likelihood of kidney cancer.",
+                                                            "visual_evidence": "The image analysis detected a kidney tumor, which is a common indicator of kidney cancer."
+                                                        },
                                                         "metrics": {},
                                                         "artifacts": {
                                                             "input_file": True,
@@ -258,7 +281,7 @@ REQUEST_TEMPLATE = {
                                                     "node_name_dict": "x_ai_model",
                                                     "executed": False,
                                                     "node_id": "6946dff31cc02c3427815ae2",
-                                                    "prototype_id": "69b7ce309fc31ca2c4714132"
+                                                    "prototype_id": "69b862e0a6fbd73a6254e5be"
                                                 }
                                             ],
                                             "tracking": {
@@ -283,7 +306,7 @@ REQUEST_TEMPLATE = {
                                                     },
                                                     "prediction": "kidney_tumor",
                                                     "cam_explanation": "The model focused on a localized region of the image, located centrally within the renal parenchyma, with asymmetric spatial distribution. In the context of a tumor prediction, this pattern suggests visually distinct renal regions that may correspond to localized structural alteration.",
-                                                    "file_path": "[URL]http://looporchestra.sytes.net:4001/admin/admin/retrieve-image-file/nodes_bucket/626130f7c71f6b9e651c76be/69b7ce309fc31ca2c4714132/87edd98d-8cb4-477f-8516-d3dbc77c242e.jpeg"
+                                                    "file_path": "[URL]http://looporchestra.sytes.net:4001/admin/admin/retrieve-image-file/nodes_bucket/626130f7c71f6b9e651c76be/69b862e0a6fbd73a6254e5be/87edd98d-8cb4-477f-8516-d3dbc77c242e.jpeg"
                                                 },
                                                 "metrics": {},
                                                 "artifacts": {
@@ -296,7 +319,7 @@ REQUEST_TEMPLATE = {
                                             "node_name_dict": "image_analyzer_model",
                                             "executed": False,
                                             "node_id": "6946db821cc02c3427815adf",
-                                            "prototype_id": "69b7ce309fc31ca2c4714132"
+                                            "prototype_id": "69b862e0a6fbd73a6254e5be"
                                         }
                                     ],
                                     "tracking": {
@@ -328,7 +351,7 @@ REQUEST_TEMPLATE = {
                                     "node_name_dict": "kidney_cancer_detection_model",
                                     "executed": False,
                                     "node_id": "6986172e677ea52be211de08",
-                                    "prototype_id": "69b7ce309fc31ca2c4714132"
+                                    "prototype_id": "69b862e0a6fbd73a6254e5be"
                                 }
                             ],
                             "tracking": {
@@ -363,19 +386,19 @@ REQUEST_TEMPLATE = {
                                         "name": "NodeDataReader5",
                                         "type": "input.data-reader",
                                         "run_id": "8e4348850bdf4a3990e2a3597e3dc9b0",
-                                        "workflow_name": "Test_kidney_nexus",
+                                        "workflow_name": "Test_Kidney_nexus",
                                         "workflow_type": "prototype",
                                         "workflow_id": "28",
                                         "workflow_run_id": "a79b2053d7754a93aeaf56cd42406e03"
                                     },
-                                    "data": "626130f7c71f6b9e651c76be/69b7ce309fc31ca2c4714132/kidney_test2.jpeg",
+                                    "data": "626130f7c71f6b9e651c76be/69b862e0a6fbd73a6254e5be/kidney_test2.jpeg",
                                     "pdf_path": None
                                 }
                             },
                             "node_name_dict": "NodeDataReader5",
                             "executed": False,
                             "node_id": "6936866fb56d784128f48718",
-                            "prototype_id": "69b7ce309fc31ca2c4714132"
+                            "prototype_id": "69b862e0a6fbd73a6254e5be"
                         }
                     ]
                 }
