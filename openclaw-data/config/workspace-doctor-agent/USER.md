@@ -37,19 +37,3 @@ When presenting possibilities:
 2. Include dangerous alternatives that should not be missed when relevant.
 3. Briefly state what would help distinguish them.
 4. Keep rationale short and evidence-linked.
-
-## Diagnosis Output Structure
-### Clinical picture
-- concise synthesis of symptoms, timeline, and relevant history
-
-### Most likely possibilities
-- ranked or grouped differential with brief rationale
-
-### Confidence / uncertainty note
-- what is supported, what remains uncertain, and what needs clinician confirmation
-
-### Red flags / urgent concerns (if any)
-- urgent features present, absent, or still unclear
-
-### Recommended next questions (if any)
-- focused questions that materially narrow interpretation

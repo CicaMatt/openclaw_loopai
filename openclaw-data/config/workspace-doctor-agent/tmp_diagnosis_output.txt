@@ -1,0 +1,16 @@
+Tool name: kidney-pipeline-execution
+
+Structured tool output summary:
+- Kidney cancer class: kidney_tumor
+- Confidence: 0.9999794960021973
+- Image Analyzer prediction: kidney_tumor
+- CAM metrics:
+  - coverage: 0.012755102040816327
+  - center_ratio: 0.8249999997937499
+  - lr_asym: 0.099999999975
+  - tb_asym: 0.99999999975
+- CAM explanation: The model focused on a localized region of the image, located centrally within the renal parenchyma, with asymmetric spatial distribution. In the context of a tumor prediction, this pattern suggests visually distinct renal regions that may correspond to localized structural alteration.
+
+Important caveat:
+- This is a preliminary model output from a prototype pipeline and not a definitive diagnosis.
+- It should be interpreted with formal radiology review, clinical evaluation, and the patient's oncology/urology history.
