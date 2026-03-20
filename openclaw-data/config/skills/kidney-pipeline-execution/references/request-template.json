@@ -205,7 +205,7 @@
                                              "secret_key":"string",
                                              "text_column_name":"",
                                              "model_path":"string",
-                                             "pdf_path":"/upload/2026-03-16_20.05.56_d1PtORaYYoNWDsbQg6qs/kidney_test2.jpeg",
+                                             "pdf_path":"<image_path_here>",
                                              "storage_ref":"nodes_bucket",
                                              "computing_machines":[
                                                 {
@@ -368,7 +368,7 @@
                            "additionalProp3":"string"
                         },
                         "parameters":{
-                           "File Path":"/upload/2026-03-16_20.05.56_d1PtORaYYoNWDsbQg6qs/kidney_test2.jpeg",
+                           "File Path":"<image_path_here>",
                            "Sheet Name":0,
                            "Document Type":"jpg",
                            "Document Size":"0.034 Mb"
@@ -393,7 +393,7 @@
                               "workflow_id":"30",
                               "workflow_run_id":"4d70991c5ff342a696d7697f4e7bb619"
                            },
-                           "data":"626130f7c71f6b9e651c76be/69b862e0a6fbd73a6254e5be/kidney_test2.jpeg",
+                           "data":"<image_path_here>",
                            "pdf_path":null
                         }
                      },
