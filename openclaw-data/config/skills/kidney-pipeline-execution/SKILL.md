@@ -17,11 +17,17 @@ Follow this sequence exactly:
 2. Require the Telegram user id.
    - Pass it as `--telegram-user-id` or set `TELEGRAM_USER_ID`.
    - Use that value as the upload request's `user_id` query parameter.
-3. Upload the image with `POST multipart/form-data` to:
-   - `http://looporchestra.sytes.net:4001/nodes/input/upload?storage_ref=nodes_bucket&local_file_path=upload%2F&user_id=<telegram-user-id>`
+3. Upload the image with a real multipart `POST` to:
+   - `http://looporchestra.sytes.net:4001/nodes/input/upload`
+   - Send query params: `storage_ref=nodes_bucket`, `local_file_path=upload`, and `user_id=<telegram-user-id>`.
+   - Send the file as a real multipart form field named `file`.
+   - Set `accept: application/json`.
+   - Retry the upload a few times with short backoff if the endpoint is flaky.
+   - Manual multipart generation is acceptable in this environment; if `requests` is unavailable, use the standard library and include the multipart boundary in the generated `Content-Type` header.
 4. Read the upload response JSON.
-   - Build the real remote image path as `path + filename`.
-   - Use the returned path from the upload response only.
+   - Treat a response as successful whenever it yields a usable uploaded path assembled from the returned `path` and `filename`, even if the same attempt also surfaced transport noise or a socket-level error.
+   - Treat payloads such as `{"Error": {}}`, empty lists, missing `path`, or missing `filename` as upload failures.
+   - Use the returned path from the successful upload response only.
    - Do not keep example paths, stale upload paths, or unresolved placeholders in the executed request.
 5. Load `references/request-template.json`.
 6. Replace every <image-path-here> placeholder in the template with the real uploaded image path (rows 56, 208, 305, 371, 396).
@@ -38,7 +44,7 @@ Follow this sequence exactly:
 
 Keep these values fixed:
 - `storage_ref`: `nodes_bucket`
-- `local_file_path`: `upload/`
+- `local_file_path`: `upload`
 - execution endpoint: `http://looporchestra.sytes.net:4001/admin/prototype_execution/prototype_execution/`
 - request template: `references/request-template.json`
 
@@ -47,6 +53,7 @@ Keep these values fixed:
 - Treat the request template as a fixed prototype payload, but always inject the freshly uploaded image path before execution.
 - Fail loudly if `<image_path_here>` remains anywhere in the payload after replacement.
 - If template fields such as `filename`, `pdf_path`, or `File Path` contain placeholder or stale upload-path values, replace them with the fresh uploaded image path before execution.
+- Persist upload artifacts so debugging is easy: save the final successful upload request and response, and also save the full ordered list of upload attempts.
 - Preserve the response wrapper shape returned by the script.
 - If the endpoint returns non-JSON text, return that text as the `response` value.
 
@@ -59,6 +66,7 @@ python3 scripts/pipeline_execution_tool.py --telegram-user-id <telegram-user-id>
 ```
 
 If `local-image-path` is omitted, the script should select the newest supported image from `/home/node/.openclaw/media/inbound`.
+Use that inbound lookup as the default path source for normal runs so the latest uploaded image is what gets sent unless an explicit local path is intentionally provided.
 
 ## Summary fields to prioritize
 
