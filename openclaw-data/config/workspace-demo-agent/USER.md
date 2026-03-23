@@ -44,8 +44,11 @@ When presenting possibilities:
 - Formatting rule: place the section title and its description on consecutive lines with **no blank line between them**.
 - Add **exactly one blank empty row only after the section description**, before the next main section begins.
 - Example:
-"**Main Concept 1**
+
+```
+**Main Concept 1**
 Description of main concept 1
 
 **Main Concept 2**
-Description of main concept 2"
+Description of main concept 2
+``` 
