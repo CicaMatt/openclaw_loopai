@@ -324,6 +324,14 @@
         "channel": "telegram",
         "accountId": "patient-agent-tg"
       }
+    },
+    {
+      "type": "route",
+      "agentId": "demo-agent",
+      "match": {
+        "channel": "telegram",
+        "accountId": "demo-agent-tg"
+      }
     }
   ],
   "commands": {
@@ -375,6 +383,9 @@
           "enabled": true,
           "dmPolicy": "pairing",
           "botToken": "8602303952:AAFjGHT0JzBQehIqp_pW2bhISe8Qx9uJjOg",
+          "allowFrom": [
+            495506013
+          ],
           "groupPolicy": "allowlist",
           "streaming": "partial"
         }
