@@ -1,49 +1,51 @@
-# TOOLS.md - LoopAI Patient Agent Tools Registry
+# TOOLS.md - Medical Skills & Capability Notes
 
----
+## Tool Use Principle
+Tools support clinical reasoning; they do not replace it.
+Use them only when they materially improve the case review, and interpret outputs cautiously.
 
-## 1. Diagnostic & Screening Tools
-Tools used to move from "vague symptom" to "structured data."
+## Diagnostic Workflow
+1. Review structured history when available.
+2. Review the current symptom snapshot.
+3. Identify red flags first.
+4. Decide whether a tool or skill is actually needed.
+5. Interpret outputs as preliminary signals, not final truth.
+6. Return findings in the standard six-part output structure.
 
-### `kidney-cancer-detector`
-- **Description:** Analyzes kidney medical images (CT scans/MRIs) to identify potential malignancies using a specialized inference model.
-- **Parameters:** `image_path` (string): The local path or URI of the medical image provided by the user..
-- **When to use:** When a user provides a kidney scan for analysis.
+## pipeline-generator
+- **Role:** Broader ecosystem ML pipeline generation capability.
+- **Use for:** rare medical systems-design discussions, not routine patient diagnostic support.
+- **Limits:** Not a diagnostic authority and should not shape clinical conclusions directly.
 
----
+## kidney-pipeline-execution
+- **Role:** Execute the fixed kidney cancer detection pipeline starting from an image file.
+- **Use for:** running the integrated kidney pipeline when an image should be uploaded and passed through the Kidney Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
+- **Suggestion rule:** If the diagnostic impression raises kidney-focused problems or a possible renal mass concern, suggest that the user can run this specialized pipeline and invite them to upload a CT image scan.
+- **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize these wanted outputs when present: the kidney cancer class, the kidney cancer confidence, the Image Analyzer prediction, and all available `cam_...` fields from the Image Analyzer output, especially the full `cam_metrics` set and `cam_explanation`.
+- **Presentation rule:** When reporting results to the user, do not default to low-level JSON labels. Present them in a cleaner summary with readable labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, etc.
+- **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
+- **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
+- **Output structure:** "Kidney Cancer Detector", "Image Analyzer", "xAI", "Result Interpretation", "Recommendended next steps" (at the end of the "Image Analyzer" section, leave a brief statament mentioning that the heatmap image is attached). 
+- **Final message:** Always remember to the use that the tool output as a preliminary signal, not as an actual diagnosis.
 
-## 2. Information & Research Tools
-Tools used to provide evidence-based context.
+## llm_distillator
+- **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
+- **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
+- **Suggestion rule:** Suggest this skill only once there has been enough symptom discussion to frame the case and a tool has just produced a diagnostic result or preliminary diagnosis.
+- **Presentation rule:** Use it to convert raw or fragmented tool output into a concise explanation that matches the agent’s diagnostic output structure and preserves the distinction between tool findings and clinical interpretation.
+- **Safety rule:** Present the distilled result as a preliminary interpretation, not a confirmed diagnosis, and keep uncertainty visible when the upstream tool output is limited or ambiguous.
 
-### `pipeline-generator`
-- **Description:** Generates a professional machine learning pipeline prototype based on a user's prompt. It interfaces with the AutoGen-model to provide a draft design covering data flow, training approach, and evaluation.
-- **Parameters:** `prompt` (string): A detailed description of the ML pipeline prototype request..
-- **When to use:** Use only when the user explicitly asks for an ML pipeline prototype to be defined or generated.
+## patient-klm
+- **Role:** Patient-specific knowledge base skill for retrieving live structured health context, including symptom history, visits, disease timeline, genomics, and custom patient facts.
+- **Use for:** when the user reports symptoms and patient-specific context could materially improve interpretation, first retrieve the latest relevant patient record through the patient-klm skill, then combine that structured report with the user’s current symptom description.
+- **Default patient rule:** If the user asks for patient knowledge base access without specifying a patient, default to patient_id `P-001`.
+- **Presentation rule:** Integrate the fetched report with the newly reported symptoms into one coherent clinical picture. Clearly distinguish what came from the patient knowledge base versus what the user reported now when that distinction matters.
+- **Safety rule:** Treat patient-klm output as supporting clinical context, not final truth. Do not overstate certainty, do not invent missing facts, and say when important context is still missing.
+- **Answering rule:** After incorporating the updated report, provide a comprehensive but careful explanation of the user’s likely health situation, including uncertainty, red flags, and next-step guidance when relevant.
 
----
-
-## 3. Patient Record & Retrieval Tools
-Tools used to persist and retrieve longitudinal patient information.
-
-### `user-medical-data-update`
-- **Description:** Creates or updates a structured per-user medical record in `/home/node/openclaw-shared/user_medical_data` and can also summarize an existing user record.
-- **Stored Data Structure:** One folder per user, containing `medical_data.json` with `basic_health_data` fields and a timestamped `symptom_health_timeline`.
-- **When to use for logging:** Whenever the user shares new symptoms, health history, measurements, medications, allergies, or other medically relevant facts that should be preserved for later use.
-- **When to use for retrieval:** Whenever the user asks for a summary, recap, overview, or review of their stored medical information or symptom history.
-- **Logging Behavior:** Create the record if missing, merge basic profile fields carefully, append timestamped symptom/health entries, and avoid duplicating exact timeline events.
-- **Summary Behavior:** Read the user file, return non-empty profile fields, counts of logged items, and a recent timeline summary.
-
----
-
-## 4. General Utility Tools
-Tools used for general-purpose tasks.
-
-### `dumb-calculator`
-- **Description:** Generates a single random addition expression (integers 0-999) and its computed result.
-- **Parameters:** None.
-- **When to use:** When the user explicitly requests to run a "dumb calculator".
-
----
-
-Notes:
-- When running tools, to do not mention any execution-related message, just answer the user as you have to, without previous repetitive sub-answers.
+## Interpretation Rules
+- Treat all tool outputs as inputs to reasoning, not verdicts.
+- Cross-check against symptoms, history, and time course.
+- Prefer no tool over an irrelevant tool.
+- State uncertainty plainly when output quality is limited.
+- Escalate to clinician review when findings are serious, unclear, or high-risk.
