@@ -6,7 +6,6 @@ import mimetypes
 import os
 import re
 import sys
-import time
 import uuid
 from pathlib import Path
 from urllib import error, parse, request
@@ -16,14 +15,18 @@ EXECUTION_ENDPOINT = (
 )
 UPLOAD_BASE_URL = "http://looporchestra.sytes.net:4001/nodes/input/upload"
 FIXED_STORAGE_REF = "nodes_bucket"
-UPLOAD_RETRIES = 3
-UPLOAD_RETRY_SLEEP_SECONDS = 1.5
-FIXED_LOCAL_FILE_PATH = "upload"
+FIXED_LOCAL_FILE_PATH = "upload/"
 SUPPORTED_EXTENSIONS = {".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp", ".tif", ".tiff"}
 
 REQUEST_TEMPLATE_PATH = Path(__file__).resolve().parent.parent / "references" / "request-template.json"
-INBOUND_MEDIA_DIR = Path("/home/node/.openclaw/media/inbound").resolve()
-ARTIFACTS_DIR = Path("/home/node/.openclaw/workspace/kidney-pipeline-artifacts").resolve()
+
+
+def _safe_suffix_from_url(url: str) -> str:
+    parsed = parse.urlparse(url)
+    suffix = Path(parsed.path).suffix.lower()
+    if suffix in SUPPORTED_EXTENSIONS:
+        return suffix
+    return ".jpg"
 
 
 def _extract_image_url_from_response(response_obj):
@@ -125,6 +128,26 @@ def load_request_template():
         ) from exc
 
 
+
+def _multipart_encode(field_name: str, file_path: Path):
+    boundary = f"----OpenClawBoundary{uuid.uuid4().hex}"
+    mime_type = mimetypes.guess_type(file_path.name)[0] or "application/octet-stream"
+    file_bytes = file_path.read_bytes()
+
+    parts = [
+        f"--{boundary}\r\n".encode("utf-8"),
+        (
+            f'Content-Disposition: form-data; name="{field_name}"; '
+            f'filename="{file_path.name}"\r\n'
+        ).encode("utf-8"),
+        f"Content-Type: {mime_type}\r\n\r\n".encode("utf-8"),
+        file_bytes,
+        b"\r\n",
+        f"--{boundary}--\r\n".encode("utf-8"),
+    ]
+    return boundary, b"".join(parts)
+
+
 def _normalize_upload_response(value):
     if isinstance(value, list):
         if not value:
@@ -132,212 +155,66 @@ def _normalize_upload_response(value):
         value = value[0]
     if not isinstance(value, dict):
         raise RuntimeError("Upload endpoint returned an unsupported JSON shape.")
-    if value == {"Error": {}}:
-        raise RuntimeError("Upload response returned an empty error payload.")
     return value
 
 
-def _guess_mime_type(file_path: Path) -> str:
-    guessed, _ = mimetypes.guess_type(str(file_path))
-    return guessed or "application/octet-stream"
-
-
-def _multipart_encode(field_name: str, file_path: Path):
-    mime_type = _guess_mime_type(file_path)
-    boundary = f"----OpenClawBoundary{uuid.uuid4().hex}"
-    file_bytes = file_path.read_bytes()
-    body = b"".join(
-        [
-            f"--{boundary}\r\n".encode("utf-8"),
-            (
-                f'Content-Disposition: form-data; name="{field_name}"; filename="{file_path.name}"\r\n'
-            ).encode("utf-8"),
-            f"Content-Type: {mime_type}\r\n\r\n".encode("utf-8"),
-            file_bytes,
-            b"\r\n",
-            f"--{boundary}--\r\n".encode("utf-8"),
-        ]
-    )
-    return boundary, body
-
-
-def _ensure_artifacts_dir() -> Path:
-    ARTIFACTS_DIR.mkdir(parents=True, exist_ok=True)
-    return ARTIFACTS_DIR
-
-
-def upload_image(local_image_path: str, telegram_user_id: str, timeout: int = 60):
+def upload_image(local_image_path: str, telegram_user_id: str, timeout: int = 60) -> dict:
     file_path = Path(local_image_path).expanduser().resolve()
     if not file_path.is_file():
         raise RuntimeError(f"Image file not found: {file_path}")
 
-    artifacts_dir = _ensure_artifacts_dir()
-    attempts_path = artifacts_dir / "upload-attempts.json"
-    upload_request_path = artifacts_dir / "upload-request.json"
-    upload_response_path = artifacts_dir / "upload-response.json"
-
-    attempts = []
-    last_error = None
-
-    for retry_index in range(1, UPLOAD_RETRIES + 1):
-        query = parse.urlencode(
-            {
-                "storage_ref": FIXED_STORAGE_REF,
-                "local_file_path": FIXED_LOCAL_FILE_PATH,
-                "user_id": telegram_user_id,
-            }
-        )
-        upload_url = f"{UPLOAD_BASE_URL}?{query}"
-        boundary, body = _multipart_encode("file", file_path)
-        headers = {
+    query = parse.urlencode(
+        {
+            "storage_ref": FIXED_STORAGE_REF,
+            "local_file_path": FIXED_LOCAL_FILE_PATH,
+            "user_id": telegram_user_id,
+        }
+    )
+    upload_url = f"{UPLOAD_BASE_URL}?{query}"
+    boundary, body = _multipart_encode("file", file_path)
+    req = request.Request(
+        upload_url,
+        data=body,
+        headers={
             "Content-Type": f"multipart/form-data; boundary={boundary}",
             "Accept": "application/json",
-        }
+        },
+        method="POST",
+    )
 
-        request_record = {
-            "attempt": retry_index,
-            "retry_index": retry_index,
-            "storage_ref": FIXED_STORAGE_REF,
-            "method": "POST",
-            "url": UPLOAD_BASE_URL,
-            "query_url": upload_url,
-            "params": {
-                "storage_ref": FIXED_STORAGE_REF,
-                "local_file_path": FIXED_LOCAL_FILE_PATH,
-                "user_id": telegram_user_id,
-            },
-            "headers": headers,
-            "multipart_field": {
-                "name": "file",
-                "filename": file_path.name,
-                "content_type": _guess_mime_type(file_path),
-                "local_path": str(file_path),
-                "size_bytes": file_path.stat().st_size,
-            },
-        }
+    try:
+        with request.urlopen(req, timeout=timeout) as resp:
+            response_body = resp.read().decode("utf-8", errors="replace")
+    except error.HTTPError as e:
+        detail = e.read().decode("utf-8", errors="replace")
+        raise RuntimeError(f"Upload failed with HTTP {e.code}: {detail}") from e
+    except Exception as e:
+        raise RuntimeError(f"Upload request failed: {e}") from e
 
-        req = request.Request(
-            upload_url,
-            data=body,
-            headers=headers,
-            method="POST",
-        )
+    try:
+        parsed = json.loads(response_body)
+    except json.JSONDecodeError as e:
+        raise RuntimeError("Upload endpoint returned a non-JSON response.") from e
 
-        response_body = None
-        status = None
-        response_headers = {}
-        transport_error = None
-        parsed = None
+    parsed = _normalize_upload_response(parsed)
+    remote_dir = parsed.get("path")
+    filename = parsed.get("filename")
+    if not isinstance(remote_dir, str) or not remote_dir:
+        raise RuntimeError("Upload response is missing 'path'.")
+    if not isinstance(filename, str) or not filename:
+        raise RuntimeError("Upload response is missing 'filename'.")
 
-        try:
-            with request.urlopen(req, timeout=timeout) as resp:
-                response_body = resp.read().decode("utf-8", errors="replace")
-                status = resp.status
-                response_headers = dict(resp.headers.items())
-        except error.HTTPError as e:
-            detail = e.read().decode("utf-8", errors="replace")
-            status = e.code
-            response_headers = dict(e.headers.items()) if e.headers else {}
-            transport_error = f"Upload failed with HTTP {e.code}: {detail}"
-            response_body = detail
-        except Exception as e:
-            transport_error = f"Upload request failed: {e}"
-
-        if response_body is not None:
-            try:
-                parsed = json.loads(response_body)
-            except json.JSONDecodeError:
-                parsed = None
-
-        attempt_record = {
-            "request": request_record,
-            "response": {
-                "status_code": status,
-                "headers": response_headers,
-                "body": parsed if parsed is not None else None,
-                "body_text": response_body if parsed is None else None,
-            },
-            "success": False,
-            "error": transport_error,
-        }
-
-        if parsed is not None:
-            try:
-                parsed = _normalize_upload_response(parsed)
-                remote_dir = parsed.get("path")
-                filename = parsed.get("filename")
-                if not isinstance(remote_dir, str) or not remote_dir:
-                    raise RuntimeError("Upload response is missing 'path'.")
-                if not isinstance(filename, str) or not filename:
-                    raise RuntimeError("Upload response is missing 'filename'.")
-
-                uploaded_image_path = f"{remote_dir}{filename}"
-                attempt_record["success"] = True
-                attempts.append(attempt_record)
-                attempts_path.write_text(json.dumps(attempts, indent=2, ensure_ascii=False), encoding="utf-8")
-                upload_request_path.write_text(json.dumps(request_record, indent=2, ensure_ascii=False), encoding="utf-8")
-                upload_response_path.write_text(
-                    json.dumps(attempt_record["response"], indent=2, ensure_ascii=False),
-                    encoding="utf-8",
-                )
-                return {
-                    "uploaded_image_path": uploaded_image_path,
-                    "upload_storage_ref_used": FIXED_STORAGE_REF,
-                    "upload_attempts_artifact": str(attempts_path),
-                    "upload_request_artifact": str(upload_request_path),
-                    "upload_response_artifact": str(upload_response_path),
-                    "upload_response_json": parsed,
-                }
-            except RuntimeError as e:
-                if not attempt_record["error"]:
-                    attempt_record["error"] = str(e)
-
-        if not attempt_record["error"]:
-            if parsed is None and response_body is not None:
-                attempt_record["error"] = "Upload endpoint returned a non-JSON response."
-            else:
-                attempt_record["error"] = "Upload failed without a readable response body."
-
-        attempts.append(attempt_record)
-        attempts_path.write_text(json.dumps(attempts, indent=2, ensure_ascii=False), encoding="utf-8")
-        last_error = attempt_record["error"]
-        if retry_index < UPLOAD_RETRIES:
-            time.sleep(UPLOAD_RETRY_SLEEP_SECONDS)
-
-    raise RuntimeError(last_error or "Upload failed for nodes_bucket.")
-
-
-def _resolve_input_image_path(image_path: str | None) -> Path:
-    if image_path:
-        file_path = Path(image_path).expanduser().resolve()
-        if not file_path.is_file():
-            raise RuntimeError(f"Image file not found: {file_path}")
-        return file_path
-
-    if not INBOUND_MEDIA_DIR.is_dir():
-        raise RuntimeError(
-            "Inbound media directory not found: /home/node/.openclaw/media/inbound. "
-            "Pass an image path explicitly if the image is stored elsewhere."
-        )
-
-    candidates = [
-        path
-        for path in INBOUND_MEDIA_DIR.rglob("*")
-        if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS
-    ]
-    if not candidates:
-        raise RuntimeError(
-            "No supported image files found in /home/node/.openclaw/media/inbound. "
-            "Pass an image path explicitly if needed."
-        )
-
-    return max(candidates, key=lambda p: p.stat().st_mtime).resolve()
-
+    return {
+        "uploaded_image_path": f"{remote_dir}{filename}",
+        "upload_path": remote_dir,
+        "upload_filename": filename,
+        "telegram_user_id_used": str(telegram_user_id),
+        "upload_request_url": upload_url,
+        "raw_upload_response": parsed,
+    }
 
 
 PATH_FIELD_KEYS = {"filename", "pdf_path", "File Path"}
-
-
 
 def _replace_uploaded_image_path(obj, uploaded_image_path: str, parent_key=None):
     if isinstance(obj, dict):
@@ -350,10 +227,7 @@ def _replace_uploaded_image_path(obj, uploaded_image_path: str, parent_key=None)
             _replace_uploaded_image_path(item, uploaded_image_path, parent_key=parent_key)
             for item in obj
         ]
-    if isinstance(obj, str) and (
-        obj == "<image_path_here>"
-        or (parent_key in PATH_FIELD_KEYS and obj.strip().lstrip("/").startswith("upload/"))
-    ):
+    if isinstance(obj, str) and (obj == "<image_path_here>"):
         return uploaded_image_path
     return obj
 
@@ -408,6 +282,7 @@ def call_pipeline_execution(uploaded_image_path: str, timeout: int = 120):
     except Exception as e:
         raise RuntimeError(f"Execution request failed: {e}") from e
 
+    parsed_body = None
     try:
         parsed_body = json.loads(body)
     except json.JSONDecodeError:
@@ -431,11 +306,34 @@ def call_pipeline_execution(uploaded_image_path: str, timeout: int = 120):
     return result
 
 
+def find_latest_inbound_image() -> str:
+    inbound_dir = Path("/home/node/.openclaw/media/inbound").resolve()
+    if not inbound_dir.is_dir():
+        raise RuntimeError(
+            "Inbound media directory not found: /home/node/.openclaw/media/inbound. "
+            "Pass --image-path explicitly if the image is stored elsewhere."
+        )
+
+    candidates = [
+        path
+        for path in inbound_dir.rglob("*")
+        if path.is_file() and path.suffix.lower() in SUPPORTED_EXTENSIONS
+    ]
+    if not candidates:
+        raise RuntimeError(
+            "No supported image files found in /home/node/.openclaw/media/inbound. "
+            "Pass --image-path explicitly if needed."
+        )
+
+    latest = max(candidates, key=lambda p: p.stat().st_mtime)
+    return str(latest)
+
+
 def main():
     parser = argparse.ArgumentParser(
         description=(
-            "Upload a local image with the kidney cancer skill's multipart POST flow, "
-            "replace the <image_path_here> placeholder inside the fixed prototype payload, call the "
+            "Upload a local image with the same flow as the kidney cancer skill, replace "
+            "the <image_path_here> placeholder inside the fixed prototype payload, call the "
             "prototype execution endpoint, expose any analyzer image URL in the JSON wrapper, "
             "and print the result without sending out-of-band Telegram messages."
         )
@@ -462,25 +360,24 @@ def main():
             "Missing Telegram user id. Pass --telegram-user-id or set TELEGRAM_USER_ID."
         )
 
-    input_image_path = _resolve_input_image_path(args.image_path)
+    local_image_path = args.image_path or find_latest_inbound_image()
     telegram_user_id = str(args.telegram_user_id)
 
     upload_result = upload_image(
-        local_image_path=str(input_image_path),
+        local_image_path=local_image_path,
         telegram_user_id=telegram_user_id,
         timeout=args.upload_timeout,
     )
-    uploaded_image_path = upload_result["uploaded_image_path"]
     result = call_pipeline_execution(
-        uploaded_image_path,
+        upload_result["uploaded_image_path"],
         timeout=args.timeout,
     )
-    result["local_image_path_used"] = str(input_image_path)
-    result["upload_storage_ref_used"] = upload_result["upload_storage_ref_used"]
-    result["upload_attempts_artifact"] = upload_result["upload_attempts_artifact"]
-    result["upload_request_artifact"] = upload_result["upload_request_artifact"]
-    result["upload_response_artifact"] = upload_result["upload_response_artifact"]
-    result["upload_response_json"] = upload_result["upload_response_json"]
+    result["local_image_path_used"] = str(Path(local_image_path).expanduser().resolve())
+    result["telegram_user_id_used_for_upload"] = upload_result["telegram_user_id_used"]
+    result["upload_path"] = upload_result["upload_path"]
+    result["upload_filename"] = upload_result["upload_filename"]
+    result["upload_request_url"] = upload_result["upload_request_url"]
+    result["raw_upload_response"] = upload_result["raw_upload_response"]
     print(json.dumps(result, indent=2, ensure_ascii=False))
 
 
