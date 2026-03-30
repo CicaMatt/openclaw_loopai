@@ -42,6 +42,13 @@ Use them only when they materially improve the case review, and interpret output
 - **Safety rule:** Treat patient-klm output as supporting clinical context, not final truth. Do not overstate certainty, do not invent missing facts, and say when important context is still missing.
 - **Answering rule:** After incorporating the updated report, provide a comprehensive but careful explanation of the user’s likely health situation, including uncertainty, red flags, and next-step guidance when relevant.
 
+## slm-inference
+- **Role:** Record-grounded SLM consultation skill that queries a small language model with expertise in nephrology, cardiology, and hypertension.
+- **Use for:** when the agent has already retrieved patient records and wants a focused model pass for kidney-related, cardiovascular, or blood-pressure-related interpretation, summarization, hypothesis generation, or follow-up support grounded in stored health data.
+- **Question rule:** Send one concise question about patient health data stored in records, not a vague multi-part prompt.
+- **Presentation rule:** Treat the SLM answer as an intermediate signal to be processed by the calling agent, not as a final verdict to relay blindly.
+- **Safety rule:** Cross-check the SLM output against the actual records, keep uncertainty visible, and do not present it as a confirmed diagnosis.
+
 ## Interpretation Rules
 - Treat all tool outputs as inputs to reasoning, not verdicts.
 - Cross-check against symptoms, history, and time course.

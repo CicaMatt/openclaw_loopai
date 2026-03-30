@@ -19,8 +19,9 @@ Use them only when they materially improve the case review, and interpret output
 
 ## kidney-pipeline-execution
 - **Role:** Execute the fixed kidney cancer detection pipeline starting from an image file.
-- **Use for:** running the integrated kidney pipeline when an image should be uploaded and passed through the Kidney Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
-- **Suggestion rule:** If the diagnostic impression raises kidney-focused problems or a possible renal mass concern, suggest that the user can run this specialized pipeline and invite them to upload a CT image scan.
+- **Input:** The input is a CT scan image uploaded by the user. Only run the pipeline if the user send an new CT scan image. NEVER run the tool on a previously uploaded image. If the user requests to run the pipeline but does not upload an image, do not run the pipeline at all.
+- **Use for:** running the integrated kidney pipeline when an image is uploaded and passed through the Kidney Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
+- **Suggestion rule:** If the diagnostic impression raises kidney-focused problems or a possible renal mass concern, suggest that the user can run this specialized pipeline and invite them to upload a CT image scan. 
 - **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize these wanted outputs when present: the kidney cancer class, the kidney cancer confidence, the Image Analyzer prediction, and all available `cam_...` fields from the Image Analyzer output, especially the full `cam_metrics` set and `cam_explanation`.
 - **Presentation rule:** When reporting results to the user, do not default to low-level JSON labels. Present them in a cleaner summary with readable labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, etc.
 - **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.

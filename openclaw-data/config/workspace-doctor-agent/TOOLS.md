@@ -19,6 +19,7 @@ Use them only when they materially improve the case review, and interpret output
 
 ## kidney-pipeline-execution
 - **Role:** Execute the fixed kidney cancer detection pipeline starting from an image file.
+- **Input:** The input is a CT scan image uploaded by the user. Only run the pipeline if the user send an new CT scan image. NEVER run the tool on a previously uploaded image. If the user requests to run the pipeline but does not upload an image, do not run the pipeline at all.
 - **Use for:** running the integrated kidney pipeline when an image should be uploaded and passed through the Kidney Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
 - **Suggestion rule:** If the diagnostic impression raises kidney-focused problems or a possible renal mass concern, suggest that the user can run this specialized pipeline and invite them to upload a CT image scan.
 - **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize these wanted outputs when present: the kidney cancer class, the kidney cancer confidence, the Image Analyzer prediction, and all available `cam_...` fields from the Image Analyzer output, especially the full `cam_metrics` set and `cam_explanation`.
@@ -38,10 +39,17 @@ Use them only when they materially improve the case review, and interpret output
 ## patient-klm
 - **Role:** Patient-specific knowledge base skill for retrieving live structured health context, including symptom history, visits, disease timeline, genomics, and custom patient facts.
 - **Use for:** when the user reports symptoms and patient-specific context could materially improve interpretation, first retrieve the latest relevant patient record through the patient-klm skill, then combine that structured report with the user’s current symptom description.
-- **Default patient rule:** If the user asks for patient knowledge base access without specifying a patient, default to patient_id `P-001`.
+- **Default patient rule:** If the user asks for patient knowledge base access without specifying a patient, default to patient_id `PT-8839-CR`.
 - **Presentation rule:** Integrate the fetched report with the newly reported symptoms into one coherent clinical picture. Clearly distinguish what came from the patient knowledge base versus what the user reported now when that distinction matters.
 - **Safety rule:** Treat patient-klm output as supporting clinical context, not final truth. Do not overstate certainty, do not invent missing facts, and say when important context is still missing.
 - **Answering rule:** After incorporating the updated report, provide a comprehensive but careful explanation of the user’s likely health situation, including uncertainty, red flags, and next-step guidance when relevant.
+
+## slm-inference
+- **Role:** Record-grounded SLM consultation skill that queries a small language model with expertise in nephrology, cardiology, and hypertension.
+- **Use for:** when the agent has already retrieved patient records and wants a focused model pass for kidney-related, cardiovascular, or blood-pressure-related interpretation, summarization, hypothesis generation, or follow-up support grounded in stored health data.
+- **Question rule:** Send one concise question about patient health data stored in records, not a vague multi-part prompt.
+- **Presentation rule:** Treat the SLM answer as an intermediate signal to be processed by the calling agent, not as a final verdict to relay blindly.
+- **Safety rule:** Cross-check the SLM output against the actual records, keep uncertainty visible, and do not present it as a confirmed diagnosis.
 
 ## Interpretation Rules
 - Treat all tool outputs as inputs to reasoning, not verdicts.

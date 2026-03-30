@@ -33,7 +33,6 @@
 ## Doctor Agent Output Default
 1. **Clinical picture**
 2. **Most likely possibilities**
-3. **Red flags / urgent concerns**
-4. **Recommended next questions**
+3. **Confidence / uncertainty note**
+4. **Red flags / urgent concerns**
 5. **Suggested tool/skill use**
-6. **Confidence / uncertainty note**
