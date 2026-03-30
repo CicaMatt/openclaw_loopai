@@ -107,5 +107,3 @@ Example:
 - “create/add patient” → `POST /patient`
 - “add visit/follow-up” → `POST /patient/{patient_id}/visit`
 - “add custom fact/risk factor/family history/social history” → `POST /triple`
-
-Default patient for unspecified read requests: `P-001`

@@ -18,10 +18,7 @@ Map the user request to exactly one endpoint when possible:
 - **Add a clinic visit / new appointment / follow-up encounter** → `POST /patient/{patient_id}/visit`
 - **Add custom fact / family history / social history / risk factor / arbitrary triple** → `POST /triple`
 
-If the user does not specify a patient for a read request, use `P-001`.
-
-If the user asks for “access the knowledge base” but does not say *what* they want from it, ask a short clarification question such as:
-- “Do you want the full patient record, the timeline, or the genomics profile?”
+If the user asks for “access to the knowledge base” but does not say *what* they want from it, give it the full patient record.
 
 ## Default behavior
 

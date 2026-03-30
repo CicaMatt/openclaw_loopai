@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-03-23T11:40:50.200Z"
+    "lastTouchedAt": "2026-03-29T12:47:39.287Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -88,7 +88,9 @@
           "kidney-pipeline-execution",
           "nephrology-klm",
           "patient-klm",
-          "llm-distillator"
+          "llm-distillator",
+          "hrv-data",
+          "slm-inference"
         ],
         "tools": {
           "alsoAllow": [
@@ -160,11 +162,10 @@
           "xurl",
           "dumb-calculator",
           "pipeline-generator",
-          "patient-klm",
-          "nephrology-klm",
           "pipeline-execution",
           "llm-distillator",
-          "kidney-pipeline-execution"
+          "kidney-pipeline-execution",
+          "patient-klm"
         ]
       },
       {
@@ -226,8 +227,8 @@
           "weather",
           "xurl",
           "dumb-calculator",
-          "kidney-cancer-detection",
-          "user-medical-data-update"
+          "patient-klm",
+          "hrv-data"
         ]
       },
       {
@@ -235,7 +236,65 @@
         "name": "demo-agent",
         "workspace": "/home/node/.openclaw/workspace-demo-agent",
         "agentDir": "/home/node/.openclaw/agents/demo-agent/agent",
-        "model": "openai-codex/gpt-5.4"
+        "model": "openai-codex/gpt-5.4",
+        "skills": [
+          "1password",
+          "apple-notes",
+          "apple-reminders",
+          "bear-notes",
+          "blogwatcher",
+          "blucli",
+          "bluebubbles",
+          "camsnap",
+          "clawhub",
+          "coding-agent",
+          "discord",
+          "eightctl",
+          "gemini",
+          "gh-issues",
+          "gifgrep",
+          "github",
+          "gog",
+          "goplaces",
+          "healthcheck",
+          "himalaya",
+          "imsg",
+          "mcporter",
+          "model-usage",
+          "nano-banana-pro",
+          "nano-pdf",
+          "notion",
+          "obsidian",
+          "openai-image-gen",
+          "openai-whisper",
+          "openai-whisper-api",
+          "openhue",
+          "oracle",
+          "ordercli",
+          "peekaboo",
+          "sag",
+          "session-logs",
+          "sherpa-onnx-tts",
+          "skill-creator",
+          "slack",
+          "songsee",
+          "sonoscli",
+          "spotify-player",
+          "summarize",
+          "things-mac",
+          "tmux",
+          "trello",
+          "video-frames",
+          "voice-call",
+          "wacli",
+          "weather",
+          "xurl",
+          "kidney-pipeline-execution",
+          "llm-distillator",
+          "nephrology-klm",
+          "patient-klm",
+          "pipeline-generator"
+        ]
       }
     ]
   },
@@ -265,6 +324,14 @@
       "match": {
         "channel": "telegram",
         "accountId": "patient-agent-tg"
+      }
+    },
+    {
+      "type": "route",
+      "agentId": "demo-agent",
+      "match": {
+        "channel": "telegram",
+        "accountId": "demo-agent-tg"
       }
     }
   ],
@@ -317,6 +384,9 @@
           "enabled": true,
           "dmPolicy": "pairing",
           "botToken": "8602303952:AAFjGHT0JzBQehIqp_pW2bhISe8Qx9uJjOg",
+          "allowFrom": [
+            495506013
+          ],
           "groupPolicy": "allowlist",
           "streaming": "partial"
         }
