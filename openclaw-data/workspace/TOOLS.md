@@ -27,6 +27,16 @@ Use them only when they materially improve the case review, and interpret output
 - **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
 - **Output message:** Always remember to the use that the tool output as a preliminary signal, not as an actual diagnosis.
 
+## skin-cancer-pipeline
+- **Role:** Execute the fixed skin cancer detection pipeline starting from a skin image file.
+- **Use for:** running the integrated skin pipeline when an image should be uploaded and passed through the Skin Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
+- **Suggestion rule:** If the diagnostic impression raises concern for a suspicious skin lesion or possible skin malignancy, suggest that the user can run this specialized pipeline and invite them to upload a skin image.
+- **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize these wanted outputs when present: the skin cancer class, the skin cancer confidence, the Image Analyzer prediction, and all available `cam_...` fields from the Image Analyzer output, especially the full `cam_metrics` set and `cam_explanation`.
+- **Presentation rule:** When reporting results to the user, do not default to low-level JSON labels. Present them in a cleaner summary with readable labels such as `Skin cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, `CAM top-bottom asymmetry`, and `CAM explanation`.
+- **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
+- **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
+- **Output message:** Always remember to tell the user that the tool output is a preliminary signal, not an actual diagnosis.
+
 ## llm_distillator
 - **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
 - **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
@@ -44,7 +54,7 @@ Use them only when they materially improve the case review, and interpret output
 
 ## slm-inference
 - **Role:** Record-grounded SLM consultation skill that queries a small language model with expertise in nephrology, cardiology, and hypertension.
-- **Use for:** when the agent has already retrieved patient records and wants a focused model pass for kidney-related, cardiovascular, or blood-pressure-related interpretation, summarization, hypothesis generation, or follow-up support grounded in stored health data.
+- **Use for:** when the agent has already retrieved patient records and wants a focused model pass for nephrology-related, cardiovascular, or blood-pressure-related interpretation, summarization, hypothesis generation, or follow-up support grounded in stored health data.
 - **Question rule:** Send one concise question about patient health data stored in records, not a vague multi-part prompt.
 - **Presentation rule:** Treat the SLM answer as an intermediate signal to be processed by the calling agent, not as a final verdict to relay blindly.
 - **Safety rule:** Cross-check the SLM output against the actual records, keep uncertainty visible, and do not present it as a confirmed diagnosis.

@@ -19,7 +19,7 @@ Use them only when they materially improve the case review, and interpret output
 
 ## kidney-pipeline-execution
 - **Role:** Execute the fixed kidney cancer detection pipeline starting from an image file.
-- **Input:** The input is a CT scan image uploaded by the user. Only run the pipeline if the user send an new CT scan image. NEVER run the tool on a previously uploaded image. If the user requests to run the pipeline but does not upload an image, do not run the pipeline at all.
+- **Input:** The input is a CT scan image uploaded by the user. Only run the pipeline if the user send an new CT scan image. NEVER run the tool on a previously uploaded image. If the user requests to run the pipeline but does not upload an image, do not run the pipeline at all, and ask him again to upload it.
 - **Use for:** running the integrated kidney pipeline when an image is uploaded and passed through the Kidney Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
 - **Suggestion rule:** If the diagnostic impression raises kidney-focused problems or a possible renal mass concern, suggest that the user can run this specialized pipeline and invite them to upload a CT image scan. 
 - **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize these wanted outputs when present: the kidney cancer class, the kidney cancer confidence, the Image Analyzer prediction, and all available `cam_...` fields from the Image Analyzer output, especially the full `cam_metrics` set and `cam_explanation`.
