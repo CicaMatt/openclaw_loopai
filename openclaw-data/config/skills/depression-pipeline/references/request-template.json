@@ -1,0 +1,284 @@
+{
+  "prototype_id": "69caabfc3b7b36bbd3dc49eb",
+  "created_at": "2026-03-30T16:59:40.368000",
+  "updated_at": "2026-03-30T17:53:08.747000",
+  "prototype_name": "Demo3",
+  "prototype_description": "It Prototype",
+  "prototype_subtitle": null,
+  "prototype_players": [
+    {
+      "user_id": "626130f7c71f6b9e651c76be",
+      "role": "owner"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_name": "Demo3",
+      "workflow_id": "wf_id",
+      "workflow_type": "prototype",
+      "branches": [
+        {
+          "branch_id": "xs7w10hjiif7eitpkha7x5",
+          "branch_name": "Branch 1",
+          "nodes": [
+            {
+              "node_category": "input",
+              "node_sub_category": "Data Reader",
+              "node_name": "NodeDataReader4",
+              "node_label": "Audio Reader",
+              "node_description": "Reads one or more audio files",
+              "endpoints": [
+                {
+                  "position": 0,
+                  "endpoint": "/nodes/input/upload"
+                },
+                {
+                  "position": 0,
+                  "endpoint": "/nodes/input/data-reader"
+                }
+              ],
+              "allowed_node_types": [
+                "operator",
+                "ai_tool",
+                "evaluation_vusualization",
+                "process_automation",
+                "output"
+              ],
+              "style": {
+                "icon": "<svg width=\"19\" height=\"23\" viewBox=\"0 0 19 23\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n            <path d=\"M0.00173349 14.9961V17.8964V18.2963V18.3964C-0.00216686 18.3964 0.00173349 18.3964 0.00173349 18.4964C0.00173349 20.8966 4.0315 22.9968 9.00254 22.9968C13.974 22.9968 18.0033 20.8966 18.0033 18.4964V18.2963V17.9964V14.9961H0.00173349Z\" fill=\"#2B5F7C\"/>\n            <path d=\"M18.0036 15.0004C18.0036 17.2097 13.9742 19.0007 9.00276 19.0007C4.03171 19.0007 0.00195312 17.2097 0.00195312 15.0004C0.00195312 12.7911 4.03171 11 9.00276 11C13.9742 11 18.0036 12.7911 18.0036 15.0004Z\" fill=\"#BDC3C7\"/>\n            <path d=\"M0.00173349 9.99609V12.8964V13.2963V13.3964C-0.00216686 13.3964 0.00173349 13.3964 0.00173349 13.4964C0.00173349 15.8966 4.0315 17.9968 9.00254 17.9968C13.974 17.9968 18.0033 15.8966 18.0033 13.4964V13.2963V12.9964V9.99609H0.00173349Z\" fill=\"#2B5F7C\"/>\n            <path d=\"M18.0036 9.99645C18.0036 12.2058 13.9742 13.9968 9.00276 13.9968C4.03171 13.9968 0.00195312 12.2058 0.00195312 9.99645C0.00195312 7.78715 4.03171 5.99609 9.00276 5.99609C13.9742 5.99609 18.0036 7.78715 18.0036 9.99645Z\" fill=\"#BDC3C7\"/>\n            <path d=\"M0.0644587 13.4961C0.0184546 13.5961 0.00195312 13.7961 0.00195312 13.9961C0.00195312 16.1963 4.03171 17.9965 9.00276 17.9965C13.9742 17.9965 18.0036 16.1963 18.0036 13.9961C18.0036 13.7961 17.9866 13.5961 17.9416 13.4961C17.3875 15.3963 13.5922 16.9964 9.00276 16.9964C4.41295 16.9964 0.618308 15.3963 0.0644587 13.4961Z\" fill=\"#ECF0F1\"/>\n            <path d=\"M0.00173349 4.99609V7.89638V8.29632V8.39642C-0.00216686 8.39642 0.00173349 8.3964 0.00173349 8.49641C0.00173349 10.8966 4.0315 12.9968 9.00254 12.9968C13.974 12.9968 18.0033 10.8966 18.0033 8.49641V8.29632V7.99636V4.99609H0.00173349Z\" fill=\"#2B5F7C\"/>\n            <path d=\"M0.0644587 8.5C0.0184546 8.60001 0.00195312 8.80003 0.00195312 9.00004C0.00195312 11.2002 4.03171 13.0004 9.00276 13.0004C13.9742 13.0004 18.0036 11.2002 18.0036 9.00004C18.0036 8.80003 17.9866 8.60001 17.9416 8.5C17.3875 10.4002 13.5922 12.0003 9.00276 12.0003C4.41295 12.0003 0.618308 10.4002 0.0644587 8.5Z\" fill=\"#153547\"/>\n            <path d=\"M9.00195 14.9961V22.9968C13.9734 22.9968 18.0028 20.8966 18.0028 18.4964V18.2963V17.9964V14.9961H9.00195Z\" fill=\"#2B5F7C\"/>\n            <path d=\"M9.00195 10.9922V18.9929C13.9734 18.9929 18.0028 17.2017 18.0028 14.9925C18.0028 12.7832 13.9734 10.9922 9.00195 10.9922Z\" fill=\"#153547\"/>\n            <path d=\"M9.00195 9.99609V17.9968C13.9734 17.9968 18.0028 15.9816 18.0028 13.4964V13.3089V12.9964V9.99609H9.00195Z\" fill=\"#2B5F7C\"/>\n            <path d=\"M17.9408 13.4961C17.3867 15.4693 13.5914 16.9964 9.00195 16.9964V17.9965C13.9734 17.9965 18.0028 16.2053 18.0028 13.9961C18.0028 13.8267 17.9858 13.6599 17.9408 13.4961Z\" fill=\"#ECF0F1\"/>\n            <path d=\"M9.00195 5.99609V13.9968C13.9734 13.9968 18.0028 12.2057 18.0028 9.99645C18.0028 7.78715 13.9734 5.99609 9.00195 5.99609Z\" fill=\"#ECF0F1\"/>\n            <path d=\"M9.00195 4.99609V12.9968C13.9734 12.9968 18.0028 10.9816 18.0028 8.49641V8.30889V7.99636V4.99609H9.00195Z\" fill=\"#2B5F7C\"/>\n            <path d=\"M17.9408 8.5C17.3867 10.4732 13.5914 12.0003 9.00195 12.0003V13.0004C13.9734 13.0004 18.0028 11.2092 18.0028 9.00004C18.0028 8.83063 17.9858 8.66381 17.9408 8.5Z\" fill=\"#153547\"/>\n            <path d=\"M18.0036 4.99645C18.0036 7.20575 13.9742 8.99681 9.00276 8.99681C4.03171 8.99681 0.00195312 7.20575 0.00195312 4.99645C0.00195312 2.78715 4.03171 0.996094 9.00276 0.996094C13.9742 0.996094 18.0036 2.78715 18.0036 4.99645Z\" fill=\"#407C9E\"/>\n            </svg>",
+                "notexecuted_border_color": "#407C9E",
+                "notexecuted_background_color": "#FFFFFF",
+                "executed_background_color": "#407C9E",
+                "executed_border_color": "#0F4873"
+              },
+              "data": {
+                "general_parameters": {
+                  "filename": "<image-path-here>",
+                  "storage_ref": "nodes_bucket"
+                },
+                "specific_parameters": {
+                  "type": "mp3",
+                  "sep": ",",
+                  "sheet_name": 0,
+                  "encoding": "latin-1",
+                  "columns": {}
+                }
+              },
+              "children": [
+                {
+                  "node_category": "build_ai_tool",
+                  "node_sub_category": "Loop Ready Model",
+                  "node_name": "voice_depression_detection_model",
+                  "node_label": "Voice Depression Detection",
+                  "node_description": "Voice Depression",
+                  "endpoints": [
+                    {
+                      "position": 0,
+                      "endpoint": "/nodes/ai_tool/Voice-Depression-Detection-model"
+                    }
+                  ],
+                  "allowed_node_types": [
+                    "operator",
+                    "ai_tool",
+                    "evaluation_visualization",
+                    "process_automation",
+                    "output"
+                  ],
+                  "style": {
+                    "icon": "<svg width=\"22\" height=\"22\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path d=\"M12.0377 11.6211H11.2075V19.0928H12.0377V11.6211Z\" fill=\"#5B0228\"/>\n        <path d=\"M19.3878 2.78234L18.8008 2.19531L12.5745 8.42161L13.1615 9.00863L19.3878 2.78234Z\" fill=\"#5B0228\"/>\n        <path d=\"M11.086 11.087L10.499 10.5L2.1973 18.8017L2.78432 19.3887L11.086 11.087Z\" fill=\"#5B0228\"/>\n        <path d=\"M10.2558 8.0073L5.68994 3.44141L5.10292 4.02843L9.6688 8.59433L10.2558 8.0073Z\" fill=\"#5B0228\"/>\n        <path d=\"M18.9724 16.7263L12.7461 10.5L12.1591 11.087L18.3854 17.3133L18.9724 16.7263Z\" fill=\"#5B0228\"/>\n        <path d=\"M19.9246 4.15094C21.0708 4.15094 22.0001 3.22172 22.0001 2.07547C22.0001 0.92922 21.0708 0 19.9246 0C18.7783 0 17.8491 0.92922 17.8491 2.07547C17.8491 3.22172 18.7783 4.15094 19.9246 4.15094Z\" fill=\"#D7B4C2\"/>\n        <path d=\"M11.6228 21.9986C12.7691 21.9986 13.6983 21.0694 13.6983 19.9231C13.6983 18.7769 12.7691 17.8477 11.6228 17.8477C10.4766 17.8477 9.54736 18.7769 9.54736 19.9231C9.54736 21.0694 10.4766 21.9986 11.6228 21.9986Z\" fill=\"#EC5C70\"/>\n        <path d=\"M2.07547 21.1705C3.22172 21.1705 4.15094 20.2413 4.15094 19.095C4.15094 17.9488 3.22172 17.0195 2.07547 17.0195C0.92922 17.0195 0 17.9488 0 19.095C0 20.2413 0.92922 21.1705 2.07547 21.1705Z\" fill=\"#D7B4C2\"/>\n        <path d=\"M4.98112 4.56478C5.66887 4.56478 6.22641 4.00725 6.22641 3.3195C6.22641 2.63175 5.66887 2.07422 4.98112 2.07422C4.29337 2.07422 3.73584 2.63175 3.73584 3.3195C3.73584 4.00725 4.29337 4.56478 4.98112 4.56478Z\" fill=\"#FF84B7\"/>\n        <path d=\"M18.2643 17.8499C18.9521 17.8499 19.5096 17.2924 19.5096 16.6047C19.5096 15.9169 18.9521 15.3594 18.2643 15.3594C17.5766 15.3594 17.019 15.9169 17.019 16.6047C17.019 17.2924 17.5766 17.8499 18.2643 17.8499Z\" fill=\"#FF84B7\"/>\n        <path d=\"M11.6225 12.866C13.2272 12.866 14.5281 11.5651 14.5281 9.96035C14.5281 8.3556 13.2272 7.05469 11.6225 7.05469C10.0177 7.05469 8.7168 8.3556 8.7168 9.96035C8.7168 11.5651 10.0177 12.866 11.6225 12.866Z\" fill=\"#EC5C70\"/>\n        </svg>",
+                    "notexecuted_border_color": "#EC5C70",
+                    "notexecuted_background_color": "#FFFFFF",
+                    "executed_background_color": "#EC5C70",
+                    "executed_border_color": "#AD3848"
+                  },
+                  "data": {
+                    "general_parameters": {
+                      "age": "",
+                      "localization": "",
+                      "dx_type": "",
+                      "sex": "",
+                      "input_df": "string",
+                      "secret_key": "string",
+                      "text_column_name": "",
+                      "model_path": "string",
+                      "storage_ref": "nodes_bucket",
+                      "computing_machines": [
+                        {
+                          "machine_id": "sd8fs90d8f0d80s",
+                          "machine_name": "Google - NVIDIA GeForce RTX 2070"
+                        },
+                        {
+                          "machine_id": "v8fsd8fs9d8f0s",
+                          "machine_name": "AWS - Nvidia Tesla v100 16GB"
+                        }
+                      ]
+                    },
+                    "specific_parameters": {
+                      "language": "english",
+                      "model_type": "large",
+                      "entity_types": "['CARDINAL', 'DATE', 'EVENT', 'FAC', 'GPE', 'LANGUAGE', 'LAW', 'LOC', 'MONEY', 'NORP', 'ORDINAL', 'ORG',  'PERCENT', 'PERSON', 'PRODUCT', 'QUANTITY', 'TIME', 'WORK_OF_ART','IBAN','BIC']"
+                    }
+                  },
+                  "children": [
+                    {
+                      "node_category": "build_ai_tool",
+                      "node_sub_category": "Loop Ready Model",
+                      "node_name": "fuzzy_stress_evaluator_model",
+                      "node_label": "Fuzzy Stress Evaluator",
+                      "node_description": "string",
+                      "endpoints": [
+                        {
+                          "position": 0,
+                          "endpoint": "/nodes/ai_tool/stress-fuzzy-model-v1"
+                        }
+                      ],
+                      "allowed_node_types": [
+                        "operator",
+                        "ai_tool",
+                        "evaluation_visualization",
+                        "process_automation",
+                        "output"
+                      ],
+                      "style": {
+                        "icon": "<svg width=\"22\" height=\"22\" viewBox=\"0 0 22 22\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\">\n        <path d=\"M12.0377 11.6211H11.2075V19.0928H12.0377V11.6211Z\" fill=\"#5B0228\"/>\n        <path d=\"M19.3878 2.78234L18.8008 2.19531L12.5745 8.42161L13.1615 9.00863L19.3878 2.78234Z\" fill=\"#5B0228\"/>\n        <path d=\"M11.086 11.087L10.499 10.5L2.1973 18.8017L2.78432 19.3887L11.086 11.087Z\" fill=\"#5B0228\"/>\n        <path d=\"M10.2558 8.0073L5.68994 3.44141L5.10292 4.02843L9.6688 8.59433L10.2558 8.0073Z\" fill=\"#5B0228\"/>\n        <path d=\"M18.9724 16.7263L12.7461 10.5L12.1591 11.087L18.3854 17.3133L18.9724 16.7263Z\" fill=\"#5B0228\"/>\n        <path d=\"M19.9246 4.15094C21.0708 4.15094 22.0001 3.22172 22.0001 2.07547C22.0001 0.92922 21.0708 0 19.9246 0C18.7783 0 17.8491 0.92922 17.8491 2.07547C17.8491 3.22172 18.7783 4.15094 19.9246 4.15094Z\" fill=\"#D7B4C2\"/>\n        <path d=\"M11.6228 21.9986C12.7691 21.9986 13.6983 21.0694 13.6983 19.9231C13.6983 18.7769 12.7691 17.8477 11.6228 17.8477C10.4766 17.8477 9.54736 18.7769 9.54736 19.9231C9.54736 21.0694 10.4766 21.9986 11.6228 21.9986Z\" fill=\"#EC5C70\"/>\n        <path d=\"M2.07547 21.1705C3.22172 21.1705 4.15094 20.2413 4.15094 19.095C4.15094 17.9488 3.22172 17.0195 2.07547 17.0195C0.92922 17.0195 0 17.9488 0 19.095C0 20.2413 0.92922 21.1705 2.07547 21.1705Z\" fill=\"#D7B4C2\"/>\n        <path d=\"M4.98112 4.56478C5.66887 4.56478 6.22641 4.00725 6.22641 3.3195C6.22641 2.63175 5.66887 2.07422 4.98112 2.07422C4.29337 2.07422 3.73584 2.63175 3.73584 3.3195C3.73584 4.00725 4.29337 4.56478 4.98112 4.56478Z\" fill=\"#FF84B7\"/>\n        <path d=\"M18.2643 17.8499C18.9521 17.8499 19.5096 17.2924 19.5096 16.6047C19.5096 15.9169 18.9521 15.3594 18.2643 15.3594C17.5766 15.3594 17.019 15.9169 17.019 16.6047C17.019 17.2924 17.5766 17.8499 18.2643 17.8499Z\" fill=\"#FF84B7\"/>\n        <path d=\"M11.6225 12.866C13.2272 12.866 14.5281 11.5651 14.5281 9.96035C14.5281 8.3556 13.2272 7.05469 11.6225 7.05469C10.0177 7.05469 8.7168 8.3556 8.7168 9.96035C8.7168 11.5651 10.0177 12.866 11.6225 12.866Z\" fill=\"#EC5C70\"/>\n        </svg>",
+                        "notexecuted_border_color": "#EC5C70",
+                        "notexecuted_background_color": "#FFFFFF",
+                        "executed_background_color": "#EC5C70",
+                        "executed_border_color": "#AD3848"
+                      },
+                      "data": {
+                        "general_parameters": {
+                          "input_df": "string",
+                          "secret_key": "string",
+                          "text_column_name": "",
+                          "model_path": "string",
+                          "storage_ref": "nodes_bucket",
+                          "computing_machines": [
+                            {
+                              "machine_id": "sd8fs90d8f0d80s",
+                              "machine_name": "Google - NVIDIA GeForce RTX 2070"
+                            },
+                            {
+                              "machine_id": "v8fsd8fs9d8f0s",
+                              "machine_name": "AWS - Nvidia Tesla v100 16GB"
+                            }
+                          ]
+                        },
+                        "specific_parameters": {
+                          "language": "english",
+                          "model_type": "large",
+                          "entity_types": "['CARDINAL', 'DATE', 'EVENT', 'FAC', 'GPE', 'LANGUAGE', 'LAW', 'LOC', 'MONEY', 'NORP', 'ORDINAL', 'ORG',  'PERCENT', 'PERSON', 'PRODUCT', 'QUANTITY', 'TIME', 'WORK_OF_ART','IBAN','BIC']"
+                        }
+                      },
+                      "children": [],
+                      "tracking": {
+                        "run_id": "string",
+                        "start": false,
+                        "experiment_name": "string",
+                        "workflow_name": "string",
+                        "workflow_type": "experiment",
+                        "workflow_id": "string",
+                        "workflow_run_id": "string",
+                        "tags": {
+                          "additionalProp1": "string",
+                          "additionalProp2": "string",
+                          "additionalProp3": "string"
+                        },
+                        "parameters": {},
+                        "metrics": {},
+                        "artifacts": {
+                          "input_file": true,
+                          "output_file": false,
+                          "input_dataframe": false,
+                          "model_file": false
+                        }
+                      },
+                      "node_name_dict": "fuzzy_stress_evaluator_model",
+                      "executed": false,
+                      "node_id": "6939356d7c826825a6be9b9c"
+                    }
+                  ],
+                  "tracking": {
+                    "run_id": "string",
+                    "start": false,
+                    "experiment_name": "string",
+                    "workflow_name": "string",
+                    "workflow_type": "experiment",
+                    "workflow_id": "string",
+                    "workflow_run_id": "string",
+                    "tags": {
+                      "additionalProp1": "string",
+                      "additionalProp2": "string",
+                      "additionalProp3": "string"
+                    },
+                    "parameters": {},
+                    "metrics": {},
+                    "artifacts": {
+                      "input_file": true,
+                      "output_file": false,
+                      "input_dataframe": false,
+                      "model_file": false
+                    }
+                  },
+                  "node_name_dict": "voice_depression_detection_model",
+                  "executed": false,
+                  "node_id": "69cab32fbc216927eedc8b36",
+                  "prototype_id": "69caabfc3b7b36bbd3dc49eb"
+                }
+              ],
+              "tracking": {
+                "run_id": "string",
+                "start": false,
+                "experiment_name": "string",
+                "workflow_name": "string",
+                "workflow_type": "experiment",
+                "workflow_id": "string",
+                "workflow_run_id": "string",
+                "tags": {
+                  "additionalProp1": "string",
+                  "additionalProp2": "string",
+                  "additionalProp3": "string"
+                },
+                "parameters": {
+                  "File Path": "<image-path-here>",
+                  "Sheet Name": 0,
+                  "Document Type": "mp3",
+                  "Document Size": "0.145 Mb"
+                },
+                "metrics": {},
+                "artifacts": {
+                  "input_file": true,
+                  "output_file": false,
+                  "input_dataframe": false,
+                  "model_file": false
+                },
+                "response": {
+                  "status": 200,
+                  "metadata": {
+                    "name": "NodeDataReader4",
+                    "type": "input.data-reader",
+                    "run_id": "78b8ee2ce69044e2911cf5a8a601d768",
+                    "workflow_name": "Demo3",
+                    "workflow_type": "prototype",
+                    "workflow_id": "39",
+                    "workflow_run_id": "1159b782ca9a46048550a82e18e328ac"
+                  },
+                  "data": "626130f7c71f6b9e651c76be/69caabfc3b7b36bbd3dc49eb/voice001.dat",
+                  "pdf_path": null
+                }
+              },
+              "node_name_dict": "NodeDataReader4",
+              "executed": false,
+              "node_id": "63d1327b05ffeb4abf9950dc",
+              "prototype_id": "69caabfc3b7b36bbd3dc49eb"
+            }
+          ]
+        }
+      ],
+      "external_nodes": []
+    }
+  ],
+  "project_link_id": "",
+  "concert_hall_id": "627392cbef51f1256835d0e8",
+  "session_id": "n4vwbre3tpnp1i1rlktwyr"
+}

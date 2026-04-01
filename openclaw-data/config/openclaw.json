@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-03-29T12:47:51.127Z"
+    "lastTouchedAt": "2026-03-31T14:50:54.631Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -90,7 +90,9 @@
           "patient-klm",
           "llm-distillator",
           "hrv-data",
-          "slm-inference"
+          "slm-inference",
+          "skin-cancer-pipeline",
+          "depression-pipeline"
         ],
         "tools": {
           "alsoAllow": [
@@ -161,12 +163,11 @@
           "weather",
           "xurl",
           "dumb-calculator",
-          "pipeline-generator",
           "pipeline-execution",
           "llm-distillator",
-          "kidney-pipeline-execution",
           "patient-klm",
-          "slm-inference"
+          "slm-inference",
+          "hrv-data"
         ]
       },
       {
@@ -292,9 +293,133 @@
           "xurl",
           "kidney-pipeline-execution",
           "llm-distillator",
-          "nephrology-klm",
+          "patient-klm"
+        ]
+      },
+      {
+        "id": "patient-agent-2",
+        "name": "patient-agent-2",
+        "workspace": "/home/node/.openclaw/workspace-patient-agent-2",
+        "agentDir": "/home/node/.openclaw/agents/patient-agent-2/agent",
+        "model": "openai-codex/gpt-5.4",
+        "skills": [
+          "1password",
+          "apple-notes",
+          "apple-reminders",
+          "bear-notes",
+          "blogwatcher",
+          "blucli",
+          "bluebubbles",
+          "camsnap",
+          "clawhub",
+          "coding-agent",
+          "discord",
+          "eightctl",
+          "gemini",
+          "gh-issues",
+          "gifgrep",
+          "github",
+          "gog",
+          "goplaces",
+          "healthcheck",
+          "himalaya",
+          "imsg",
+          "mcporter",
+          "model-usage",
+          "nano-banana-pro",
+          "nano-pdf",
+          "notion",
+          "obsidian",
+          "openai-image-gen",
+          "openai-whisper",
+          "openai-whisper-api",
+          "openhue",
+          "oracle",
+          "ordercli",
+          "peekaboo",
+          "sag",
+          "session-logs",
+          "sherpa-onnx-tts",
+          "skill-creator",
+          "slack",
+          "songsee",
+          "sonoscli",
+          "spotify-player",
+          "summarize",
+          "things-mac",
+          "tmux",
+          "trello",
+          "video-frames",
+          "voice-call",
+          "wacli",
+          "weather",
+          "xurl",
+          "patient-klm"
+        ]
+      },
+      {
+        "id": "doctor-agent-2",
+        "name": "doctor-agent-2",
+        "workspace": "/home/node/.openclaw/workspace-doctor-agent-2",
+        "agentDir": "/home/node/.openclaw/agents/doctor-agent-2/agent",
+        "model": "openai-codex/gpt-5.4",
+        "skills": [
+          "1password",
+          "apple-notes",
+          "apple-reminders",
+          "bear-notes",
+          "blogwatcher",
+          "blucli",
+          "bluebubbles",
+          "camsnap",
+          "clawhub",
+          "coding-agent",
+          "discord",
+          "eightctl",
+          "gemini",
+          "gh-issues",
+          "gifgrep",
+          "github",
+          "gog",
+          "goplaces",
+          "healthcheck",
+          "himalaya",
+          "imsg",
+          "mcporter",
+          "model-usage",
+          "nano-banana-pro",
+          "nano-pdf",
+          "notion",
+          "obsidian",
+          "openai-image-gen",
+          "openai-whisper",
+          "openai-whisper-api",
+          "openhue",
+          "oracle",
+          "ordercli",
+          "peekaboo",
+          "sag",
+          "session-logs",
+          "sherpa-onnx-tts",
+          "skill-creator",
+          "slack",
+          "songsee",
+          "sonoscli",
+          "spotify-player",
+          "summarize",
+          "things-mac",
+          "tmux",
+          "trello",
+          "video-frames",
+          "voice-call",
+          "wacli",
+          "weather",
+          "xurl",
+          "depression-pipeline",
+          "llm-distillator",
           "patient-klm",
-          "pipeline-generator"
+          "skin-cancer-pipeline",
+          "slm-inference"
         ]
       }
     ]
@@ -333,6 +458,22 @@
       "match": {
         "channel": "telegram",
         "accountId": "demo-agent-tg"
+      }
+    },
+    {
+      "type": "route",
+      "agentId": "patient-agent-2",
+      "match": {
+        "channel": "telegram",
+        "accountId": "patient-agent-2-tg"
+      }
+    },
+    {
+      "type": "route",
+      "agentId": "doctor-agent-2",
+      "match": {
+        "channel": "telegram",
+        "accountId": "doctor-agent-2-tg"
       }
     }
   ],
@@ -388,6 +529,20 @@
           "allowFrom": [
             495506013
           ],
+          "groupPolicy": "allowlist",
+          "streaming": "partial"
+        },
+        "patient-agent-2-tg": {
+          "enabled": true,
+          "dmPolicy": "pairing",
+          "botToken": "8092968634:AAEgPUxfOGT-V-0dRAdWxLQgfX9lgMMpsYk",
+          "groupPolicy": "allowlist",
+          "streaming": "partial"
+        },
+        "doctor-agent-2-tg": {
+          "enabled": true,
+          "dmPolicy": "pairing",
+          "botToken": "8776225581:AAG9OnJU7cUa5c8ZSlQlN56Vh8k-k4srp_E",
           "groupPolicy": "allowlist",
           "streaming": "partial"
         }
