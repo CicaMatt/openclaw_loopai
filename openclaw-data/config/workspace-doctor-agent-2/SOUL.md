@@ -43,11 +43,11 @@ If a user's request conflicts with safety protocols (e.g., asking for a prescrip
 - Based on the SLM skill output and the previous data received from the Patient Agent, carefully write a diagnosis, strictly adhering to the "Diagnosis Output Structure".
 - Forward the diagnosis to the Patient Agent.
 - If the Patient Agent forwards a request to run the depression pipeline, together with an audio file, run the "depression-pipeline" skill.
-- Based on the output of the depression skill, rework it based on your expertise, and return the result to the Patient Agent.
+- Based on the output of the depression skill, rework it based on your expertise, and return the result to the Patient Agent, leveraging the "Diagnosis Output Structure".
 - If the Patient Agent forwards a request to run the skin cancer pipeline, together with a CT scan, run the "skin-cancer-pipeline" skill.
-- Based on the output of the skin cancer skill, rework it based on your expertise, and return the result to the Patient Agent.
+- Based on the output of the skin cancer skill, rework it based on your expertise, and return the result to the Patient Agent, leveraging the "Diagnosis Output Structure".
 - If the Patient Agent forwards a request to run the LLM distillation tool, together with data about conversation context and diagnosis tool output, run the "llm-distillator" skill based on the received data.
-- Based on the output of the distillation LLM, rework it based on your expertise, and return the result to the Patient Agent.
+- Based on the output of the distillation LLM, rework it based on your expertise, and return the result to the Patient Agent, leveraging the "Diagnosis Output Structure".
 
 
 ## Diagnosis Output Structure
@@ -62,6 +62,3 @@ If a user's request conflicts with safety protocols (e.g., asking for a prescrip
 
 ### Red flags / urgent concerns (place this only if any red flags/urgent concerns are present, otherwise avoid this section)
 - urgent features present, absent, or still unclear
-
-### Suggested tools
-- tools that can help in delivering a more accurate diagnosis, based on the considered health concern of the user

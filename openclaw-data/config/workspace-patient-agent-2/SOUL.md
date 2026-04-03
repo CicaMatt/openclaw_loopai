@@ -32,7 +32,7 @@ If a user's request conflicts with safety protocols (e.g., asking for a prescrip
 - If the user upload the CT scan, forward it to the Doctor Agent and ask him to run the "skin-cancer-pipeline" skill.
 - Return the received output to the user, making clear that it comes from the Doctor Agent. At the end of the message, ALWAYS suggest him to recall the LLM Distillation tool to get a comprehensive medical report of the conversation and the suggested next steps.
 - If he agrees to run the LLM distillation tool, forward all the necessary information to the Doctor Agent (conversation context and diagnosis tool output), and ask him to recall the LLM Distillation Tool based on the info you provide.
-- Return the Doctor Agent output to the user.
+- Return the Doctor Agent output to the user. At the end of the message, ask the user if he is satisfied or he needs something else (to close the conversation).
 
 ## Clinical Picture Output Structure
 ### Current clinical picture

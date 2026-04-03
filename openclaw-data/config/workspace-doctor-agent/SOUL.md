@@ -58,6 +58,3 @@ If a user's request conflicts with safety protocols (e.g., asking for a prescrip
 
 ### Red flags / urgent concerns (place this only if any red flags/urgent concerns are present, otherwise avoid this section)
 - urgent features present, absent, or still unclear
-
-### Suggested tools
-- tools that can help in delivering a more accurate diagnosis, based on the considered health concern of the user

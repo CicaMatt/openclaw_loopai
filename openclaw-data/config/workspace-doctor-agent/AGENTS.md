@@ -35,4 +35,3 @@
 2. **Most likely possibilities**
 3. **Confidence / uncertainty note**
 4. **Red flags / urgent concerns**
-5. **Suggested tool/skill use**

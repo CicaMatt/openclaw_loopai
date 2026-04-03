@@ -29,6 +29,17 @@ Use them only when they materially improve the case review, and interpret output
 - **Output structure:** "Kidney Cancer Detector", "Image Analyzer", "xAI", "Result Interpretation", "Recommendended next steps" (at the end of the "Image Analyzer" section, leave a brief statament mentioning that the heatmap image is attached). 
 - **Final message:** Always remember to the use that the tool output as a preliminary signal, not as an actual diagnosis.
 
+## depression-pipeline
+- **Role:** Execute the voice depression pipeline starting from a user-provided audio file.
+- **Input:** The input is an audio file uploaded by the user. Only run the pipeline when the user provides a new audio file for analysis. If the user requests the pipeline but does not upload an audio file, do not run it.
+- **Use for:** running the integrated depression-analysis pipeline when an uploaded audio file should be passed through the Voice Depression Detection component and the Fuzzy Stress Evaluator.
+- **Suggestion rule:** If the clinical conversation raises concern about depressed mood, emotional distress, or stress-related voice analysis and the user wants audio-based screening support, suggest that they can upload an audio recording for this specialized pipeline.
+- **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize the main outputs from the Voice Depression Detection module and the Fuzzy Stress Evaluator, including any depression-related classification, confidence, stress level, and supporting explanatory fields when present.
+- **Presentation rule:** When reporting results to the user, do not default to raw JSON labels. Present them in a clean summary with readable labels such as `Depression screening result`, `Confidence`, `Stress level`, and other clearly named interpretation fields when available.
+- **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
+- **Limits:** This is still a prototype pipeline output, not a diagnosis. Audio-based screening can be noisy or context-limited, so its result must be interpreted cautiously and alongside the broader clinical picture.
+- **Output message:** Always remind the user that the tool output is a preliminary signal, not an actual diagnosis.
+
 ## llm_distillator
 - **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
 - **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.

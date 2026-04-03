@@ -12,23 +12,6 @@ Use them only when they materially improve the case review, and interpret output
 5. Interpret outputs as preliminary signals, not final truth.
 6. Return findings in the standard six-part output structure.
 
-## pipeline-generator
-- **Role:** Broader ecosystem ML pipeline generation capability.
-- **Use for:** rare medical systems-design discussions, not routine patient diagnostic support.
-- **Limits:** Not a diagnostic authority and should not shape clinical conclusions directly.
-
-## kidney-pipeline-execution
-- **Role:** Execute the fixed kidney cancer detection pipeline starting from an image file.
-- **Input:** The input is a CT scan image uploaded by the user. Only run the pipeline if the user send an new CT scan image. NEVER run the tool on a previously uploaded image. If the user requests to run the pipeline but does not upload an image, do not run the pipeline at all.
-- **Use for:** running the integrated kidney pipeline when an image should be uploaded and passed through the Kidney Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
-- **Suggestion rule:** If the diagnostic impression raises kidney-focused problems or a possible renal mass concern, suggest that the user can run this specialized pipeline and invite them to upload a CT image scan.
-- **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize these wanted outputs when present: the kidney cancer class, the kidney cancer confidence, the Image Analyzer prediction, and all available `cam_...` fields from the Image Analyzer output, especially the full `cam_metrics` set and `cam_explanation`.
-- **Presentation rule:** When reporting results to the user, do not default to low-level JSON labels. Present them in a cleaner summary with readable labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, etc.
-- **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
-- **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
-- **Output structure:** "Kidney Cancer Detector", "Image Analyzer", "xAI", "Result Interpretation", "Recommendended next steps" (at the end of the "Image Analyzer" section, leave a brief statament mentioning that the heatmap image is attached). 
-- **Final message:** Always remember to the use that the tool output as a preliminary signal, not as an actual diagnosis.
-
 ## llm_distillator
 - **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
 - **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
