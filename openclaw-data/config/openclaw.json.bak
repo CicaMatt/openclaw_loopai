@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-03-31T14:50:30.000Z"
+    "lastTouchedAt": "2026-04-01T10:44:05.437Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -229,8 +229,7 @@
           "weather",
           "xurl",
           "dumb-calculator",
-          "patient-klm",
-          "hrv-data"
+          "patient-klm"
         ]
       },
       {
@@ -293,9 +292,7 @@
           "xurl",
           "kidney-pipeline-execution",
           "llm-distillator",
-          "nephrology-klm",
-          "patient-klm",
-          "pipeline-generator"
+          "patient-klm"
         ]
       },
       {

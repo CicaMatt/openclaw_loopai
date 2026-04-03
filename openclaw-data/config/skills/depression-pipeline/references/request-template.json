@@ -53,7 +53,7 @@
               },
               "data": {
                 "general_parameters": {
-                  "filename": "<image-path-here>",
+                  "filename": "<audio-path-here>",
                   "storage_ref": "nodes_bucket"
                 },
                 "specific_parameters": {
@@ -240,7 +240,7 @@
                   "additionalProp3": "string"
                 },
                 "parameters": {
-                  "File Path": "<image-path-here>",
+                  "File Path": "<audio-path-here>",
                   "Sheet Name": 0,
                   "Document Type": "mp3",
                   "Document Size": "0.145 Mb"
@@ -263,7 +263,7 @@
                     "workflow_id": "39",
                     "workflow_run_id": "1159b782ca9a46048550a82e18e328ac"
                   },
-                  "data": "626130f7c71f6b9e651c76be/69caabfc3b7b36bbd3dc49eb/voice001.dat",
+                  "data": "<audio-path-here>",
                   "pdf_path": null
                 }
               },

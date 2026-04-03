@@ -24,7 +24,7 @@ Follow this sequence exactly:
    - Use the returned path from the upload response only.
    - Do not keep example paths, stale upload paths, or unresolved placeholders in the executed request.
 5. Load `references/request-template.json`.
-6. Replace every `<image-path-here>` placeholder in the template with the real uploaded audio path.
+6. Replace every `<audio-path-here>` placeholder in the template with the real uploaded audio path.
 7. Send the resulting JSON payload to:
    - `http://looporchestra.sytes.net:4001/admin/prototype_execution/prototype_execution/`
 8. Read the pipeline response and summarize it by module:
@@ -44,7 +44,7 @@ Keep these values fixed:
 ## Implementation notes
 
 - Treat the request template as a fixed prototype payload, but always inject the freshly uploaded audio path before execution.
-- Fail loudly if `<image_path_here>` remains anywhere in the payload after replacement.
+- Fail loudly if `<audio_path_here>` remains anywhere in the payload after replacement.
 - If template fields such as `filename`, `pdf_path`, or `File Path` contain placeholder or stale upload-path values, replace them with the fresh uploaded audio path before execution.
 - Preserve the response wrapper shape returned by the script.
 - If the endpoint returns non-JSON text, return that text as the `response` value.

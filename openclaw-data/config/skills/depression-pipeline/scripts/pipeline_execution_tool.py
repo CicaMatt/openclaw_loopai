@@ -151,7 +151,7 @@ def upload_audio(local_audio_path: str, telegram_user_id: str, timeout: int = 60
     }
 
 
-PLACEHOLDER_VALUES = {"<image_path_here>", "<image-path-here>"}
+PLACEHOLDER_VALUES = {"<audio-path-here>"}
 PATH_FIELD_KEYS = {"filename", "pdf_path", "File Path"}
 
 
