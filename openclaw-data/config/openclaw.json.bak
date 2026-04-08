@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-04-01T10:44:05.437Z"
+    "lastTouchedAt": "2026-04-08T11:55:47.821Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -92,7 +92,8 @@
           "hrv-data",
           "slm-inference",
           "skin-cancer-pipeline",
-          "depression-pipeline"
+          "depression-pipeline",
+          "slm-dermatology"
         ],
         "tools": {
           "alsoAllow": [
@@ -166,8 +167,7 @@
           "pipeline-execution",
           "llm-distillator",
           "patient-klm",
-          "slm-inference",
-          "hrv-data"
+          "slm-expert"
         ]
       },
       {

@@ -4,7 +4,14 @@ import json
 import sys
 from urllib import error, request
 
-ENDPOINT = "http://looporchestra.sytes.net:8007/chat"
+BASE_URL = "http://looporchestra.sytes.net:8007"
+LOAD_ADAPTER_ENDPOINT = f"{BASE_URL}/node/load-adapter"
+CHAT_ENDPOINT = f"{BASE_URL}/chat"
+LOAD_ADAPTER_PAYLOAD = {
+    "model": "tinyllama",
+    "adapter_path": "adapters/derma_v1.0",
+    "mode": "derma",
+}
 
 
 def extract_answer(body: str) -> str:
@@ -46,33 +53,39 @@ def extract_answer(body: str) -> str:
     return json.dumps(parsed, indent=2)
 
 
-def call_endpoint(question: str, timeout: int = 45) -> str:
-    payload = json.dumps({"question": question}).encode("utf-8")
-
+def post_json(url: str, payload: dict, timeout: int) -> str:
     req = request.Request(
-        ENDPOINT,
-        data=payload,
+        url,
+        data=json.dumps(payload).encode("utf-8"),
         headers={"Content-Type": "application/json", "Accept": "application/json"},
         method="POST",
     )
 
     try:
         with request.urlopen(req, timeout=timeout) as resp:
-            body = resp.read().decode("utf-8", errors="replace")
+            return resp.read().decode("utf-8", errors="replace")
     except error.HTTPError as e:
         detail = e.read().decode("utf-8", errors="replace")
-        raise RuntimeError(f"HTTP {e.code}: {detail}") from e
+        raise RuntimeError(f"HTTP {e.code} from {url}: {detail}") from e
     except Exception as e:
-        raise RuntimeError(f"Request failed: {e}") from e
+        raise RuntimeError(f"Request to {url} failed: {e}") from e
 
+
+def load_adapter(timeout: int) -> str:
+    return post_json(LOAD_ADAPTER_ENDPOINT, LOAD_ADAPTER_PAYLOAD, timeout)
+
+
+def call_endpoint(question: str, timeout: int = 45) -> str:
+    load_adapter(timeout)
+    body = post_json(CHAT_ENDPOINT, {"question": question}, timeout)
     return extract_answer(body)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Query the SLM inference endpoint and print the returned answer"
+        description="Load the dermatology adapter and query the dermatology SLM endpoint"
     )
-    parser.add_argument("question", help="Question about patient health data stored in records")
+    parser.add_argument("question", help="Dermatology question grounded in records or known context")
     parser.add_argument("--timeout", type=int, default=45)
     args = parser.parse_args()
 
