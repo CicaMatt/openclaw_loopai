@@ -1,17 +1,5 @@
 # TOOLS.md - Medical Skills & Capability Notes
 
-## Tool Use Principle
-Tools support clinical reasoning; they do not replace it.
-Use them only when they materially improve the case review, and interpret outputs cautiously.
-
-## Diagnostic Workflow
-1. Review structured history when available.
-2. Review the current symptom snapshot.
-3. Identify red flags first.
-4. Decide whether a tool or skill is actually needed.
-5. Interpret outputs as preliminary signals, not final truth.
-6. Return findings in the standard six-part output structure.
-
 ## pipeline-generator
 - **Role:** Broader ecosystem ML pipeline generation capability.
 - **Use for:** rare medical systems-design discussions, not routine patient diagnostic support.
@@ -37,6 +25,14 @@ Use them only when they materially improve the case review, and interpret output
 - **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
 - **Output message:** Always remember to tell the user that the tool output is a preliminary signal, not an actual diagnosis.
 
+## depression-pipeline
+- **Role:** Execute the fixed voice depression pipeline starting from an uploaded audio file.
+- **Use for:** running the integrated audio pipeline when a user provides a voice recording that should be uploaded and passed through the Voice Depression Detection model and the Fuzzy Stress Evaluator.
+- **Meaning:** Produces a preliminary pipeline result structure; for summaries, prioritize the Voice Depression Detection class, confidence, inference time, and any returned stress label, score, confidence, or explanation from the Fuzzy Stress Evaluator.
+- **Presentation rule:** Group the reply into the two modules, use readable labels instead of raw JSON paths, and omit low-level execution metadata unless the user explicitly asks for the raw or technical response.
+- **Limits:** This is still a prototype pipeline output, not a diagnosis. Some runs may complete the upload and input stages but fail to expose downstream model outputs in the returned payload.
+- **Output message:** Always tell the user that the tool output is a preliminary signal, not an actual diagnosis.
+
 ## llm_distillator
 - **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
 - **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
@@ -52,16 +48,20 @@ Use them only when they materially improve the case review, and interpret output
 - **Safety rule:** Treat patient-klm output as supporting clinical context, not final truth. Do not overstate certainty, do not invent missing facts, and say when important context is still missing.
 - **Answering rule:** After incorporating the updated report, provide a comprehensive but careful explanation of the user’s likely health situation, including uncertainty, red flags, and next-step guidance when relevant.
 
-## slm-inference
+## slm-expert
 - **Role:** Record-grounded SLM consultation skill that queries a small language model with expertise in nephrology, cardiology, and hypertension.
-- **Use for:** when the agent has already retrieved patient records and wants a focused model pass for nephrology-related, cardiovascular, or blood-pressure-related interpretation, summarization, hypothesis generation, or follow-up support grounded in stored health data.
+- **Use for:** when the agent has already retrieved patient records and wants a focused model pass for kidney-related, cardiovascular, or blood-pressure-related interpretation, summarization, hypothesis generation, or follow-up support grounded in stored health data.
 - **Question rule:** Send one concise question about patient health data stored in records, not a vague multi-part prompt.
 - **Presentation rule:** Treat the SLM answer as an intermediate signal to be processed by the calling agent, not as a final verdict to relay blindly.
 - **Safety rule:** Cross-check the SLM output against the actual records, keep uncertainty visible, and do not present it as a confirmed diagnosis.
 
+## slm-dermatology
+- **Role:** Dermatology-focused SLM consultation skill that queries a small language model after first loading the dermatology adapter.
+- **Use for:** when the agent has already retrieved relevant patient context and wants a focused dermatology model pass for lesions, rashes, skin-history interpretation, dermatology image context, hypothesis generation, summarization, or follow-up support grounded in available data.
+- **Question rule:** Send one concise dermatology question grounded in records or clearly established conversation context, not a vague multi-part prompt.
+- **Execution rule:** Before every inference, first call `/node/load-adapter` with the fixed payload for `tinyllama`, `adapters/derma_v1.0`, and `mode` `derma`, then perform the chat query.
+- **Presentation rule:** Treat the SLM answer as an intermediate signal to be processed by the calling agent, not as a final verdict to relay blindly.
+- **Safety rule:** Cross-check the SLM output against the actual context, keep uncertainty visible, and do not present it as a confirmed diagnosis.
+
 ## Interpretation Rules
-- Treat all tool outputs as inputs to reasoning, not verdicts.
-- Cross-check against symptoms, history, and time course.
-- Prefer no tool over an irrelevant tool.
 - State uncertainty plainly when output quality is limited.
-- Escalate to clinician review when findings are serious, unclear, or high-risk.

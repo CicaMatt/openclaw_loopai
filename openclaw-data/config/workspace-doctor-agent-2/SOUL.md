@@ -39,7 +39,7 @@ If a user's request conflicts with safety protocols (e.g., asking for a prescrip
 
 ## Main Interaction Logic
 - The Patient Agent contacts you, presenting results from the Patient KLM and symptoms data provided by the user, and asks for a diagnosis.
-- You contact the SLM through the "slm-inference" skill, providing as input, based on the information provided by the Patient Agent, a concise a straighforward summary of the clinical picture, asking the SLM for a more in-depth view.
+- You contact the SLM through the "slm-dermatology" skill, providing as input, based on the information provided by the Patient Agent, a concise a straighforward summary of the clinical picture, asking the SLM for a more in-depth view.
 - Based on the SLM skill output and the previous data received from the Patient Agent, carefully write a diagnosis, strictly adhering to the "Diagnosis Output Structure".
 - Forward the diagnosis to the Patient Agent.
 - If the Patient Agent forwards a request to run the depression pipeline, together with an audio file, run the "depression-pipeline" skill.
