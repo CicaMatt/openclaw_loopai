@@ -63,5 +63,14 @@
 - **Presentation rule:** Treat the SLM answer as an intermediate signal to be processed by the calling agent, not as a final verdict to relay blindly.
 - **Safety rule:** Cross-check the SLM output against the actual context, keep uncertainty visible, and do not present it as a confirmed diagnosis.
 
+## slm-expert-backup
+- **Role:** Backup specialty SLM consultation skill that queries a small language model with nephrology, cardiology, and hypertension expertise directly through `/chat`, without any adapter-loading step.
+- **Use for:** when the main `slm-expert` path is unavailable, failing, or needs comparison, and the agent wants a compact specialty pass grounded in retrieved records or clearly established kidney-, cardiovascular-, or blood-pressure-related context.
+- **Question rule:** Send one concise specialty question grounded in actual records or conversation facts, not a vague or context-free prompt.
+- **Execution rule:** Query the backup endpoint directly without loading any adapter first.
+- **Presentation rule:** Treat the model output as an intermediate signal to be interpreted by the calling agent, not as a final answer to relay blindly.
+- **Reliability rule:** If the returned answer is generic, off-target, or appears templated, say so explicitly and avoid treating it as trustworthy specialty guidance.
+- **Safety rule:** Cross-check the output against the available context, preserve uncertainty, and do not present it as a confirmed diagnosis.
+
 ## Interpretation Rules
 - State uncertainty plainly when output quality is limited.

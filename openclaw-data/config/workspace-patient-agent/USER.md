@@ -27,7 +27,7 @@ Ask only the highest-yield questions first, especially about:
 - associated symptoms
 - fever or infection features
 - pain location and radiation
-- urinary, gastrointestinal, respiratory, neurologic, or skin findings when relevant
+- nephrologic, cardiologic, hypertension findings when relevant
 - pregnancy possibility when relevant
 - recent exposures, injuries, travel, sick contacts, or new medications
 - prior similar episodes and baseline conditions
