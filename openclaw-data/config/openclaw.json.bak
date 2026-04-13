@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-04-08T11:55:47.821Z"
+    "lastTouchedAt": "2026-04-10T13:22:00.039Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -93,7 +93,9 @@
           "slm-inference",
           "skin-cancer-pipeline",
           "depression-pipeline",
-          "slm-dermatology"
+          "slm-dermatology",
+          "slm-expert",
+          "slm-expert-backup"
         ],
         "tools": {
           "alsoAllow": [

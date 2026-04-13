@@ -6,15 +6,13 @@ from __future__ import annotations
 import argparse
 import json
 import os
-import sys
-import textwrap
 import urllib.error
 import urllib.request
 from pathlib import Path
 
 DEFAULT_MODEL = "meta-llama/Llama-3.3-70B-Instruct"
 HF_API_URL = "https://router.huggingface.co/v1/chat/completions"
-HF_TOKEN_PLACEHOLDER = "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"
+HF_TOKEN_PLACEHOLDER = "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"
 
 SYSTEM_PROMPT = """You are a medically cautious synthesis assistant.
 Your task is to combine health-related conversation context with diagnostic tool output into one clear, comprehensive answer for the user.
@@ -37,12 +35,11 @@ Conversation context:
 Diagnostic tool output:
 {diagnosis}
 
-Write a final answer that:
-1. Briefly summarizes the overall picture.
-2. Explains what in the conversation is clinically relevant.
-3. Explains what the diagnostic tool output suggests.
-4. States uncertainty, caveats, or contradictions clearly.
-5. Gives practical next-step guidance and notes urgency if needed.
+Write a final answer structured as follows:
+1. Clinical Picture: Briefly summarizes the overall picture and explains what in the conversation is clinically relevant.
+2. Diagnostic Tool Output Overview: Explains what the diagnostic tools output suggests.
+3. Probable Causes: States likely possibilities given the clinical picture and the diagnostic tool output. Eventually, state uncertainty clearly here.
+4. Suggested Next-Steps: Gives practical next-step guidance and notes urgency if needed.
 """
 
 
