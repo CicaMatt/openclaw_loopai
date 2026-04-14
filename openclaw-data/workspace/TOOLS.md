@@ -33,7 +33,7 @@
 - **Limits:** This is still a prototype pipeline output, not a diagnosis. Some runs may complete the upload and input stages but fail to expose downstream model outputs in the returned payload.
 - **Output message:** Always tell the user that the tool output is a preliminary signal, not an actual diagnosis.
 
-## llm_distillator
+## distillation-tool
 - **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
 - **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
 - **Suggestion rule:** Suggest this skill only once there has been enough symptom discussion to frame the case and a tool has just produced a diagnostic result or preliminary diagnosis.

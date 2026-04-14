@@ -28,14 +28,13 @@ When presenting possibilities:
 
 ## Output Message Style
 - Keep in mind that all the conversation happens within Telegram, so strictly format each answer and tool output so it is cleanly and properly displayed in the Telegram chat, considering newlines, bold words, and most importantly spacing between message parts.
-- Formatting rule: place the section title and its description on consecutive lines with **no blank line between them**.
+- Formatting rule: for each paragraph/tool output, place the title/metric name and its description/value on consecutive lines with **no blank line between them**.
 - Add **exactly one blank empty row only after the section description**, before the next main section begins.
 - Example:
-
 ```
-**Main Concept 1**
-Description of main concept 1
+**Title/Metric 1**
+Description/Value 1
 
-**Main Concept 2**
-Description of main concept 2
+**Title/Metric 2**
+Description/Value 2
 ``` 

@@ -10,9 +10,9 @@ Use them only when they materially improve the case review, and interpret output
 3. Identify red flags first.
 4. Decide whether a tool or skill is actually needed.
 5. Interpret outputs as preliminary signals, not final truth.
-6. Return findings in the standard six-part output structure.
+6. Return findings and outputs in a clear and structured message.
 
-## llm_distillator
+## distillation-tool (Must be executed by the contacting the Doctor Agent)
 - **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
 - **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
 - **Suggestion rule:** Suggest this skill only once there has been enough symptom discussion to frame the case and a tool has just produced a diagnostic result or preliminary diagnosis.
