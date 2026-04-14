@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-04-10T13:22:00.039Z"
+    "lastTouchedAt": "2026-04-13T15:47:40.760Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -95,7 +95,8 @@
           "depression-pipeline",
           "slm-dermatology",
           "slm-expert",
-          "slm-expert-backup"
+          "slm-expert-backup",
+          "distillation-tool"
         ],
         "tools": {
           "alsoAllow": [
@@ -169,7 +170,8 @@
           "pipeline-execution",
           "llm-distillator",
           "patient-klm",
-          "slm-expert"
+          "distillation-tool",
+          "slm-expert-backup"
         ]
       },
       {
@@ -294,7 +296,8 @@
           "xurl",
           "kidney-pipeline-execution",
           "llm-distillator",
-          "patient-klm"
+          "patient-klm",
+          "distillation-tool"
         ]
       },
       {
@@ -420,7 +423,8 @@
           "llm-distillator",
           "patient-klm",
           "skin-cancer-pipeline",
-          "slm-inference"
+          "slm-inference",
+          "distillation-tool"
         ]
       }
     ]

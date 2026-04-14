@@ -1,6 +1,6 @@
 ---
 name: slm-expert-backup
-description: Query a small language model (SLM) endpoint with nephrology, cardiology, and hypertension expertise by asking a focused question about patient health data stored in records, kidney symptoms, blood-pressure history, cardiovascular findings, renal imaging context, or specialty-relevant follow-up needs. Perform the query directly through /chat without any adapter-loading step. Use when the agent needs a compact nephrology/cardiology/hypertension-specialist model pass over record-grounded or clearly provided context, and the SLM output should be processed rather than forwarded blindly.
+description: Query a small language model (SLM) endpoint with nephrology, cardiology, and hypertension expertise by asking a focused question about patient health data stored in records, kidney symptoms, blood-pressure history, cardiovascular findings, renal imaging context, or specialty-relevant follow-up needs. Perform the query directly through /chat. Use when the agent needs a compact nephrology/cardiology/hypertension-specialist model pass over record-grounded or clearly provided context, and the SLM output should be processed rather than forwarded blindly.
 ---
 
 # SLM Expert Backup
@@ -25,8 +25,7 @@ Use this skill to ask the specialty SLM a focused question about patient data or
      - `Given this cardiovascular history and symptom summary, which cardiology concerns are most important to prioritize?`
      - `Which nephrology-focused factors best explain worsening renal function in this hypertension context?`
 
-3. Query the specialty SLM directly without loading any adapter.
-   - Do not perform any adapter-load step.
+3. Query the specialty SLM directly.
    - Run:
 
 ```bash

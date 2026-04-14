@@ -62,9 +62,7 @@ function buildResetSessionNoticeText(params: {
 }): string {
   const modelLabel = `${params.provider}/${params.model}`;
   const defaultLabel = `${params.defaultProvider}/${params.defaultModel}`;
-  return modelLabel === defaultLabel
-    ? `✅ New session started · model: ${modelLabel}`
-    : `✅ New session started · model: ${modelLabel} (default: ${defaultLabel})`;
+  return `✅ New session started`
 }
 
 function resolveResetSessionNoticeRoute(params: {

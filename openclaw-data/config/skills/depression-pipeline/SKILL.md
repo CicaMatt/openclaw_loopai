@@ -30,8 +30,7 @@ Follow this sequence exactly:
 8. Read the pipeline response and summarize it by module:
    - Voice Depression Detection
    - Fuzzy Stress Evaluator
-9. Do not send out-of-band Telegram messages from the script.
-10. Do not try to send any image back in chat for this skill.
+
 
 ## Fixed values
 
@@ -54,27 +53,59 @@ Keep these values fixed:
 Run:
 
 ```bash
-python3 scripts/pipeline_execution_tool.py --telegram-user-id <telegram-user-id> [local-audio-path]
+python3 scripts/pipeline_execution_tool.py --telegram-user-id <telegram-user-id> [--include-timeline] [local-audio-path]
 ```
 
 If `local-audio-path` is omitted, the script should select the newest supported audio file from `/home/node/.openclaw/media/inbound`.
 
 ## Summary fields to prioritize
 
-When present, summarize these fields first.
+Extract module metrics from the actual tracking parameter objects in the execution response.
 
 ### Voice Depression Detection
-- `Inference time`
-- `classes`
-- `confidence`
-- other returned tracking parameters when useful
+- Primary path: `workflows[0].branches[0].nodes[0].children[0].tracking.parameters`
+- Extract these fields first when present:
+  - `Inference time`
+  - `classes`
+  - `confidence`
+- Present them with readable labels such as:
+  - `Inference time`
+  - `Class`
+  - `Confidence`
+- If extra useful fields appear under the same tracking object, include them only when they add clear value.
 
 ### Fuzzy Stress Evaluator
-- returned tracking parameters
-- any stress label, score, confidence, or explanation fields when present
+- Primary path: `workflows[0].branches[0].nodes[0].children[0].children[0].tracking.parameters`
+- Extract these fields first when present:
+  - `stress_level`
+  - `formatted`
+  - `lambda`
+  - `confidence`
+  - `score`
+  - `explanation`
+  - `timeline`
+- Present them with readable labels such as:
+  - `Stress level`
+  - `Score` for `formatted` or `score`
+  - `Lambda`
+  - `Confidence`
+  - `Explanation`
+- Include `timeline` only when the user asks for more detail or when it materially helps explain the result.
+- The helper script should keep `Timeline` out of `user_summary` by default and include it only when `--include-timeline` is passed.
+
+### Actual observed outputs from real runs
+- Voice Depression Detection has returned values such as:
+  - `classes: Minimal`
+  - `confidence: 0.0`
+  - `classes: Moderate`
+  - `confidence: 11.3`
+- Fuzzy Stress Evaluator has returned values such as:
+  - `stress_level: Low`, `formatted: 0.200`, `lambda: 0.20014652301190844`
+  - `stress_level: Moderate`, `formatted: 0.385`, `lambda: 0.3851116997420148`
 
 ## User-facing reply rules
 
+- Prefer a normalized `user_summary` object from the helper script when available.
 - Group the result into the two modules.
 - Use readable labels instead of raw JSON paths.
 - Do not include low-level execution metadata by default.

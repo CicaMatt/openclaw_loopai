@@ -30,28 +30,107 @@ def _deep_get(obj, path, default=None):
     return current
 
 
+VOICE_DEPRESSION_TRACKING_PARAMETERS_PATH = [
+    "workflows", 0, "branches", 0, "nodes", 0, "children", 0, "tracking", "parameters"
+]
+FUZZY_STRESS_TRACKING_PARAMETERS_PATH = [
+    "workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "tracking", "parameters"
+]
+
+
+def _pick_fields(source, field_names):
+    if not isinstance(source, dict):
+        return {}
+    return {field_name: source[field_name] for field_name in field_names if field_name in source}
+
+
+
+def _build_user_summary(module_reference_metrics, include_timeline=False):
+    if not isinstance(module_reference_metrics, dict):
+        return None
+
+    voice = module_reference_metrics.get("voice_depression_detection") or {}
+    fuzzy = module_reference_metrics.get("fuzzy_stress_evaluator") or {}
+
+    voice_summary = {}
+    if "Inference time" in voice:
+        voice_summary["Inference time"] = voice["Inference time"]
+    if "classes" in voice:
+        voice_summary["Class"] = voice["classes"]
+    if "confidence" in voice:
+        voice_summary["Confidence"] = voice["confidence"]
+
+    fuzzy_summary = {}
+    if "stress_level" in fuzzy:
+        fuzzy_summary["Stress level"] = fuzzy["stress_level"]
+    if "score" in fuzzy:
+        fuzzy_summary["Score"] = fuzzy["score"]
+    elif "formatted" in fuzzy:
+        fuzzy_summary["Score"] = fuzzy["formatted"]
+    if "lambda" in fuzzy:
+        fuzzy_summary["Lambda"] = fuzzy["lambda"]
+    if "confidence" in fuzzy:
+        fuzzy_summary["Confidence"] = fuzzy["confidence"]
+    if "explanation" in fuzzy:
+        fuzzy_summary["Explanation"] = fuzzy["explanation"]
+    if include_timeline and "timeline" in fuzzy:
+        fuzzy_summary["Timeline"] = fuzzy["timeline"]
+
+    if not voice_summary and not fuzzy_summary:
+        return None
+
+    return {
+        "Voice Depression Detection": voice_summary,
+        "Fuzzy Stress Evaluator": fuzzy_summary,
+    }
+
+
+
 def _extract_module_reference_metrics(response_payload):
     if not isinstance(response_payload, dict):
         return None
 
-    voice_depression_detection = _deep_get(
+    voice_tracking_parameters = _deep_get(
         response_payload,
-        ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "tracking", "parameters"],
+        VOICE_DEPRESSION_TRACKING_PARAMETERS_PATH,
         default={},
     )
-    fuzzy_stress_evaluator = _deep_get(
+    fuzzy_tracking_parameters = _deep_get(
         response_payload,
-        ["workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "tracking", "parameters"],
+        FUZZY_STRESS_TRACKING_PARAMETERS_PATH,
         default={},
     )
 
+    voice_tracking_parameters = (
+        voice_tracking_parameters if isinstance(voice_tracking_parameters, dict) else {}
+    )
+    fuzzy_tracking_parameters = (
+        fuzzy_tracking_parameters if isinstance(fuzzy_tracking_parameters, dict) else {}
+    )
+
+    voice_summary = _pick_fields(
+        voice_tracking_parameters,
+        ["Inference time", "classes", "confidence"],
+    )
+    fuzzy_summary = _pick_fields(
+        fuzzy_tracking_parameters,
+        ["stress_level", "formatted", "lambda", "confidence", "score", "explanation", "timeline"],
+    )
+
     modules = {
-        "voice_depression_detection": voice_depression_detection if isinstance(voice_depression_detection, dict) else {},
-        "fuzzy_stress_evaluator": fuzzy_stress_evaluator if isinstance(fuzzy_stress_evaluator, dict) else {},
+        "voice_depression_detection": voice_summary,
+        "fuzzy_stress_evaluator": fuzzy_summary,
     }
     if not any(module for module in modules.values()):
         return None
-    return modules
+    return {
+        "paths": {
+            "voice_depression_detection": ".".join(str(part) for part in VOICE_DEPRESSION_TRACKING_PARAMETERS_PATH),
+            "fuzzy_stress_evaluator": ".".join(str(part) for part in FUZZY_STRESS_TRACKING_PARAMETERS_PATH),
+        },
+        "voice_depression_detection": modules["voice_depression_detection"],
+        "fuzzy_stress_evaluator": modules["fuzzy_stress_evaluator"],
+    }
 
 
 def load_request_template():
@@ -208,7 +287,7 @@ def build_payload(uploaded_audio_path: str):
     return payload_obj
 
 
-def call_pipeline_execution(uploaded_audio_path: str, timeout: int = 120):
+def call_pipeline_execution(uploaded_audio_path: str, timeout: int = 120, include_timeline: bool = False):
     payload_obj = build_payload(uploaded_audio_path)
     payload = json.dumps(payload_obj).encode("utf-8")
     req = request.Request(
@@ -246,6 +325,9 @@ def call_pipeline_execution(uploaded_audio_path: str, timeout: int = 120):
     module_reference_metrics = _extract_module_reference_metrics(parsed_body)
     if module_reference_metrics is not None:
         result["module_reference_metrics"] = module_reference_metrics
+        user_summary = _build_user_summary(module_reference_metrics, include_timeline=include_timeline)
+        if user_summary is not None:
+            result["user_summary"] = user_summary
 
     return result
 
@@ -296,6 +378,11 @@ def main():
     )
     parser.add_argument("--timeout", type=int, default=120, help="Execution timeout in seconds.")
     parser.add_argument("--upload-timeout", type=int, default=60, help="Upload timeout in seconds.")
+    parser.add_argument(
+        "--include-timeline",
+        action="store_true",
+        help="Include the Fuzzy Stress Evaluator timeline in the normalized user_summary output.",
+    )
     args = parser.parse_args()
 
     if not args.telegram_user_id:
@@ -314,6 +401,7 @@ def main():
     result = call_pipeline_execution(
         upload_result["uploaded_audio_path"],
         timeout=args.timeout,
+        include_timeline=args.include_timeline,
     )
     result["local_audio_path_used"] = str(Path(local_audio_path).expanduser().resolve())
     result["telegram_user_id_used_for_upload"] = upload_result["telegram_user_id_used"]

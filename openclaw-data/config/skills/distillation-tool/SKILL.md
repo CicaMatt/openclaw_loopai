@@ -1,9 +1,9 @@
 ---
-name: llm-distillator
+name: distillation-tool
 description: Distill health-related conversation context plus diagnostic tool output into a clear, comprehensive patient-facing answer using a Hugging Face-hosted Llama 70B model. Use when the agent needs to (1) extract clinically relevant context from the current conversation, including symptoms, history, red flags, timelines, and other useful health details, (2) combine that context with the output of a diagnosis or screening tool, and (3) produce a concise but complete explanation that is easy for a user to understand.
 ---
 
-# Llm Distillator
+# Distillation Tool
 
 ## Overview
 
