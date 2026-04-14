@@ -4,7 +4,9 @@ import path from "node:path";
 import { isGatewayArgv } from "../infra/gateway-process-argv.js";
 import { findVerifiedGatewayListenerPidsOnPortSync } from "../infra/gateway-processes.js";
 import { inspectPortUsage } from "../infra/ports.js";
+import { getWindowsInstallRoots } from "../infra/windows-install-roots.js";
 import { killProcessTree } from "../process/kill-tree.js";
+import { normalizeLowercaseStringOrEmpty } from "../shared/string-coerce.js";
 import { sleep } from "../utils.js";
 import { parseCmdScriptCommandLine, quoteCmdScriptArg } from "./cmd-argv.js";
 import { assertNoCmdLineBreak, parseCmdSetAssignment, renderCmdSetAssignment } from "./cmd-set.js";
@@ -120,7 +122,7 @@ export async function readScheduledTaskCommand(
       if (!line) {
         continue;
       }
-      const lower = line.toLowerCase();
+      const lower = normalizeLowercaseStringOrEmpty(line);
       if (line.startsWith("@echo")) {
         continue;
       }
@@ -161,6 +163,12 @@ export type ScheduledTaskInfo = {
   lastRunResult?: string;
 };
 
+function hasListenerPid<T extends { pid?: number | null }>(
+  listener: T,
+): listener is T & { pid: number } {
+  return typeof listener.pid === "number";
+}
+
 export function parseSchtasksQuery(output: string): ScheduledTaskInfo {
   const entries = parseKeyValueOutput(output, ":");
   const info: ScheduledTaskInfo = {};
@@ -172,7 +180,9 @@ export function parseSchtasksQuery(output: string): ScheduledTaskInfo {
   if (lastRunTime) {
     info.lastRunTime = lastRunTime;
   }
-  const lastRunResult = entries["last run result"];
+  // Some Windows locales/versions emit "Last Result" instead of "Last Run Result".
+  // Accept both so gateway status is not falsely reported as "unknown" (#47726).
+  const lastRunResult = entries["last run result"] ?? entries["last result"];
   if (lastRunResult) {
     info.lastRunResult = lastRunResult;
   }
@@ -183,7 +193,7 @@ function normalizeTaskResultCode(value?: string): string | null {
   if (!value) {
     return null;
   }
-  const raw = value.trim().toLowerCase();
+  const raw = normalizeLowercaseStringOrEmpty(value);
   if (!raw) {
     return null;
   }
@@ -388,7 +398,7 @@ async function resolveScheduledTaskGatewayListenerPids(port: number): Promise<nu
     new Set(
       diagnostics.listeners
         .map((listener) => listener.pid)
-        .filter((pid): pid is number => Number.isFinite(pid) && pid > 0),
+        .filter((pid): pid is number => typeof pid === "number" && Number.isFinite(pid) && pid > 0),
     ),
   );
 }
@@ -430,11 +440,7 @@ async function terminateGatewayProcessTree(pid: number, graceMs: number): Promis
     killProcessTree(pid, { graceMs });
     return;
   }
-  const taskkillPath = path.join(
-    process.env.SystemRoot ?? "C:\\Windows",
-    "System32",
-    "taskkill.exe",
-  );
+  const taskkillPath = path.join(getWindowsInstallRoots().systemRoot, "System32", "taskkill.exe");
   spawnSync(taskkillPath, ["/T", "/PID", String(pid)], {
     stdio: "ignore",
     timeout: 5_000,
@@ -463,8 +469,26 @@ async function waitForGatewayPortRelease(port: number, timeoutMs = 5_000): Promi
   return false;
 }
 
+async function terminateBusyPortListeners(port: number): Promise<number[]> {
+  const diagnostics = await inspectPortUsage(port).catch(() => null);
+  if (diagnostics?.status !== "busy") {
+    return [];
+  }
+  const pids = Array.from(
+    new Set(
+      diagnostics.listeners
+        .map((listener) => listener.pid)
+        .filter((pid): pid is number => typeof pid === "number" && Number.isFinite(pid) && pid > 0),
+    ),
+  );
+  for (const pid of pids) {
+    await terminateGatewayProcessTree(pid, 300);
+  }
+  return pids;
+}
+
 async function resolveFallbackRuntime(env: GatewayServiceEnv): Promise<GatewayServiceRuntime> {
-  const port = resolveConfiguredGatewayPort(env);
+  const port = (await resolveScheduledTaskPort(env)) ?? resolveConfiguredGatewayPort(env);
   if (!port) {
     return {
       status: "unknown",
@@ -478,7 +502,7 @@ async function resolveFallbackRuntime(env: GatewayServiceEnv): Promise<GatewaySe
       detail: `Startup-folder login item installed; could not inspect port ${port}.`,
     };
   }
-  const listener = diagnostics.listeners.find((item) => typeof item.pid === "number");
+  const listener = diagnostics.listeners.find(hasListenerPid);
   return {
     status: diagnostics.status === "busy" ? "running" : "stopped",
     ...(listener?.pid ? { pid: listener.pid } : {}),
@@ -523,14 +547,16 @@ async function restartStartupEntry(
   return { outcome: "completed" };
 }
 
-export async function installScheduledTask({
+async function writeScheduledTaskScript({
   env,
-  stdout,
   programArguments,
   workingDirectory,
   environment,
   description,
-}: GatewayServiceInstallArgs): Promise<{ scriptPath: string }> {
+}: Omit<GatewayServiceInstallArgs, "stdout">): Promise<{
+  scriptPath: string;
+  taskDescription: string;
+}> {
   await assertSchtasksAvailable();
   const scriptPath = resolveTaskScriptPath(env);
   await fs.mkdir(path.dirname(scriptPath), { recursive: true });
@@ -542,9 +568,74 @@ export async function installScheduledTask({
     environment,
   });
   await fs.writeFile(scriptPath, script, "utf8");
+  return { scriptPath, taskDescription };
+}
 
-  const taskName = resolveTaskName(env);
-  const quotedScript = quoteSchtasksArg(scriptPath);
+export async function stageScheduledTask({
+  stdout,
+  ...args
+}: GatewayServiceInstallArgs): Promise<{ scriptPath: string }> {
+  const { scriptPath } = await writeScheduledTaskScript(args);
+  writeFormattedLines(stdout, [{ label: "Staged task script", value: scriptPath }], {
+    leadingBlankLine: true,
+  });
+  return { scriptPath };
+}
+
+async function updateExistingScheduledTask(params: {
+  env: GatewayServiceEnv;
+  stdout: NodeJS.WritableStream;
+  taskName: string;
+  quotedScript: string;
+  scriptPath: string;
+}): Promise<boolean> {
+  if (!(await isRegisteredScheduledTask(params.env))) {
+    return false;
+  }
+  const change = await execSchtasks([
+    "/Change",
+    "/TN",
+    params.taskName,
+    "/TR",
+    params.quotedScript,
+  ]);
+  if (change.code !== 0) {
+    return false;
+  }
+  await runScheduledTaskOrThrow(params.taskName);
+  writeFormattedLines(
+    params.stdout,
+    [
+      { label: "Updated Scheduled Task", value: params.taskName },
+      { label: "Task script", value: params.scriptPath },
+    ],
+    { leadingBlankLine: true },
+  );
+  return true;
+}
+
+async function runScheduledTaskOrThrow(taskName: string): Promise<void> {
+  const run = await execSchtasks(["/Run", "/TN", taskName]);
+  if (run.code !== 0) {
+    throw new Error(`schtasks run failed: ${run.stderr || run.stdout}`.trim());
+  }
+}
+
+async function activateScheduledTask(params: {
+  env: GatewayServiceEnv;
+  stdout: NodeJS.WritableStream;
+  scriptPath: string;
+  description?: string;
+}) {
+  const taskDescription = params.description ?? "OpenClaw Gateway";
+
+  const taskName = resolveTaskName(params.env);
+  const quotedScript = quoteSchtasksArg(params.scriptPath);
+
+  if (await updateExistingScheduledTask({ ...params, taskName, quotedScript })) {
+    return;
+  }
+
   const baseArgs = [
     "/Create",
     "/F",
@@ -557,7 +648,7 @@ export async function installScheduledTask({
     "/TR",
     quotedScript,
   ];
-  const taskUser = resolveTaskUser(env);
+  const taskUser = resolveTaskUser(params.env);
   let create = await execSchtasks(
     taskUser ? [...baseArgs, "/RU", taskUser, "/NP", "/IT"] : baseArgs,
   );
@@ -567,35 +658,50 @@ export async function installScheduledTask({
   if (create.code !== 0) {
     const detail = create.stderr || create.stdout;
     if (shouldFallbackToStartupEntry({ code: create.code, detail })) {
-      const startupEntryPath = resolveStartupEntryPath(env);
+      const startupEntryPath = resolveStartupEntryPath(params.env);
       await fs.mkdir(path.dirname(startupEntryPath), { recursive: true });
-      const launcher = buildStartupLauncherScript({ description: taskDescription, scriptPath });
+      const launcher = buildStartupLauncherScript({
+        description: taskDescription,
+        scriptPath: params.scriptPath,
+      });
       await fs.writeFile(startupEntryPath, launcher, "utf8");
-      launchFallbackTaskScript(scriptPath);
+      launchFallbackTaskScript(params.scriptPath);
       writeFormattedLines(
-        stdout,
+        params.stdout,
         [
           { label: "Installed Windows login item", value: startupEntryPath },
-          { label: "Task script", value: scriptPath },
+          { label: "Task script", value: params.scriptPath },
         ],
         { leadingBlankLine: true },
       );
-      return { scriptPath };
+      return;
     }
     throw new Error(`schtasks create failed: ${detail}`.trim());
   }
 
-  await execSchtasks(["/Run", "/TN", taskName]);
+  await runScheduledTaskOrThrow(taskName);
   // Ensure we don't end up writing to a clack spinner line (wizards show progress without a newline).
   writeFormattedLines(
-    stdout,
+    params.stdout,
     [
       { label: "Installed Scheduled Task", value: taskName },
-      { label: "Task script", value: scriptPath },
+      { label: "Task script", value: params.scriptPath },
     ],
     { leadingBlankLine: true },
   );
-  return { scriptPath };
+}
+
+export async function installScheduledTask(
+  args: GatewayServiceInstallArgs,
+): Promise<{ scriptPath: string }> {
+  const staged = await writeScheduledTaskScript(args);
+  await activateScheduledTask({
+    env: args.env,
+    stdout: args.stdout,
+    scriptPath: staged.scriptPath,
+    description: staged.taskDescription,
+  });
+  return { scriptPath: staged.scriptPath };
 }
 
 export async function uninstallScheduledTask({
@@ -625,7 +731,7 @@ export async function uninstallScheduledTask({
 }
 
 function isTaskNotRunning(res: { stdout: string; stderr: string; code: number }): boolean {
-  const detail = (res.stderr || res.stdout).toLowerCase();
+  const detail = normalizeLowercaseStringOrEmpty(res.stderr || res.stdout);
   return detail.includes("not running");
 }
 
@@ -655,7 +761,14 @@ export async function stopScheduledTask({ stdout, env }: GatewayServiceControlAr
   await terminateScheduledTaskGatewayListeners(effectiveEnv);
   await terminateInstalledStartupRuntime(effectiveEnv);
   if (stopPort) {
-    await waitForGatewayPortRelease(stopPort);
+    const released = await waitForGatewayPortRelease(stopPort);
+    if (!released) {
+      await terminateBusyPortListeners(stopPort);
+      const releasedAfterForce = await waitForGatewayPortRelease(stopPort, 2_000);
+      if (!releasedAfterForce) {
+        throw new Error(`gateway port ${stopPort} is still busy after stop`);
+      }
+    }
   }
   stdout.write(`${formatLine("Stopped Scheduled Task", taskName)}\n`);
 }
@@ -684,12 +797,16 @@ export async function restartScheduledTask({
   await terminateScheduledTaskGatewayListeners(effectiveEnv);
   await terminateInstalledStartupRuntime(effectiveEnv);
   if (restartPort) {
-    await waitForGatewayPortRelease(restartPort);
+    const released = await waitForGatewayPortRelease(restartPort);
+    if (!released) {
+      await terminateBusyPortListeners(restartPort);
+      const releasedAfterForce = await waitForGatewayPortRelease(restartPort, 2_000);
+      if (!releasedAfterForce) {
+        throw new Error(`gateway port ${restartPort} is still busy before restart`);
+      }
+    }
   }
-  const res = await execSchtasks(["/Run", "/TN", taskName]);
-  if (res.code !== 0) {
-    throw new Error(`schtasks run failed: ${res.stderr || res.stdout}`.trim());
-  }
+  await runScheduledTaskOrThrow(taskName);
   stdout.write(`${formatLine("Restarted Scheduled Task", taskName)}\n`);
   return { outcome: "completed" };
 }
@@ -723,7 +840,7 @@ export async function readScheduledTaskRuntime(
       return await resolveFallbackRuntime(env);
     }
     const detail = (res.stderr || res.stdout).trim();
-    const missing = detail.toLowerCase().includes("cannot find the file");
+    const missing = normalizeLowercaseStringOrEmpty(detail).includes("cannot find the file");
     return {
       status: missing ? "stopped" : "unknown",
       detail: detail || undefined,

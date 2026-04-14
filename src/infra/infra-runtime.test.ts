@@ -1,8 +1,6 @@
 import os from "node:os";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import type { runExec } from "../process/exec.js";
-import type { RuntimeEnv } from "../runtime.js";
-import { ensureBinary } from "./binaries.js";
+import { makeNetworkInterfacesSnapshot } from "../test-helpers/network-interfaces.js";
 import {
   __testing,
   consumeGatewaySigusr1RestartAuthorization,
@@ -30,35 +28,6 @@ describe("infra runtime", () => {
       __testing.resetSigusr1State();
     });
   }
-
-  describe("ensureBinary", () => {
-    it("passes through when binary exists", async () => {
-      const exec: typeof runExec = vi.fn().mockResolvedValue({
-        stdout: "",
-        stderr: "",
-      });
-      const runtime: RuntimeEnv = {
-        log: vi.fn(),
-        error: vi.fn(),
-        exit: vi.fn(),
-      };
-      await ensureBinary("node", exec, runtime);
-      expect(exec).toHaveBeenCalledWith("which", ["node"]);
-    });
-
-    it("logs and exits when missing", async () => {
-      const exec: typeof runExec = vi.fn().mockRejectedValue(new Error("missing"));
-      const error = vi.fn();
-      const exit = vi.fn(() => {
-        throw new Error("exit");
-      });
-      await expect(ensureBinary("ghost", exec, { log: vi.fn(), error, exit })).rejects.toThrow(
-        "exit",
-      );
-      expect(error).toHaveBeenCalledWith("Missing required binary: ghost. Please install it.");
-      expect(exit).toHaveBeenCalledWith(1);
-    });
-  });
 
   describe("restart authorization", () => {
     setupRestartSignalSuite();
@@ -222,8 +191,8 @@ describe("infra runtime", () => {
         await vi.advanceTimersByTimeAsync(0);
         expect(emitSpy).not.toHaveBeenCalledWith("SIGUSR1");
 
-        // Advance past the 90s max deferral wait
-        await vi.advanceTimersByTimeAsync(90_000);
+        // Advance past the 5-minute max deferral wait
+        await vi.advanceTimersByTimeAsync(300_000);
         expect(emitSpy).toHaveBeenCalledWith("SIGUSR1");
       } finally {
         process.removeListener("SIGUSR1", handler);
@@ -249,24 +218,15 @@ describe("infra runtime", () => {
 
   describe("tailnet address detection", () => {
     it("detects tailscale IPv4 and IPv6 addresses", () => {
-      vi.spyOn(os, "networkInterfaces").mockReturnValue({
-        lo0: [{ address: "127.0.0.1", family: "IPv4", internal: true, netmask: "" }],
-        utun9: [
-          {
-            address: "100.123.224.76",
-            family: "IPv4",
-            internal: false,
-            netmask: "",
-          },
-          {
-            address: "fd7a:115c:a1e0::8801:e04c",
-            family: "IPv6",
-            internal: false,
-            netmask: "",
-          },
-        ],
-        // oxlint-disable-next-line typescript/no-explicit-any
-      } as any);
+      vi.spyOn(os, "networkInterfaces").mockReturnValue(
+        makeNetworkInterfacesSnapshot({
+          lo0: [{ address: "127.0.0.1", family: "IPv4", internal: true }],
+          utun9: [
+            { address: "100.123.224.76", family: "IPv4" },
+            { address: "fd7a:115c:a1e0::8801:e04c", family: "IPv6" },
+          ],
+        }),
+      );
 
       const out = listTailnetAddresses();
       expect(out.ipv4).toEqual(["100.123.224.76"]);
