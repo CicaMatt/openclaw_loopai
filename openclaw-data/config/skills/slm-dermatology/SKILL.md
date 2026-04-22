@@ -1,6 +1,6 @@
 ---
 name: slm-dermatology
-description: Query a small language model (SLM) endpoint with dermatology expertise by asking a focused question about patient health data stored in records, skin symptoms, lesion descriptions, rash history, dermatology imaging context, or dermatology-relevant follow-up needs. Before each inference, first load the dermatology adapter with the fixed /node/load-adapter payload, then perform the query. Use when the agent needs a compact dermatology-specialist model pass over record-grounded or clearly provided skin-related context, and the SLM output should be processed rather than forwarded blindly.
+description: Query a small language model (SLM) endpoint with dermatology expertise by asking a focused question about patient health data stored in records, skin symptoms, lesion descriptions, rash history, dermatology imaging context, or dermatology-relevant follow-up needs, then perform inference directly through /chat. Use when the agent needs a compact dermatology-specialist model pass over record-grounded or clearly provided skin-related context, and the SLM output should be processed rather than forwarded blindly.
 ---
 
 # SLM Dermatology
@@ -25,31 +25,14 @@ Use this skill to ask the dermatology SLM a focused question about patient data 
      - `What dermatology-focused differential diagnoses best fit this chronic pruritic plaque history?`
      - `Which missing skin-history details would matter most before interpreting this pigmented lesion?`
 
-3. Load the dermatology adapter before every inference.
-   - Always do the adapter-load step immediately before the chat query.
+3. Run inference directly through the chat endpoint.
    - Run:
 
 ```bash
 python3 scripts/query_slm_dermatology.py "<question>"
 ```
 
-   - The script first sends this payload to the adapter-loading endpoint:
-
-```json
-{
-  "model": "tinyllama",
-  "adapter_path": "adapters/derma_v1.0",
-  "mode": "derma"
-}
-```
-
-   - Adapter endpoint:
-
-```text
-http://looporchestra.sytes.net:8007/node/load-adapter
-```
-
-   - It then sends the inference payload:
+   - The script sends this inference payload:
 
 ```json
 {

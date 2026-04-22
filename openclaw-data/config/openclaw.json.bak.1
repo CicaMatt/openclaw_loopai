@@ -1,7 +1,7 @@
 {
   "meta": {
-    "lastTouchedVersion": "2026.3.13",
-    "lastTouchedAt": "2026-04-13T15:47:21.436Z"
+    "lastTouchedVersion": "2026.4.14",
+    "lastTouchedAt": "2026-04-14T14:54:43.495Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -83,7 +83,6 @@
           "weather",
           "xurl",
           "pipeline-generator",
-          "dumb-calculator",
           "pipeline-execution",
           "kidney-pipeline-execution",
           "nephrology-klm",
@@ -166,13 +165,26 @@
           "wacli",
           "weather",
           "xurl",
-          "dumb-calculator",
           "pipeline-execution",
           "llm-distillator",
           "patient-klm",
-          "slm-expert",
-          "distillation-tool"
-        ]
+          "distillation-tool",
+          "slm-expert-backup"
+        ],
+        "tools": {
+          "profile": "coding",
+          "alsoAllow": [
+            "message",
+            "tts"
+          ],
+          "deny": [
+            "music_generate",
+            "image_generate",
+            "video_generate",
+            "cron",
+            "x_search"
+          ]
+        }
       },
       {
         "id": "patient-agent",
@@ -232,9 +244,21 @@
           "wacli",
           "weather",
           "xurl",
-          "dumb-calculator",
           "patient-klm"
-        ]
+        ],
+        "tools": {
+          "alsoAllow": [
+            "tts",
+            "message"
+          ],
+          "deny": [
+            "video_generate",
+            "music_generate",
+            "image_generate",
+            "cron",
+            "x_search"
+          ]
+        }
       },
       {
         "id": "demo-agent",
@@ -359,7 +383,20 @@
           "weather",
           "xurl",
           "patient-klm"
-        ]
+        ],
+        "tools": {
+          "alsoAllow": [
+            "tts",
+            "message"
+          ],
+          "deny": [
+            "image_generate",
+            "music_generate",
+            "video_generate",
+            "cron",
+            "x_search"
+          ]
+        }
       },
       {
         "id": "doctor-agent-2",
@@ -424,8 +461,22 @@
           "patient-klm",
           "skin-cancer-pipeline",
           "slm-inference",
-          "distillation-tool"
-        ]
+          "distillation-tool",
+          "slm-dermatology"
+        ],
+        "tools": {
+          "alsoAllow": [
+            "tts",
+            "message"
+          ],
+          "deny": [
+            "image_generate",
+            "music_generate",
+            "video_generate",
+            "cron",
+            "x_search"
+          ]
+        }
       }
     ]
   },
@@ -496,7 +547,9 @@
       "enabled": true,
       "dmPolicy": "pairing",
       "groupPolicy": "allowlist",
-      "streaming": "partial",
+      "streaming": {
+        "mode": "partial"
+      },
       "accounts": {
         "default": {
           "dmPolicy": "pairing",
@@ -505,7 +558,9 @@
             495506013
           ],
           "groupPolicy": "allowlist",
-          "streaming": "partial"
+          "streaming": {
+            "mode": "partial"
+          }
         },
         "doctor-agent-tg": {
           "enabled": true,
@@ -515,7 +570,9 @@
             495506013
           ],
           "groupPolicy": "allowlist",
-          "streaming": "partial"
+          "streaming": {
+            "mode": "partial"
+          }
         },
         "patient-agent-tg": {
           "enabled": true,
@@ -525,7 +582,9 @@
             495506013
           ],
           "groupPolicy": "allowlist",
-          "streaming": "partial"
+          "streaming": {
+            "mode": "partial"
+          }
         },
         "demo-agent-tg": {
           "enabled": true,
@@ -535,21 +594,27 @@
             495506013
           ],
           "groupPolicy": "allowlist",
-          "streaming": "partial"
+          "streaming": {
+            "mode": "partial"
+          }
         },
         "patient-agent-2-tg": {
           "enabled": true,
           "dmPolicy": "pairing",
           "botToken": "8092968634:AAEgPUxfOGT-V-0dRAdWxLQgfX9lgMMpsYk",
           "groupPolicy": "allowlist",
-          "streaming": "partial"
+          "streaming": {
+            "mode": "partial"
+          }
         },
         "doctor-agent-2-tg": {
           "enabled": true,
           "dmPolicy": "pairing",
           "botToken": "8776225581:AAG9OnJU7cUa5c8ZSlQlN56Vh8k-k4srp_E",
           "groupPolicy": "allowlist",
-          "streaming": "partial"
+          "streaming": {
+            "mode": "partial"
+          }
         }
       }
     }
@@ -588,6 +653,121 @@
     "entries": {
       "telegram": {
         "enabled": true
+      },
+      "openai": {
+        "enabled": true
+      }
+    }
+  },
+  "skills": {
+    "entries": {
+      "1password": {
+        "enabled": false
+      },
+      "apple-notes": {
+        "enabled": false
+      },
+      "apple-reminders": {
+        "enabled": false
+      },
+      "bear-notes": {
+        "enabled": false
+      },
+      "blogwatcher": {
+        "enabled": false
+      },
+      "blucli": {
+        "enabled": false
+      },
+      "bluebubbles": {
+        "enabled": false
+      },
+      "camsnap": {
+        "enabled": false
+      },
+      "discord": {
+        "enabled": false
+      },
+      "eightctl": {
+        "enabled": false
+      },
+      "gemini": {
+        "enabled": false
+      },
+      "gh-issues": {
+        "enabled": false
+      },
+      "gifgrep": {
+        "enabled": false
+      },
+      "gog": {
+        "enabled": false
+      },
+      "goplaces": {
+        "enabled": false
+      },
+      "himalaya": {
+        "enabled": false
+      },
+      "imsg": {
+        "enabled": false
+      },
+      "notion": {
+        "enabled": false
+      },
+      "obsidian": {
+        "enabled": false
+      },
+      "openhue": {
+        "enabled": false
+      },
+      "oracle": {
+        "enabled": false
+      },
+      "ordercli": {
+        "enabled": false
+      },
+      "peekaboo": {
+        "enabled": false
+      },
+      "sag": {
+        "enabled": false
+      },
+      "sherpa-onnx-tts": {
+        "enabled": false
+      },
+      "slack": {
+        "enabled": false
+      },
+      "songsee": {
+        "enabled": false
+      },
+      "sonoscli": {
+        "enabled": false
+      },
+      "spotify-player": {
+        "enabled": false
+      },
+      "things-mac": {
+        "enabled": false
+      },
+      "trello": {
+        "enabled": false
+      },
+      "video-frames": {
+        "enabled": false
+      },
+      "voice-call": {
+        "enabled": false
+      },
+      "xurl": {
+        "enabled": false
+      },
+      "weather": {
+        "enabled": false
+      },
+      "tmux": {
+        "enabled": false
       }
     }
   }

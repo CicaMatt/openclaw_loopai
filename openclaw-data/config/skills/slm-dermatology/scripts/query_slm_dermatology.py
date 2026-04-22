@@ -5,13 +5,7 @@ import sys
 from urllib import error, request
 
 BASE_URL = "http://looporchestra.sytes.net:8007"
-LOAD_ADAPTER_ENDPOINT = f"{BASE_URL}/node/load-adapter"
 CHAT_ENDPOINT = f"{BASE_URL}/chat"
-LOAD_ADAPTER_PAYLOAD = {
-    "model": "tinyllama",
-    "adapter_path": "adapters/derma_v1.0",
-    "mode": "derma",
-}
 
 
 def extract_answer(body: str) -> str:
@@ -71,19 +65,14 @@ def post_json(url: str, payload: dict, timeout: int) -> str:
         raise RuntimeError(f"Request to {url} failed: {e}") from e
 
 
-def load_adapter(timeout: int) -> str:
-    return post_json(LOAD_ADAPTER_ENDPOINT, LOAD_ADAPTER_PAYLOAD, timeout)
-
-
 def call_endpoint(question: str, timeout: int = 45) -> str:
-    load_adapter(timeout)
     body = post_json(CHAT_ENDPOINT, {"question": question}, timeout)
     return extract_answer(body)
 
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Load the dermatology adapter and query the dermatology SLM endpoint"
+        description="Query the dermatology SLM endpoint"
     )
     parser.add_argument("question", help="Dermatology question grounded in records or known context")
     parser.add_argument("--timeout", type=int, default=45)
