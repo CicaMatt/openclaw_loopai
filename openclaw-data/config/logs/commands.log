@@ -19,3 +19,7 @@
 {"timestamp":"2026-04-22T11:50:28.737Z","action":"new","sessionKey":"agent:patient-agent-2:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
 {"timestamp":"2026-04-22T12:03:50.501Z","action":"new","sessionKey":"agent:main:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
 {"timestamp":"2026-04-22T13:25:44.860Z","action":"new","sessionKey":"agent:patient-agent-2:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-23T10:49:59.686Z","action":"new","sessionKey":"agent:patient-agent:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-23T10:50:10.899Z","action":"new","sessionKey":"agent:main:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-23T11:01:46.515Z","action":"new","sessionKey":"agent:main:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-23T13:02:21.802Z","action":"new","sessionKey":"agent:patient-agent:telegram:direct:495506013","senderId":"495506013","source":"telegram"}

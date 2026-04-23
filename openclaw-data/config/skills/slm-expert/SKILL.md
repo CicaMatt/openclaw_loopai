@@ -47,7 +47,8 @@ Use this skill to query the specialty SLM at `http://looporchestra.sytes.net:800
 python3 scripts/query_slm_expert.py \
   --question "What signs of kidney damage should be monitored in hypertensive patients?" \
   --domain nephrology \
-  --domain hypertension
+  --domain hypertension \
+  --timeout 180
 ```
 
    - The helper always sends a fixed blank `patient_context` object.

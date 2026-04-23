@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.4.14",
-    "lastTouchedAt": "2026-04-14T14:54:43.495Z"
+    "lastTouchedAt": "2026-04-14T14:55:21.587Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -322,7 +322,20 @@
           "llm-distillator",
           "patient-klm",
           "distillation-tool"
-        ]
+        ],
+        "tools": {
+          "alsoAllow": [
+            "tts"
+          ],
+          "deny": [
+            "image_generate",
+            "music_generate",
+            "video_generate",
+            "cron",
+            "message",
+            "x_search"
+          ]
+        }
       },
       {
         "id": "patient-agent-2",

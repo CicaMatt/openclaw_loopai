@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.4.14",
-    "lastTouchedAt": "2026-04-14T14:55:51.132Z"
+    "lastTouchedAt": "2026-04-23T11:12:35.533Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -170,7 +170,7 @@
           "llm-distillator",
           "patient-klm",
           "distillation-tool",
-          "slm-expert-backup"
+          "slm-expert"
         ],
         "tools": {
           "profile": "coding",

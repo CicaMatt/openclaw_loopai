@@ -1,7 +1,7 @@
 {
   "meta": {
     "lastTouchedVersion": "2026.4.14",
-    "lastTouchedAt": "2026-04-14T14:52:56.842Z"
+    "lastTouchedAt": "2026-04-14T14:53:59.057Z"
   },
   "wizard": {
     "lastRunAt": "2026-03-09T20:25:00.842Z",
@@ -170,7 +170,21 @@
           "patient-klm",
           "distillation-tool",
           "slm-expert-backup"
-        ]
+        ],
+        "tools": {
+          "profile": "coding",
+          "alsoAllow": [
+            "message",
+            "tts"
+          ],
+          "deny": [
+            "music_generate",
+            "image_generate",
+            "video_generate",
+            "cron",
+            "x_search"
+          ]
+        }
       },
       {
         "id": "patient-agent",
