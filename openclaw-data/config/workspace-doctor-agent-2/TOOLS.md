@@ -17,18 +17,6 @@ Use them only when they materially improve the case review, and interpret output
 - **Use for:** rare medical systems-design discussions, not routine patient diagnostic support.
 - **Limits:** Not a diagnostic authority and should not shape clinical conclusions directly.
 
-## kidney-pipeline-execution
-- **Role:** Execute the fixed kidney cancer detection pipeline starting from an image file.
-- **Input:** The input is a CT scan image uploaded by the user. Only run the pipeline if the user send an new CT scan image. NEVER run the tool on a previously uploaded image. If the user requests to run the pipeline but does not upload an image, do not run the pipeline at all.
-- **Use for:** running the integrated kidney pipeline when an image should be uploaded and passed through the Kidney Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
-- **Suggestion rule:** If the diagnostic impression raises kidney-focused problems or a possible renal mass concern, suggest that the user can run this specialized pipeline and invite them to upload a CT image scan.
-- **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize these wanted outputs when present: the kidney cancer class, the kidney cancer confidence, the Image Analyzer prediction, and all available `cam_...` fields from the Image Analyzer output, especially the full `cam_metrics` set and `cam_explanation`.
-- **Presentation rule:** When reporting results to the user, do not default to low-level JSON labels. Present them in a cleaner summary with readable labels such as `Kidney cancer class`, `Confidence`, `Image Analyzer prediction`, `CAM coverage`, `CAM center ratio`, `CAM left-right asymmetry`, etc.
-- **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
-- **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
-- **Output structure:** "Kidney Cancer Detector", "Image Analyzer", "xAI", "Result Interpretation", "Recommendended next steps" (at the end of the "Image Analyzer" section, leave a brief statament mentioning that the heatmap image is attached). 
-- **Final message:** Always remember to the use that the tool output as a preliminary signal, not as an actual diagnosis.
-
 ## depression-pipeline
 - **Role:** Execute the voice depression pipeline starting from a user-provided audio file.
 - **Input:** The input is an audio file uploaded by the user. Only run the pipeline when the user provides a new audio file for analysis. If the user requests the pipeline but does not upload an audio file, do not run it.
@@ -50,7 +38,7 @@ Use them only when they materially improve the case review, and interpret output
 ## patient-klm
 - **Role:** Patient-specific knowledge base skill for retrieving live structured health context, including symptom history, visits, disease timeline, genomics, and custom patient facts.
 - **Use for:** when the user reports symptoms and patient-specific context could materially improve interpretation, first retrieve the latest relevant patient record through the patient-klm skill, then combine that structured report with the user’s current symptom description.
-- **Default patient rule:** If the user asks for patient knowledge base access without specifying a patient, default to patient_id `P-003`.
+- **Default patient rule:** If the user asks for patient knowledge base access without specifying a patient, default to patient_id `PT-9921`.
 - **Presentation rule:** Integrate the fetched report with the newly reported symptoms into one coherent clinical picture. Clearly distinguish what came from the patient knowledge base versus what the user reported now when that distinction matters.
 - **Safety rule:** Treat patient-klm output as supporting clinical context, not final truth. Do not overstate certainty, do not invent missing facts, and say when important context is still missing.
 - **Answering rule:** After incorporating the updated report, provide a comprehensive but careful explanation of the user’s likely health situation, including uncertainty, red flags, and next-step guidance when relevant.

@@ -12,13 +12,6 @@ Use them only when they materially improve the case review, and interpret output
 5. Interpret outputs as preliminary signals, not final truth.
 6. Return findings and outputs in a clear and structured message.
 
-## distillation-tool (Must be executed by the contacting the Doctor Agent)
-- **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
-- **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
-- **Suggestion rule:** Suggest this skill only once there has been enough symptom discussion to frame the case and a tool has just produced a diagnostic result or preliminary diagnosis.
-- **Presentation rule:** Use it to convert raw or fragmented tool output into a concise explanation that matches the agent’s diagnostic output structure and preserves the distinction between tool findings and clinical interpretation.
-- **Safety rule:** Present the distilled result as a preliminary interpretation, not a confirmed diagnosis, and keep uncertainty visible when the upstream tool output is limited or ambiguous.
-
 ## patient-klm
 - **Role:** Patient-specific knowledge base skill for retrieving live structured health context, including symptom history, visits, disease timeline, genomics, and custom patient facts.
 - **Use for:** when the user reports symptoms and patient-specific context could materially improve interpretation, first retrieve the latest relevant patient record through the patient-klm skill, then combine that structured report with the user’s current symptom description.
@@ -34,6 +27,17 @@ Use them only when they materially improve the case review, and interpret output
 - **Presentation rule:** Treat the SLM answer as an intermediate signal to be processed by the calling agent, not as a final verdict to relay blindly.
 - **Safety rule:** Cross-check the SLM output against the actual records, keep uncertainty visible, and do not present it as a confirmed diagnosis.
 
+## depression-pipeline (Must be executed by the contacting the Doctor Agent)
+- **Role:** Execute the voice depression pipeline starting from a user-provided audio file.
+- **Input:** The input is an audio file uploaded by the user. Only run the pipeline when the user provides a new audio file for analysis. If the user requests the pipeline but does not upload an audio file, do not run it.
+- **Use for:** running the integrated depression-analysis pipeline when an uploaded audio file should be passed through the Voice Depression Detection component and the Fuzzy Stress Evaluator.
+- **Suggestion rule:** If the clinical conversation raises concern about depressed mood, emotional distress, or stress-related voice analysis and the user wants audio-based screening support, suggest that they can upload an audio recording for this specialized pipeline.
+- **Meaning:** Produces a preliminary pipeline result structure; for quick summaries, prioritize the main outputs from the Voice Depression Detection module and the Fuzzy Stress Evaluator, including any depression-related classification, confidence, stress level, and supporting explanatory fields when present.
+- **Presentation rule:** When reporting results to the user, do not default to raw JSON labels. Present them in a clean summary with readable labels such as `Depression screening result`, `Confidence`, `Stress level`, and other clearly named interpretation fields when available.
+- **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
+- **Limits:** This is still a prototype pipeline output, not a diagnosis. Audio-based screening can be noisy or context-limited, so its result must be interpreted cautiously and alongside the broader clinical picture.
+- **Output message:** Always remind the user that the tool output is a preliminary signal, not an actual diagnosis.
+
 ## skin-cancer-pipeline (Must be executed by the contacting the Doctor Agent)
 - **Role:** Execute the fixed skin cancer detection pipeline starting from a skin image file.
 - **Use for:** running the integrated skin pipeline when an image should be uploaded and passed through the Skin Cancer Detection model, the Image Analyzer component, and the downstream X-AI component.
@@ -43,6 +47,13 @@ Use them only when they materially improve the case review, and interpret output
 - **Default verbosity rule:** Do not include low-level run details in normal replies. Omit upload paths, endpoint values, HTTP status, node ids, workflow ids, raw file paths, and other execution metadata unless the user explicitly asks for technical or raw output.
 - **Limits:** This is still a prototype pipeline output, not a diagnosis. The X-AI component may be integrated in the workflow even when its own returned tracking data is limited.
 - **Output message:** Always remember to tell the user that the tool output is a preliminary signal, not an actual diagnosis.
+
+## distillation-tool (Must be executed by the contacting the Doctor Agent)
+- **Role:** Distill the outputs of one or more diagnostic tools together with the symptom discussion and immediate conversation context into a clear patient-facing summary.
+- **Use for:** after symptoms have already been discussed and a diagnostic tool has just run, especially when its output needs to be translated into a coherent explanation for the user.
+- **Suggestion rule:** Suggest this skill only once there has been enough symptom discussion to frame the case and a tool has just produced a diagnostic result or preliminary diagnosis.
+- **Presentation rule:** Use it to convert raw or fragmented tool output into a concise explanation that matches the agent’s diagnostic output structure and preserves the distinction between tool findings and clinical interpretation.
+- **Safety rule:** Present the distilled result as a preliminary interpretation, not a confirmed diagnosis, and keep uncertainty visible when the upstream tool output is limited or ambiguous.
 
 ## Interpretation Rules
 - Treat all tool outputs as inputs to reasoning, not verdicts.
