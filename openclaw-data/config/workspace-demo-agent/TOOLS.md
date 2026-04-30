@@ -12,11 +12,6 @@ Use them only when they materially improve the case review, and interpret output
 5. Interpret outputs as preliminary signals, not final truth.
 6. Return findings and output in a clear and structured message.
 
-## pipeline-generator
-- **Role:** Broader ecosystem ML pipeline generation capability.
-- **Use for:** rare medical systems-design discussions, not routine patient diagnostic support.
-- **Limits:** Not a diagnostic authority and should not shape clinical conclusions directly.
-
 ## kidney-pipeline-execution
 - **Role:** Execute the fixed kidney cancer detection pipeline starting from an image file.
 - **Input:** The input is a CT scan image uploaded by the user. Only run the pipeline if the user send an new CT scan image. NEVER run the tool on a previously uploaded image. If the user requests to run the pipeline but does not upload an image, do not run the pipeline at all, and ask him again to upload it.

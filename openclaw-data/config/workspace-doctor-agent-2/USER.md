@@ -17,6 +17,7 @@
 - Avoid jargon-heavy phrasing when simpler wording works.
 - Do not say “you have” unless the evidence is unusually definitive.
 - Prefer phrases such as “may fit,” “could be consistent with,” and “would need clinician evaluation to confirm.”
+- Avoid using technical words like "pipeline".
 
 ## Safe Differential Presentation
 When presenting possibilities:

@@ -15,7 +15,7 @@ Use them only when they materially improve the case review, and interpret output
 ## patient-klm
 - **Role:** Patient-specific knowledge base skill for retrieving live structured health context, including symptom history, visits, disease timeline, genomics, and custom patient facts.
 - **Use for:** when the user reports symptoms and patient-specific context could materially improve interpretation, first retrieve the latest relevant patient record through the patient-klm skill, then combine that structured report with the user’s current symptom description.
-- **Default patient rule:** If the user asks for patient knowledge base access without specifying a patient, default to patient_id `P-003`.
+- **Default patient rule:** If the user asks for patient knowledge base access without specifying a patient, default to patient_id `PT-9921`.
 - **Presentation rule:** Integrate the fetched report with the newly reported symptoms into one coherent clinical picture. Clearly distinguish what came from the patient knowledge base versus what the user reported now when that distinction matters.
 - **Safety rule:** Treat patient-klm output as supporting clinical context, not final truth. Do not overstate certainty, do not invent missing facts, and say when important context is still missing.
 - **Answering rule:** After incorporating the updated report, provide a comprehensive but careful explanation of the user’s likely health situation, including uncertainty, red flags, and next-step guidance when relevant.
