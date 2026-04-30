@@ -40,7 +40,7 @@
     },
     "createdAtMs": 1773082963275,
     "approvedAtMs": 1773087731344,
-    "displayName": "gateway:sessions.delete"
+    "displayName": "Telegram Native Approvals (default)"
   },
   "40cefc67383965e33af71b0a48f60030018cb4c60a4effcea6faa7df94eb0741": {
     "deviceId": "40cefc67383965e33af71b0a48f60030018cb4c60a4effcea6faa7df94eb0741",
@@ -109,7 +109,7 @@
           "operator.pairing"
         ],
         "createdAtMs": 1773159820916,
-        "lastUsedAtMs": 1776942768143
+        "lastUsedAtMs": 1777331491296
       }
     },
     "createdAtMs": 1773159820916,

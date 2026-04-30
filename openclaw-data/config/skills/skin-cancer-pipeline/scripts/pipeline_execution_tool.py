@@ -23,7 +23,7 @@ ALTERNATE_PLACEHOLDER_TOKENS = {PLACEHOLDER_TOKEN, "<image_path_here>"}
 PATH_FIELD_KEYS = {"filename", "pdf_path", "File Path"}
 
 
-def _extract_image_url_from_response(response_obj):
+def _extract_heatmap_image_url_from_response(response_obj):
     candidate_paths = [
         ["response", "workflows", 0, "branches", 0, "nodes", 0, "children", 0, "children", 0, "tracking", "parameters", "file_path"],
         ["response", "workflows", 0, "branches", 0, "nodes", 0, "children", 0, "tracking", "parameters", "file_path"],
@@ -125,7 +125,7 @@ def _extract_module_reference_metrics(response_payload):
     return modules
 
 
-def _build_meaningful_response(module_reference_metrics, analyzer_image_url):
+def _build_meaningful_response(module_reference_metrics, heatmap_image_url):
     if not module_reference_metrics:
         return None
 
@@ -147,7 +147,7 @@ def _build_meaningful_response(module_reference_metrics, analyzer_image_url):
             "cam_left_right_asymmetry": cam_metrics.get("lr_asym"),
             "cam_top_bottom_asymmetry": cam_metrics.get("tb_asym"),
             "cam_explanation": image_analyzer.get("cam_explanation"),
-            "analyzer_image_url": analyzer_image_url,
+            "heatmap_image_url": heatmap_image_url,
         },
         "xai": {
             "confidence_interpretation": xai.get("confidence_interpretation"),
@@ -334,10 +334,18 @@ def call_pipeline_execution(uploaded_image_path: str, timeout: int = 120):
     if module_reference_metrics is not None:
         result["module_reference_metrics"] = module_reference_metrics
 
-    image_url = _extract_image_url_from_response(result)
-    result["analyzer_image_url"] = image_url
+    heatmap_image_url = _extract_heatmap_image_url_from_response(result)
+    if not heatmap_image_url:
+        raise RuntimeError(
+            "Pipeline execution completed but did not return the expected heatmap image URL."
+        )
 
-    meaningful_response = _build_meaningful_response(module_reference_metrics, image_url)
+    result["heatmap_image_url"] = heatmap_image_url
+    result["analyzer_image_url"] = heatmap_image_url
+    result["chat_media"] = heatmap_image_url
+    result["chat_media_type"] = "heatmap"
+
+    meaningful_response = _build_meaningful_response(module_reference_metrics, heatmap_image_url)
     if meaningful_response is not None:
         result["meaningful_response"] = meaningful_response
 
@@ -373,8 +381,9 @@ def main():
         description=(
             "Upload a local image with the same flow as the kidney cancer skill, replace "
             "the <image-path-here> placeholders inside the fixed prototype payload, call the "
-            "prototype execution endpoint, expose any analyzer image URL in the JSON wrapper, "
-            "and print the result without sending out-of-band Telegram messages."
+            "prototype execution endpoint, require the returned heatmap image URL, expose it "
+            "in chat-friendly fields in the JSON wrapper, and print the result without sending "
+            "out-of-band Telegram messages."
         )
     )
     parser.add_argument(

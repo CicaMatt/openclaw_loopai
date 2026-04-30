@@ -36,10 +36,16 @@ Follow this sequence exactly:
 8. Read the pipeline response and preserve the JSON wrapper shape returned by the script.
 9. Normalize the endpoint response into a meaningful top-level JSON summary under `meaningful_response`, mirroring the kidney pipeline pattern but using the skin pipeline metrics.
    - Include `skin_cancer_detector.inference_time`, `skin_cancer_detector.class`, and `skin_cancer_detector.confidence`.
-   - Include `image_analyzer.prediction`, `image_analyzer.cam_coverage`, `image_analyzer.cam_center_ratio`, `image_analyzer.cam_left_right_asymmetry`, `image_analyzer.cam_top_bottom_asymmetry`, `image_analyzer.cam_explanation`, and `image_analyzer.analyzer_image_url` when present.
+   - Include `image_analyzer.prediction`, `image_analyzer.cam_coverage`, `image_analyzer.cam_center_ratio`, `image_analyzer.cam_left_right_asymmetry`, `image_analyzer.cam_top_bottom_asymmetry`, `image_analyzer.cam_explanation`, and `image_analyzer.heatmap_image_url`.
    - Include X-AI fields under `xai`: `confidence_interpretation`, `recommended_next_steps`, `references`, `summary`, and `visual_evidence`.
-10. If an analyzer image URL exists in the response, extract it and include the image in the normal reply.
-11. Do not send out-of-band Telegram messages from the script.
+10. Treat the analyzer heatmap image as required output.
+   - Extract the returned heatmap URL from the response.
+   - If no heatmap image URL is present, fail loudly instead of silently succeeding.
+   - Expose the URL in top-level chat-friendly fields such as `heatmap_image_url` and `chat_media`.
+11. Always return the heatmap image in the normal chat reply.
+   - Use the returned `chat_media` or `heatmap_image_url` value with the chat send path.
+   - Do not omit the image when the pipeline succeeds.
+12. Do not send out-of-band Telegram messages from the script.
 
 ## Fixed values
 
@@ -57,7 +63,8 @@ Keep these values fixed:
 - If the endpoint returns non-JSON text, return that text as the `response` value.
 - Preserve the response wrapper shape returned by the script.
 - Add a normalized `meaningful_response` object so callers can rely on a concise, clinically meaningful JSON summary instead of re-parsing raw workflow paths.
-- Retain analyzer-image extraction in the script so the calling agent can forward the image through the chat.
+- Retain heatmap-image extraction in the script so the calling agent can forward the image through the chat.
+- Treat a missing heatmap image URL as an incomplete pipeline result, not as a successful run.
 
 ## Preferred script
 
@@ -96,6 +103,7 @@ When `cam_metrics` is present, include all available subfields such as:
 - `references`
 - `summary`
 - `visual_evidence`
+- `heatmap_image_url`
 
 Preserve list order for `recommended_next_steps`.
 Preserve available fields in each reference item such as `title`, `author`, `year`, and `url`.
@@ -106,4 +114,5 @@ Preserve available fields in each reference item such as `title`, `author`, `yea
 - Use readable labels instead of raw JSON paths.
 - Do not include low-level execution metadata by default.
 - Mention clearly that the pipeline output is a preliminary signal, not a diagnosis.
-- Append the analyzer image itself when an analyzer image URL is available.
+- Append the returned heatmap image itself in chat on every successful run.
+- If the heatmap image is missing, treat the run as failed/incomplete and say so plainly.

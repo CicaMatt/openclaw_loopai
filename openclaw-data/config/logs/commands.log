@@ -24,3 +24,13 @@
 {"timestamp":"2026-04-23T11:01:46.515Z","action":"new","sessionKey":"agent:main:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
 {"timestamp":"2026-04-23T13:02:21.802Z","action":"new","sessionKey":"agent:patient-agent:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
 {"timestamp":"2026-04-23T13:09:58.253Z","action":"new","sessionKey":"agent:doctor-agent:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-27T06:32:08.372Z","action":"new","sessionKey":"agent:patient-agent:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-27T06:32:59.203Z","action":"new","sessionKey":"agent:patient-agent-2:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-27T06:52:45.364Z","action":"new","sessionKey":"agent:main:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-27T09:11:29.317Z","action":"new","sessionKey":"agent:main:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-27T09:12:34.004Z","action":"new","sessionKey":"agent:main:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-27T09:28:38.662Z","action":"new","sessionKey":"agent:main:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-27T10:02:44.192Z","action":"new","sessionKey":"agent:patient-agent-2:telegram:direct:495506013","senderId":"495506013","source":"telegram"}
+{"timestamp":"2026-04-27T14:07:08.604Z","action":"new","sessionKey":"agent:patient-agent-2:telegram:direct:567556397","senderId":"567556397","source":"telegram"}
+{"timestamp":"2026-04-27T16:53:47.327Z","action":"new","sessionKey":"agent:patient-agent-2:telegram:direct:567556397","senderId":"567556397","source":"telegram"}
+{"timestamp":"2026-04-27T17:15:31.256Z","action":"new","sessionKey":"agent:patient-agent-2:telegram:direct:567556397","senderId":"567556397","source":"telegram"}
